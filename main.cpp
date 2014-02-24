@@ -173,51 +173,61 @@ void Interpreter(string& Input)
     strncpy(Buffer, Input.c_str(), sizeof(Buffer));
     Buffer[sizeof(Buffer) - 1] = 0;
 
-    int segmt[10][2]; // record the location of each segment
+    int segmt[10][2];   // record the location of each segment
 
-    int iSeg = 0; // number of segments in command line
+    int iSeg = 0;       // number of segments in command line
 
-    bool Tag = false;
+    bool Tag = false;   // why is this called Tag?!?
 
     OP  op; // the operator in the command line
 
-    char res[50], operand_1[50], operand_2[50]; // result_name, operand_1 and operand_2
+    // result_name, operand_1 and operand_2
+    char res[50], operand_1[50], operand_2[50]; 
 
-    if(Partitioner(Buffer,segmt,iSeg))// if the command line can be successfully segment
+    // if the command line can be successfully segment(ed?)
+    if(Partitioner(Buffer,segmt,iSeg))
     {
 
         switch (iSeg) // valid cases can be : 2, 3 or 5
         {
         case 2: // the command line is possible to be unary operation
             {
-                Tag = IsAUnary(Buffer,segmt,operand_1,op); // if it is a valid unary operation
+                // if it is a valid unary operation
+                Tag = IsAUnary(Buffer,segmt,operand_1,op); 
                 if(Tag)
                 {   // it is a valid unary operation, output the result
                     OpTranslator(op); 
-                    cout<<" "<<operand_1<<endl;
+                    cout << " " << operand_1 << endl;
                 }  
                 break;      
             }
         case 3: // the command line is possible to be binary operation or assignment
             {
-                if(IsAAsn(Buffer,segmt,res,operand_1)) // if it is a valid assignment
+                // if it is a valid assignment
+                if(IsAAsn(Buffer,segmt,res,operand_1)) 
                 {   // it is a valid assignment, output the result
                     Tag = true;
-                    cout<<"ASN "<<" "<<operand_1<<" to "<< res <<endl;
+                    cout << "ASN " << " " << operand_1<< " to " << res << endl;
                 }
-                else if(IsABinary3(Buffer,segmt,operand_1,operand_2,op)) // if it is a binary operation with assignment to default variable ans
+
+                // if it is a binary operation with assignment to default variable ans
+                else if(IsABinary3(Buffer,segmt,operand_1,operand_2,op)) 
                 {   // it is a binary operation, output the result
                     Tag = true;
                     OpTranslator(op);
-                    cout<<" "<<operand_1<<" AND "<<operand_2<<" , THEN ASN to ans. "<<endl;
+                    cout << " " << operand_1<<" AND "<< operand_2 << " , THEN ASN to ans. "<<endl;
                 }
                 break;
             }
+
+        // the input command line is a binary operation and assignment
         case 5: // the command line is possible to be binary operation and assignment
             {
-                Tag = IsABinary5(Buffer,segmt,res,operand_1,operand_2,op); // if it is a binary operation with assignment to a specified variable
+                // if it is a binary operation with assignment to a specified variable
+                Tag = IsABinary5(Buffer,segmt,res,operand_1,operand_2,op); 
+
                 if(Tag)
-                {   // it is a binary operation, output the result
+                {   // it is a binary operation, so output the result
                     OpTranslator(op);
                     cout<<" "<<operand_1<<" AND "<<operand_2<<" , THEN ASN to "<< res <<endl;
                 }  
@@ -235,18 +245,21 @@ void Interpreter(string& Input)
 
 }
 
-// If the input command line is a valid unary operation
-// Input:
-// char* Buffer   : the input command line (known)
-// int segmt[][2] : the location of each segment in the command line (known)
-// char* operand  : the operand in the command line (to fill in)
-// OP& op         : the operator (to fill in)
-// Output:
-// boolean variable : 0 -- not a valid unary operation, 1 -- valid unary operation
+/* ----------------------------------------------------------------------------
+ Name:     IsAUnary
+ Purpose:  called if the input command line is a valid unary operation
+ Params:   char* Buffer   - the input command line (known)
+           int segmt[][2] - location of each segment inthe command line (known)
+           char* operand  - the operand in the command line (to fill in)
+           OP& op         - the operator (to fill in)
+ Returns:  true / 1   - valid unary operation,
+           false / 0  - not a valid unary operation
+---------------------------------------------------------------------------- */
 bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
 {
-    bool Tag = false;
-    char piece[2][50];
+    bool isValid = false;   // rename Tag to isValid
+    char piece[2][50];      // what is this?
+
     for (int i = 0 ; i<2; i++)
     {
         for(int j = 0; j<segmt[i][1]; j++)
@@ -255,32 +268,56 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
         }
         piece[i][segmt[i][1]] = '\0';
     }
-    if(strcmp(piece[0],"++")==0)
+
+    string p0 = piece[0];
+    string p1 = piece[1];
+
+    if( (strcmp(piece[0],"++") == 0) ||  (strcmp(piece[0],"--") == 0)) )
+    {
+        if(strcmp(piece[0],"++")==0) op = PRE_INC;
+        else op = PRE_DEC;
+
+        strcpy(operand, piece[1]);
+        isValid = true;
+    }
+    /*if(strcmp(piece[0],"++")==0)
     {
         op = PRE_INC;
         strcpy(operand, piece[1]);
-        Tag = true;
+        isValid = true;
     }
     else if (strcmp(piece[0],"--")==0)
     {
         op = PRE_DEC;
         strcpy(operand, piece[1]);
-        Tag = true;
+        isValid = true;
     }
+    */
+
+    else if( (strcmp(piece[1],"++") == 0) ||  (strcmp(piece[1],"--") == 0)) )
+    {
+        if(strcmp(piece[1],"++")==0) op = POST_INC;
+        else op = POST_DEC;
+
+        strcpy(operand, piece[0]);
+        isValid = true;
+    }
+
+    /*
     else if(strcmp(piece[1],"++")==0)
     {
         op = POST_INC;
         strcpy(operand, piece[0]);
-        Tag = true;
+        isValid = true;
     }
     else if (strcmp(piece[1],"--")==0)
     {
         op = POST_DEC;
         strcpy(operand, piece[0]);
-        Tag = true;
-    }
+        isValid = true;
+    }*/
 
-    return Tag;
+    return isValid;
 }
 
 // If the input command line is a valid assignment
@@ -313,16 +350,18 @@ bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
     return Tag;
 }
 
-// If the input command line is a binary operation
-// Input:
-// char* Buffer   : the input command line (known)
-// int segmt[][2] : the location of each segment in the command line (known)
-// char* operand_1: the operand_1 in the command line (to fill in)
-// char* operand_2: the operand_2 in the command line (to fill in)
-// OP& op         : the operator (to fill in)
-// Output:
-// boolean variable : 0 -- not a valid binary operation, 1 -- valid binary operation
-
+/* ----------------------------------------------------------------------------
+ Name:     IsABinary3
+ Purpose:  If the input command line is a binary operation
+ Params:   char* Buffer   - the input command line (known)
+           int segmt[][2] - location of each segment inthe command line (known)
+           char* operand  - the operand in the command line (to fill in)
+           char* operand_1- the operand_1 in the command line (to fill in)
+           char* operand_2- the operand_2 in the command line (to fill in)
+           OP& op         - the operator (to fill in)
+ Returns:  1 -- valid binary operation (true)
+           0 -- not a valid binary operation (false)
+---------------------------------------------------------------------------- */
 bool IsABinary3(char* Buffer, int segmt[][2], char* operand_1, char* operand_2, OP& op)
 {
     bool Tag = false;
@@ -538,25 +577,13 @@ int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
     return error_code;
 }
 
-bool IsAChar(char str)
-{
-    return ((str>='A'&&str<='Z')||(str>='a'&&str<='z'));
-}
+bool IsAChar(char str) { return ((str>='A'&&str<='Z')||(str>='a'&&str<='z')); }
 
-bool IsADigit(char str)
-{
-    bool Tag = false;
-    return ((str>='0'&&str<='9')||(str=='.'));// Tag = true;
-    return Tag;
-
-}
+bool IsADigit(char str) { return ((str>='0'&&str<='9')||(str=='.')); }
 
 bool IsAOperator(char str)
 {
-    bool Tag = false;
-    if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
-    return Tag;
-
+    return ((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='='));
 }
 
 
