@@ -1,0 +1,49 @@
+from: http://justpaste.it/ei4m
+
+EECS 211, Winter 2014
+Due: Feb. 24, 11:59pm
+Objective:
+In Lab 5, you will extend your solution to Lab 3 to implement a programmable calculator. Through this lab, you will gain a better understanding of classes and their role in developing solutions to more complex problems. Specifically, this assignment will help you:
+think about how to organize code into classes;
+implement class member functions, including constructors and destructors;
+learn how to instantiate class objects to solve problems; and
+further develop your debugging skills.
+Problem Description
+In this lab, you will extend your Lab 3 solution with two new classes that will allow you to store and retrieve variables. Using these, your Mini-Matlab program should be able to compute and evaluate expressions involving scalar (non-matrix) values. Specifically, you will implement a CVariable class to represent the variables defined by the user and a CVarDB class to help organize and retrieve them for your Mini-Matlab program.
+The CVariable class should store the name and value of a user-defined variable. As we are not going to incorporate matrix operations in this assignment, you can use a double to store the variable value and a char array (char*) to hold the name. Your CVariable class should implement the following member functions, though you may add additional functionality to the class:
+CVariable(const char* name)initializes a CVariable with a given name and value 0
+CVariable(const char* name, double value)initializes a CVariable with a given name and value
+CVariable(const CVariable& copy)copy constructor
+~CVariable()destroys the CVariable
+CVariable& operator=(double newValue)set the value of this CVariable (returns the CVariable)
+CVariable& operator=(CVariable& newValue)set the value of this CVariable to match that of the given CVariable (returns the CVariable)
+double& operator*()return a reference to the value stored in this CVariable
+double operator*() constreturn the value stored in a const CVariable
+const char* getName() constreturn the name of this CVariable
+The CVarDB class should store and manage the collection of all currently defined variables in a vector. (The CVarDB should also manage the "automatic" variable ans. Your CVarDB class should also implement the following member functions:
+CVarDB()initializes the variable database to contain only the ans variable
+~CVarDB()destroys the DB
+bool add(CVariable* newvar)adds a new CVariable to the DB; returns false if the variable name is already taken
+CVariable* search(const char* name)returns a pointer to the CVariable in the DB with the given name or NULL if not found
+You will need to update your main.cpp file from Lab 3 so that your command interpreter will be able to accomplish the following:
+recognize variables, numbers, and operators
+perform operations for =, +, -, *, /, ++, and -- (compound operators, like +=, -=, etc., are a bonus)
+construct and manage a "system variable database" to hold all the variables
+register, modify, and retrieve variable values as necessary
+recognize the "who" command and print out all of the currently defined variables in response
+report the results or appropriate error messages to the user
+recognize the "quit" command to end the program
+Your program does not need to be able to recognize or implement any matrices or matrix operations, as these features will be integrated in a future assignment. In order to have a single, universal database for variables, you may wish to declare a CVarDB pointer as a global variable and refer to this in your main.cpp file. To aid in the above tasks, you may wish to define the following auxilliary functions (in main.cpp):
+bool assign(const char* lhs, const char* rhs)performs a simple assignment statement, like "x = 1"; returns true if there is some error in the assignment and false otherwise
+bool unary_op(const char* variable, OP unary_op)performs a unary operator statement, like "x++"; returns true if there is some error during the operation and false otherwise
+bool binary_op(const char* left, OP operator, const char* right)performs a binary operator assignment, such as " d = 6.28 * r"; returns true if there is some error during the operation and false otherwise
+bool binary_assign(const char* assign_var, const char* left, OP operator, const char* right)performs a binary operator assignment, such as " d = 6.28 * r"; returns true if there is some error during the operation and false otherwise
+bool get_value(const char* expression, double& value)evaluates a numeric string or variable name to its numeric value; returns true if expression is an invalid number or variable does not exist
+ostream& operator<<(ostream& out, CVariable& cvar)prints out a CVariable
+ostream& operator<<(ostream& out, CVarDB& cdb)prints out every CVariable in the DB
+How to submit your work:
+Please include the definitions for the CVariable and CVarDB classes in cvariable.h and their member function implementations in cvariable.cpp. Submit these two files along with an updated main.cpp file (including any auxilliary functions) to the lab assignment appropriate to your IDE.
+Grading
+25% 	Correct usage of C++ concepts
+25% 	Visual appearance of the code
+50% 	Correct functionality
