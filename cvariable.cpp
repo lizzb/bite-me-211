@@ -5,10 +5,33 @@
 
 #include "cvariable.h"
 
-// store the name and value of a user-defined variable
-// a CVariable class to represent the variables defined by the user
-// a CVarDB class to help organize and retrieve them for your Mini-Matlab program.
-//class CVariable
+// ----- ----- ----- ----- ----- ----- -----
+// cvariable.cpp FILE...
+// its better practice to have a separate .h and .cpp file
+// for every class you create
+// so this doesnt really make sense... but assignment says so
+// ----- ----- ----- ----- ----- ----- -----
+
+    // attempt at example for virtual functions / base classes
+    // for example, you can't just create a "Shape" [theoretical class]
+    // it would store some shared components,
+    // like the name of the shape or whether it is closed (member variables)
+    // but you would have Triangle as a subclass of virtual class Shape,
+    // and make THAT to make a Triangle
+    // and if you had Square as a subclass, that would still use
+    // base features from shape (like name, bool isClosed)
+    // but would implement it differently from triangle
+
+
+// ----------------------------------------------------------------------------
+// 	CVariable class
+//
+// A class to represent the variables defined by the user
+// --> store the name and value of a user-defined variable
+//
+// (CVarDB will organize and retrieve these variables for Mini-Matlab program)
+// ----------------------------------------------------------------------------
+
 
     //can't remember how you deal with friends... declaration things
     friend ostream& CVariable::operator<<(ostream& out, CVariable& cvar)
@@ -19,6 +42,7 @@
     // initializes a CVariable with a given name and value 0
     CVariable::CVariable(const char* init_name)
     {
+    	// store the name and value of a user-defined variable
         //char* name;   // hold the name
         //double value; // store the variable value
     }
@@ -67,27 +91,16 @@
     // destroys the CVariable
     virtual CVariable::~CVariable();
     
-    // attempt at example for virtual functions / base classes
-    // for example, you can't just create a "Shape" [theoretical class]
-    // it would store some shared components,
-    // like the name of the shape or whether it is closed (member variables)
-    // but you would have Triangle as a subclass of virtual class Shape,
-    // and make THAT to make a Triangle
-    // and if you had Square as a subclass, that would still use
-    // base features from shape (like name, bool isClosed)
-    // but would implement it differently from triangle
 
+// ----------------------------------------------------------------------------
+// 	CVarDB class
+//
+// CVarDB class should store and manage the collection
+// of all currently defined variables in a vector.
+// The CVarDB shalso manage the "automatic" variable ans.ould 
+//
+// ----------------------------------------------------------------------------
 
-// ----- ----- ----- ----- ----- ----- -----
-// STILL IN THE FILE titled:
-// cvariable.cpp
-// but its better practice to have a separate .h and .cpp file for every class you create
-// so this doesnt really make sense
-// but assignment says
-
-// CVarDB class should store and manage the collection of all currently defined variables in a vector.
-// (The CVarDB should also manage the "automatic" variable ans.
-//class CVarDB
 
     // dont remember what to do with this....
     friend ostream& CVarDB::operator<<(ostream& out, CVarDB& cdb)
@@ -107,8 +120,15 @@
         // delete db vector
     }
     
-    // adds a new CVariable to the DB;
-    // returns false if the variable name is already taken
+    // ;
+    // 
+
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  adds a new CVariable to the DB
+ Params:   
+ Returns:  returns false if the variable name is already taken, true otherwise
+---------------------------------------------------------------------------- */
     bool CVarDB::add(CVariable& newVar)
     {
         return false;
@@ -123,7 +143,10 @@
 
 
 
-    // not sure where these get defined, i think the demo .cpp file
+// these are declared here but defined in the main.cpp file...???
 
+// prints out a CVariable
 ostream& operator<<(ostream& out, CVariable& cvar);
+
+// prints out every CVariable in the DB
 ostream& operator<<(ostream& out, CVarDB& cdb);
