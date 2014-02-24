@@ -269,12 +269,13 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
         piece[i][segmt[i][1]] = '\0';
     }
 
-    string p0 = piece[0];
+    // assuming these are the operator characters but not sure
+    string p0 = piece[0]; 
     string p1 = piece[1];
 
-    if( (strcmp(piece[0],"++") == 0) ||  (strcmp(piece[0],"--") == 0)) )
+    if( (strcmp(p0, "++") == 0) ||  (strcmp(p0, "--") == 0)) )
     {
-        if(strcmp(piece[0],"++")==0) op = PRE_INC;
+        if(strcmp(p0, "++") == 0) op = PRE_INC;
         else op = PRE_DEC;
 
         strcpy(operand, piece[1]);
@@ -294,9 +295,9 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
     }
     */
 
-    else if( (strcmp(piece[1],"++") == 0) ||  (strcmp(piece[1],"--") == 0)) )
+    else if( (strcmp(p1, "++") == 0) ||  (strcmp(p1, "--") == 0)) )
     {
-        if(strcmp(piece[1],"++")==0) op = POST_INC;
+        if(strcmp(p1, "++") == 0) op = POST_INC;
         else op = POST_DEC;
 
         strcpy(operand, piece[0]);
@@ -331,7 +332,7 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
 
 bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
 {
-    bool Tag = false;
+    //bool Tag = false;
     char piece[3][50];
     for (int i = 0 ; i<3; i++)
     {
@@ -345,9 +346,11 @@ bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
     {
         strcpy(res, piece[0]);
         strcpy(operand, piece[2]);
-        Tag = true;
+        return true; //Tag = true;
     }
-    return Tag;
+
+    // if we got here, it wasn't a valid assignment
+    return false; //Tag;
 }
 
 /* ----------------------------------------------------------------------------
@@ -364,7 +367,8 @@ bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
 ---------------------------------------------------------------------------- */
 bool IsABinary3(char* Buffer, int segmt[][2], char* operand_1, char* operand_2, OP& op)
 {
-    bool Tag = false;
+    bool isValid = false; // Tag = false;
+
     char piece[3][50];
     for (int i = 0 ; i<3; i++)
     {
@@ -374,32 +378,36 @@ bool IsABinary3(char* Buffer, int segmt[][2], char* operand_1, char* operand_2, 
         }
         piece[i][segmt[i][1]] = '\0';
     }
-    if(strcmp(piece[1],"+")==0) // if the #2 piece is an operator
+
+    // if the #2 piece is an operator
+    if(strcmp(piece[1],"+")==0) 
     {
         op = ADD;
-        Tag = true;
+        isValid = true; //Tag = true;
     }
     else if(strcmp(piece[1],"-")==0)
     {
         op = MIN;
-        Tag = true;
+        isValid = true; //Tag = true;
     }
     else if(strcmp(piece[1],"*")==0)
     {
         op = MUL;
-        Tag = true;
+        isValid = true; //Tag = true;
     }
     else if(strcmp(piece[1],"/")==0)
     {
         op = DIV;
-        Tag = true;
+        isValid = true; //Tag = true;
     }
-    if (Tag)
+    if (isValid) //(Tag)
     {
         strcpy(operand_1, piece[0]);
         strcpy(operand_2, piece[2]);
     }
-    return Tag;
+
+    // if we got here, it wasn't a valid assignment
+    return isValid; // Tag;
 }
 
 // If the input command line is a binary operation and assignment
@@ -415,7 +423,7 @@ bool IsABinary3(char* Buffer, int segmt[][2], char* operand_1, char* operand_2, 
 
 bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char* operand_2, OP& op)
 {
-    bool Tag = false;
+    bool isValid = false; // Tag = false;bool Tag = false;
     char piece[5][50];
     for (int i = 0 ; i<5; i++)
     {
@@ -425,29 +433,32 @@ bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char*
         }
         piece[i][segmt[i][1]] = '\0';
     }
-    if(strcmp(piece[1],"=")==0) // if the #2 piece is "=" 
+
+    // if the #2 piece is "=" 
+    if(strcmp(piece[1],"=")==0) 
     {
-        if(strcmp(piece[3],"+")==0) // if the #4 piece is an operator 
+        // if the #4 piece is an operator 
+        if(strcmp(piece[3],"+")==0) 
         {
             op = ADD;
-            Tag = true;
+            isValid = true; //Tag = true;
         }
         else if(strcmp(piece[3],"-")==0)
         {
             op = MIN;
-            Tag = true;
+            isValid = true; //Tag = true;
         }
         else if(strcmp(piece[3],"*")==0)
         {
             op = MUL;
-            Tag = true;
+            isValid = true; //Tag = true;
         }
         else if(strcmp(piece[3],"/")==0)
         {
             op = DIV;
-            Tag = true;
+            isValid = true; //Tag = true;
         }
-        if (Tag)
+        if (isValid) //(Tag)
         {
             strcpy(res, piece[0]);
             strcpy(operand_1, piece[2]);
@@ -461,7 +472,8 @@ bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char*
 // explain operators
 void OpTranslator(OP op) 
 {
-    switch(op){
+    switch(op)
+    {
     case ASN:
         cout << "ASN" ;
         break;
@@ -493,6 +505,14 @@ void OpTranslator(OP op)
         cout << "UNRECOGNIZED OPERATOR" ;
         break;
     }
+}
+
+
+function determineOperator(string piece)
+{
+    // array of possible operators
+    // ["=", "+", "-", "*","/"]
+    if(strcmp(piece,"-")==0)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
