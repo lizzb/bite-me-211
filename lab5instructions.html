@@ -1,0 +1,93 @@
+<html>
+
+//from: http://justpaste.it/ei4m
+<strong>
+EECS 211, Winter 2014 <br>
+Due: Feb. 24, 11:59pm
+</strong>
+
+<h3> Objective: </h3>
+In Lab 5, you will extend your solution to Lab 3 to implement a programmable calculator. Through this lab, you will gain a better understanding of classes and their role in developing solutions to more complex problems. Specifically, this assignment will help you:
+<li> think about how to organize code into classes; </li>
+<li> implement class member functions, including constructors and destructors; </li>
+<li> learn how to instantiate class objects to solve problems; and </li>
+<li> further develop your debugging skills. </li>
+
+<h3> Problem Description </h3>
+In this lab, you will extend your Lab 3 solution with two new classes that will allow you to store and retrieve variables. Using these, your Mini-Matlab program should be able to compute and evaluate expressions involving scalar (non-matrix) values. Specifically, you will <strong>implement a CVariable class to represent the variables defined by the user and a CVarDB class to help organize and retrieve them</strong> for your Mini-Matlab program.
+
+<h4> CVariable class </h4>
+The CVariable class should store the name and value of a user-defined variable. <br> As we are not going to incorporate matrix operations in this assignment, you can <strong>use a double to store the variable value and a char array (char*) to hold the name. </strong>
+<br>
+<strong>Your CVariable class should implement the following member functions, </strong> though you may add additional functionality to the class:
+<li> CVariable(const char* name) // initializes a CVariable with a given name and value 0 </li>
+<li> CVariable(const char* name, double value) // initializes a CVariable with a given name and value </li>
+<li> CVariable(const CVariable& copy) // copy constructor </li>
+<li> ~CVariable() // destroys the CVariable </li>
+<li> CVariable& operator=(double newValue) //set the value of this CVariable (returns the CVariable) </li>
+<li> CVariable& operator=(CVariable& newValue) // set the value of this CVariable to match that of the given CVariable (returns the CVariable)</li>
+<li> double& operator*() // return a reference to the value stored in this CVariable </li>
+<li> double operator*() const // return the value stored in a const CVariable </li>
+<li> const char* getName() const // return the name of this CVariable </li>
+
+<h4> CVarDB class </h4>
+The CVarDB class should store and manage the collection of all currently defined variables in a vector. (The CVarDB should also manage the "automatic" variable ans. 
+<br>
+<strong>Your CVarDB class should also implement the following member functions:</strong>
+<li> CVarDB()initializes the variable database to contain only the ans variable </li>
+<li> ~CVarDB()destroys the DB </li>
+<li> bool add(CVariable* newvar)adds a new CVariable to the DB; returns false if the variable name is already taken </li>
+<li> CVariable* search(const char* name)returns a pointer to the CVariable in the DB with the given name or NULL if not found </li>
+
+<h4> main.cpp </h4>
+You will need to update your main.cpp file from Lab 3 so that your command interpreter will be able to accomplish the following:
+<li> recognize variables, numbers, and operators </li>
+<li> perform operations for =, +, -, *, /, ++, and -- (compound operators, like +=, -=, etc., are a bonus) </li>
+<li> construct and manage a "system variable database" to hold all the variables </li>
+<li> register, modify, and retrieve variable values as necessary </li>
+<li> recognize the "who" command and print out all of the currently defined variables in response </li>
+<li> report the results or appropriate error messages to the user </li>
+<li> recognize the "quit" command to end the program </li>
+
+<p>
+Your program does not need to be able to recognize or implement any matrices or matrix operations, as these features will be integrated in a future assignment. In order to have a single, universal database for variables, you may wish to declare a CVarDB pointer as a global variable and refer to this in your main.cpp file. </p>
+
+To aid in the above tasks, you may wish to define the following auxilliary functions (in main.cpp):
+
+<li> bool assign(const char* lhs, const char* rhs) 
+<br>// performs a simple assignment statement, like "x = 1"; returns true if there is some error in the assignment and false otherwise </li>
+
+<br>
+
+<li> bool unary_op(const char* variable, OP unary_op) 
+<br>// performs a unary operator statement, like "x++"; returns true if there is some error during the operation and false otherwise </li>
+
+<br>
+
+<li> bool binary_op(const char* left, OP operator, const char* right)
+<br>// performs a binary operator assignment, such as " d = 6.28 * r"; returns true if there is some error during the operation and false otherwise </li>
+
+<br>
+
+<li> bool binary_assign(const char* assign_var, const char* left, OP operator, const char* right) 
+<br>// performs a binary operator assignment, such as " d = 6.28 * r"; returns true if there is some error during the operation and false otherwise <br></li>
+
+<br>
+
+<li> bool get_value(const char* expression, double& value) 
+<br>// evaluates a numeric string or variable name to its numeric value; returns true if expression is an invalid number or variable does not exist </li>
+
+<br>
+
+<li> ostream& operator<<(ostream& out, CVariable& cvar) // prints out a CVariable </li>
+<li> ostream& operator<<(ostream& out, CVarDB& cdb) // prints out every CVariable in the DB </li>
+
+<h3> How to submit your work: </h3>
+Please include the definitions for the CVariable and CVarDB classes in cvariable.h and their member function implementations in cvariable.cpp. Submit these two files along with an updated main.cpp file (including any auxilliary functions) to the lab assignment appropriate to your IDE.
+
+<h3> Grading </h3>
+25% 	Correct usage of C++ concepts <br>
+25% 	Visual appearance of the code <br>
+50% 	Correct functionality <br>
+
+<html>
