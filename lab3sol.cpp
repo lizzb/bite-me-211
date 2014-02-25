@@ -16,22 +16,12 @@
 
 using namespace std;
 
-enum OP {ASN, ADD, MIN, MUL, DIV, PRE_INC, PRE_DEC,POST_INC,POST_DEC}; // enumeration of operator types
-
-//function declaration
-void Interpreter(string&); 
-bool IsAUnary(char*, int [][2], char*, OP&); // if the command line is valid unary operation
-bool IsAAsn(char*, int [][2], char*, char*); // if it is a valid assignment
-bool IsABinary3(char*, int [][2], char*, char*, OP&); // if it is a valid binary operation
-bool IsABinary5(char*, int [][2], char*, char*, char*, OP&);// if it is a valid assignment and binary operation
-void OpTranslator(OP); // output the operator
+// enumeration of operator types - aka "enums"
+// enums allow you to refer to numbers with a more meaningful label
+// for better code readability
+enum OP {ASN, ADD, MIN, MUL, DIV, PRE_INC, PRE_DEC,POST_INC,POST_DEC};
 
 
-// functions from the previous project
-int Partitioner(char*, int [][2], int&); // partitioning the command line into segments
-bool IsAChar(char); // if input is a letter
-bool IsADigit(char); // if it is a digit
-bool IsAOperator(char); // if it is an operator
 
 
 int main()
@@ -42,12 +32,12 @@ int main()
 	cout << "\t\tNan Jiang, Northwestern University "<< endl;
 	cout << "\t\t   Copyright, 2014   " << endl;   
 
-	//Get the input
+	// Get the input
 	string Buffer;
 
 	int num_Case=0;
 
-	ifstream TestFile("/Users/deborahzzink/Desktop/eecs labs/lab 3 (week 4)/TestCase.txt"); // read from file
+	ifstream TestFile("TestCase.txt"); // read from file
 
 	if (TestFile.is_open())// open file
 	{
@@ -339,147 +329,4 @@ bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char*
 	}
 
 	return Tag;
-}
-
-// explain operators
-void OpTranslator(OP op) 
-{
-	switch(op){
-	case ASN:
-		cout << "ASN" ;
-		break;
-	case ADD:
-		cout << "ADD" ;
-		break;
-	case MIN:
-		cout << "MIN" ;
-		break;
-	case MUL:
-		cout << "MUL" ;
-		break;
-	case DIV:
-		cout << "DIV" ;
-		break;
-	case PRE_INC:
-		cout << "PRE_INC" ;
-		break;
-	case PRE_DEC:
-		cout << "PRE_DEC" ;
-		break;
-	case POST_INC:
-		cout << "POST_INC" ;
-		break;
-	case POST_DEC:
-		cout << "POST_DEC" ;
-		break;
-	default:
-		cout << "UNRECOGNIZED OPERATOR" ;
-		break;
-	}
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// functions from MP#2
-
-int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
-{
-	// indicator
-	int st=0;
-	int ed=0;
-	int error_code = 1;
-
-	int len = (int)strlen(Buffer)-1;
-
-
-	while(st<len)
-	{
-		while(Buffer[st]==' '&&st<len)st++;
-
-		ed = st;
-
-		if(st==len)
-		{
-			if (iSeg==0)
-			{
-				error_code = 0;
-			} 			
-			break;
-		}
-		else
-		{
-			if(IsAChar(Buffer[st]))
-			{
-				while((ed<len)&&(IsAChar(Buffer[ed])||IsADigit(Buffer[ed])||Buffer[ed]=='_'))ed++;
-			}
-			else if(IsADigit(Buffer[st]))
-			{
-				while((ed<len)&&(IsADigit(Buffer[ed])||Buffer[ed]=='.'))ed++;
-			}
-			else if(IsAOperator(Buffer[st]))
-			{
-				while((ed<len)&&(IsAOperator(Buffer[ed])))ed++;
-			}
-			else if(Buffer[st]=='[')
-			{
-				ed = st+1;
-				while((ed<len)&&(Buffer[ed]!=']'))
-				{
-					if(IsADigit(Buffer[ed])||(Buffer[ed]==',')||(Buffer[ed]==';')||(Buffer[ed]==' ')||(Buffer[ed]=='.'))
-					{
-						ed++;
-					}
-					else
-					{
-						cout<<"Expect a ']' here."<<endl;
-						error_code = 0;
-						break;
-					}
-					ed++;
-				}
-			}
-			else if(Buffer[st]==';')ed++;
-			else
-			{
-				error_code = 0;
-			}
-
-		}
-		if(error_code)
-		{
-			segmt[iSeg][0] = st;
-			segmt[iSeg][1] = ed-st;
-			iSeg = iSeg + 1;
-			st = ed;
-		}  
-		else
-		{
-			break;
-		}  
-	} 
-
-	return error_code;
-}
-
-bool IsAChar(char str)
-{
-	bool Tag = false;
-	if((str>='A'&&str<='Z')||(str>='a'&&str<='z')) Tag = true;
-	return Tag;
-
-}
-
-bool IsADigit(char str)
-{
-	bool Tag = false;
-	if((str>='0'&&str<='9')||(str=='.')) Tag = true;
-	return Tag;
-
-}
-
-bool IsAOperator(char str)
-{
-	bool Tag = false;
-	if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
-	return Tag;
-
 }

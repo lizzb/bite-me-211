@@ -4,6 +4,44 @@
 
 #include "cvariable.h"
 
+/*
+#include <iostream>
+#include <string>
+#include <fstream>
+*/
+using namespace std;
+
+
+// enumeration of operator types - aka "enums"
+// enums allow you to refer to numbers with a more meaningful label
+// for better code readability
+enum OP {ASN, ADD, MIN, MUL, DIV, PRE_INC, PRE_DEC,POST_INC,POST_DEC};
+
+// function declarations
+void Interpreter(string&);
+
+// if the command line is valid unary operation
+bool IsAUnary(char*, int [][2], char*, OP&);
+
+// if it is a valid assignment
+bool IsAAsn(char*, int [][2], char*, char*);
+
+// if it is a valid binary operation
+bool IsABinary3(char*, int [][2], char*, char*, OP&);
+
+// if it is a valid assignment and binary operation
+bool IsABinary5(char*, int [][2], char*, char*, char*, OP&);
+
+// output the operator
+void OpTranslator(OP);
+
+
+// functions from the previous project
+int Partitioner(char*, int [][2], int&); // partitioning the command line into segments
+bool IsAChar(char); // if input is a letter
+bool IsADigit(char); // if it is a digit
+bool IsAOperator(char); // if it is an operator
+
 
 int main()
 {
@@ -17,7 +55,24 @@ int main()
     string Buffer;
 
     int num_Case=0;
-
+    
+    /*
+     res = var_1 + 3.1415
+     M_1 = [1 2 3; 3 4 5; 4 3 2]
+     a++
+     c = d
+     a_123 = 123
+     ++m
+     a + b
+     a = b +c -d *9
+     a +=9
+     var_r = var_1 + 3.1415
+     This MP is 4 fun
+     a ++
+     M_1 - 123
+     quit
+     */
+    
     // read from file
     ifstream TestFile("testcase.txt");
 
@@ -31,13 +86,13 @@ int main()
             if (Buffer.compare("quit")==0) 
             {
                 // quit the program   
-                cout<<"\nThank you. "; 
+                cout << "\nThank you. ";
                 break; 
             } 
             else
             {
                 // print the command line
-                cout<<"\n# "<<++num_Case <<" : "<<Buffer<<endl; 
+                cout<<"\n# "<< ++num_Case <<" : "<<Buffer<<endl;
 
                 // process the command line
                 Interpreter(Buffer);
@@ -54,10 +109,39 @@ int main()
     }
 
 
-    cout<<"Press any key to exit..."<<endl;
+    cout << "Press any key to exit..." << endl;
     getchar();        
 
 }
+
+
+// if input is a letter
+bool IsAChar(char str) { return ((str>='A'&&str<='Z')||(str>='a'&&str<='z')); }
+
+// if input is a digit
+bool IsADigit(char str) { return ((str>='0'&&str<='9')||(str=='.')); }
+
+// if input is an operator
+bool IsAOperator(char str)
+{
+    return ((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='='));
+}
+
+private bool isEquals(string piece) {return (strcmp(piece,"=") == 0);}
+private bool isAdd(string piece) {return (strcmp(piece,"+") == 0);}
+private bool isMinus(string piece) {return (strcmp(piece,"-") == 0);}
+private bool isMult(string piece) {return (strcmp(piece,"*") == 0);}
+private bool isDivide(string piece) {return (strcmp(piece,"/") == 0);}
+private bool isDivide(string piece) {return (strcmp(piece,"+") == 0);}
+/*
+ function determineOperator(string piece)
+ {
+ // array of possible operators
+ // ["=", "+", "-", "*","/"]
+ if(strcmp(piece,"-")==0)
+ }*/
+
+
 
 // true for an error and false for okay makes NO SENSE
 // also in c++ strings are better than char*
@@ -321,7 +405,7 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
     return isValid;
 }
 
-// If the input command line is a valid assignment
+//
 // Input:
 // char* Buffer   : the input command line (known)
 // int segmt[][2] : the location of each segment in the command line (known)
@@ -330,6 +414,16 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
 // Output:
 // boolean variable : 0 -- not a valid assignment, 1 -- valid assignment
 
+/* ----------------------------------------------------------------------------
+ Name:     IsAAsn
+ Purpose:  called if the input command line is a valid assignment
+ Params:   char* Buffer   - the input command line (known)
+ int segmt[][2] - location of each segment inthe command line (known)
+ char* operand  - the operand in the command line (to fill in)
+ OP& op         - the operator (to fill in)
+ Returns:  true / 1   - valid unary operation,
+ false / 0  - not a valid unary operation
+ ---------------------------------------------------------------------------- */
 bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
 {
     //bool Tag = false;
@@ -433,27 +527,28 @@ bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char*
         }
         piece[i][segmt[i][1]] = '\0';
     }
-
-    // if the #2 piece is "=" 
-    if(strcmp(piece[1],"=")==0) 
+    
+    
+    // if the #2 piece is "="
+    if(isEquals(piece[1]))                  // (strcmp(piece[1],"=")==0)
     {
         // if the #4 piece is an operator 
-        if(strcmp(piece[3],"+")==0) 
+        if(isAdd(piece[3]))                 // (strcmp(piece[3],"+")==0)
         {
             op = ADD;
             isValid = true; //Tag = true;
         }
-        else if(strcmp(piece[3],"-")==0)
+        else if(isMinus(piece[3]))            // (strcmp(piece[3],"-")==0)
         {
             op = MIN;
             isValid = true; //Tag = true;
         }
-        else if(strcmp(piece[3],"*")==0)
+        else if(isMult(piece[3]))             // (strcmp(piece[3],"*")==0)
         {
             op = MUL;
             isValid = true; //Tag = true;
         }
-        else if(strcmp(piece[3],"/")==0)
+        else if(isDivide(piece[3]))         // (strcmp(piece[3],"/")==0)
         {
             op = DIV;
             isValid = true; //Tag = true;
@@ -466,29 +561,30 @@ bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char*
         }
     }
 
-    return Tag;
+    return isValid; //Tag;
 }
 
-// explain operators
+// explain operators (??)
 void OpTranslator(OP op) 
 {
+    /*if(op == ASN || op == ADD || op == MIN || op == MUL || op == DIV ||
+       op == PRE_INC || op == PRE_DEC || op == POST_INC || op == POST_DEC)
+    {
+        cout << op.toString();
+        
+    }*/
     switch(op)
     {
     case ASN:
-        cout << "ASN" ;
-        break;
+        cout << "ASN" ; break;
     case ADD:
-        cout << "ADD" ;
-        break;
+        cout << "ADD" ; break;
     case MIN:
-        cout << "MIN" ;
-        break;
+        cout << "MIN" ; break;
     case MUL:
-        cout << "MUL" ;
-        break;
+        cout << "MUL" ; break;
     case DIV:
-        cout << "DIV" ;
-        break;
+        cout << "DIV" ; break;
     case PRE_INC:
         cout << "PRE_INC" ;
         break;
@@ -508,12 +604,6 @@ void OpTranslator(OP op)
 }
 
 
-function determineOperator(string piece)
-{
-    // array of possible operators
-    // ["=", "+", "-", "*","/"]
-    if(strcmp(piece,"-")==0)
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // functions from MP#2
@@ -536,10 +626,7 @@ int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
 
         if(st==len)
         {
-            if (iSeg==0)
-            {
-                error_code = 0;
-            }           
+            if (iSeg==0) { error_code = 0; }
             break;
         }
         else
@@ -567,7 +654,7 @@ int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
                     }
                     else
                     {
-                        cout<<"Expect a ']' here."<<endl;
+                        cout << "Expect a ']' here." << endl;
                         error_code = 0;
                         break;
                     }
@@ -575,10 +662,7 @@ int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
                 }
             }
             else if(Buffer[st]==';')ed++;
-            else
-            {
-                error_code = 0;
-            }
+            else { error_code = 0; }
 
         }
         if(error_code)
@@ -588,25 +672,11 @@ int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
             iSeg = iSeg + 1;
             st = ed;
         }  
-        else
-        {
-            break;
-        }  
+        else { break; }
     } 
 
     return error_code;
 }
-
-bool IsAChar(char str) { return ((str>='A'&&str<='Z')||(str>='a'&&str<='z')); }
-
-bool IsADigit(char str) { return ((str>='0'&&str<='9')||(str=='.')); }
-
-bool IsAOperator(char str)
-{
-    return ((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='='));
-}
-
-
 
 
 

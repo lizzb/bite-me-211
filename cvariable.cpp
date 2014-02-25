@@ -124,9 +124,9 @@
     // 
 
 /* ----------------------------------------------------------------------------
- Name:     
+ Name:     add
  Purpose:  adds a new CVariable to the DB
- Params:   
+ Params:   newVar
  Returns:  returns false if the variable name is already taken, true otherwise
 ---------------------------------------------------------------------------- */
     bool CVarDB::add(CVariable& newVar)
