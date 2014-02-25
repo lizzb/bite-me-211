@@ -113,6 +113,47 @@ int main()
     getchar();        
 
 }
+/*
+Input the command line here:a = 5
+
+Input the command line here:who
+
+ans 0
+a  	5
+
+Input the command line here:b = a+5
+b = 10
+
+Input the command line here:who
+
+ans 0
+a  	5
+b  10
+
+
+Input the command line here:c = a+b
+c = 15
+
+Input the command line here:who
+
+ans 0
+a  	5
+b  10
+c  15
+
+Input the command line here:tt=a*c
+tt = 75
+
+Input the command line here:who
+
+ans     0
+a  	5
+b    10
+c    15
+tt    75
+
+Input the command line here:
+*/
 
 
 // if input is a letter

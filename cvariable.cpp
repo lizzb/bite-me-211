@@ -39,22 +39,24 @@
     
 }
 
-    // initializes a CVariable with a given name and value 0
+    // initializes a CVariable - with a given name and value 0
     CVariable::CVariable(const char* init_name)
     {
     	// store the name and value of a user-defined variable
-        //char* name;   // hold the name
-        //double value; // store the variable value
+        //char* name;   // char array (char*) to hold the name
+        //double value; // double to store the variable value
+        name = init_name;
+        value = 0.0;
     }
     
-    // initializes a CVariable with a given name and value
+    // Initializes a CVariable - with a given name and value
     CVariable::CVariable(const char* init_name, double init_value)
     {
-        //char* name;
-        //double value;
+        name = init_name;
+        value = init_value;
     }
     
-    // copy constructor
+    // Copy constructor
     CVariable::CVariable(const CVariable& copy)
     {
         //char* name;
