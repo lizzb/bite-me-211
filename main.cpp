@@ -127,25 +127,9 @@ int main()
 
     int num_Case=0;
     
-    /*
-     res = var_1 + 3.1415
-     M_1 = [1 2 3; 3 4 5; 4 3 2]
-     a++
-     c = d
-     a_123 = 123
-     ++m
-     a + b
-     a = b +c -d *9
-     a +=9
-     var_r = var_1 + 3.1415
-     This MP is 4 fun
-     a ++
-     M_1 - 123
-     quit
-     */
     
     // read from file
-    ifstream TestFile("testcase.txt");
+    ifstream TestFile("testcaseFAKE.txt");
     //ifstream TestFile("/Users/deborahzzink/Desktop/eecs labs/Lab 5 Due 22414 SGZ/TestCase2.txt");
 
     // Open file (assumes file is valid if able to be opened?)
@@ -203,7 +187,51 @@ int main()
 
     else 
     {
-        cout << "Unable to open file"; 
+        cout << "Unable to open file" << endl;
+
+    CVariable b = *new CVariable("r", 9);
+    CVariable("m", 8);
+    bool n = myDB.add(b);
+    cout << myDB << endl;
+
+    CVariable a = *new CVariable("a", 3);
+    CVariable c = *new CVariable("c", 4);
+    CVariable d = *new CVariable("d", 4);
+
+    
+     cout << "res = var_1 + 3.1415:  " << var_1 + 3.1415 << endl;
+
+     cout << "M_1 = [1 2 3; 3 4 5; 4 3 2]" << endl;
+     
+     a++;
+     cout << "a++:  " << a << endl;
+     
+     cout << "c = d" << (c = d) << endl;
+     
+     cout << "a_123 = 123:  " << a_123 << endl;
+
+     ++m;
+     cout << "++m:  " << m << endl;
+     
+     cout << "a + b:  " << (a + b) << endl;
+     
+     a = b +c -d *9;
+     cout << "a = b +c -d *9:  a=" << a << endl;
+     
+     a+= 9;
+     cout << "a +=9:  a=" << a << endl;
+     
+     var_r = var_1 + 3.1415
+     cout << "var_r = var_1 + 3.1415:  " <<  var_r << endl;
+
+     cout << "This MP is 4 fun" << endl;
+
+     a++;
+     cout << "a ++: " << a << endl;
+
+     cout << "M_1 - 123: " << (M_1 - 123) << endl;
+     cout << "quit" << endl;
+    
     }
 
 
