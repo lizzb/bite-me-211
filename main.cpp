@@ -2,6 +2,24 @@
 // main.cpp
 //
 
+//
+// EECS 211 MP#5
+// Sydney Zink, Northwestern University
+// Copyright, 2014
+//
+// This project is to make students panic
+// and question their majors
+// LULZ
+
+// #include "stdafx.h" // what is this? WHAT IS IT leemme see you roll mama roll mama WHAT IS IT okay done now maybe idk
+
+#include <iostream> // this was already included in cvariable.h
+#include <string>   // i dont think this is a thing, but string.h was included in cvariable.h
+#include <fstream>
+#include <stdio.h>
+#include <ctype.h>  // wtf this is not c++
+
+
 #include "cvariable.h"
 
 /*
@@ -9,12 +27,14 @@
 #include <string>
 #include <fstream>
 */
-using namespace std;
+using namespace std; // included in .h already... but i think its only supposed to be in the .cpp file... can't remember atm. but you dont have a need for the std namespace in the .h file i dont think...?
 
 
 // enumeration of operator types - aka "enums"
 // enums allow you to refer to numbers with a more meaningful label
 // for better code readability
+//enum OP {=, '+', -, *, /, ++, --,++,--}; --> yeah you def don't wanna do this haha
+// because poor program will get confused because not letters
 enum OP {ASN, ADD, MIN, MUL, DIV, PRE_INC, PRE_DEC,POST_INC,POST_DEC};
 
 // function declarations
@@ -36,20 +56,61 @@ bool IsABinary5(char*, int [][2], char*, char*, char*, OP&);
 void OpTranslator(OP);
 
 
-// functions from the previous project
-int Partitioner(char*, int [][2], int&); // partitioning the command line into segments
-bool IsAChar(char); // if input is a letter
-bool IsADigit(char); // if it is a digit
+// --- functions from the previous project --- //
+
+// partitioning the command line into segments
+int Partitioner(char*, int [][2], int&);
+
+bool IsAChar(char);     // if input is a letter
+bool IsADigit(char);    // if it is a digit
 bool IsAOperator(char); // if it is an operator
 
+// honestly a better naming convention is IsChar IsDigit IsOperator...
+// but whatever professor says...
+
+
+// no idea what you're doing here but whatevs
+// you should just make the object in the main function
+// because global variables are NAUGHTY
+
+//CVarDB myDB = *new CVarDB();
+//CVariable r = *new CVariable("r", 9);
+//bool f = myDB.add(r);
+
+CVarDB myDB;
 
 int main()
 {
+    //CVarDB myDB;
+    myDB.Initialize();
+    CVariable b = *new CVariable("r", 9);
+    CVariable("m", 8);
+    bool n = myDB.add(b);
+    cout << myDB << endl;
+    
+    //CVariable r = *new CVariable("r", 9);
+    //bool f = myDB.add(r);
+    
+    /* CVariable c1("AMG", 5);
+     CVariable c2("XYZ", 73);
+     CVarDB exampledb;
+     exampledb.add(c1);
+     exampledb.add(c2); */
+    
+    //cout<<c1<<endl;
+    //cout<<cdb<<endl;
+    
+    //return 0;
+    
+    
+    //char a[10];a[0]='A';a[1]='\0';
+    //cout<<strlen(a);return 0;
+    
     // print welcome message
-    cout << endl;
-    cout << "\tWelcome to the EECS 211 MP#3: A Command Line Interpreter" << endl;
-    cout << "\t\tNan Jiang, Northwestern University "<< endl;
-    cout << "\t\t   Copyright, 2014   " << endl;   
+	cout << endl;
+	cout << "\tWelcome to the EECS 211 MP#5: A Command Line Calculator" << endl;
+	cout << "\t\tSydney Zink, Northwestern University "<< endl;
+	cout << "\t\t   Copyright, 2014   " << endl;
 
     // This will store the input
     string Buffer;
@@ -75,6 +136,7 @@ int main()
     
     // read from file
     ifstream TestFile("testcase.txt");
+    //ifstream TestFile("/Users/deborahzzink/Desktop/eecs labs/Lab 5 Due 22414 SGZ/TestCase2.txt");
 
     // Open file (assumes file is valid if able to be opened?)
     if (TestFile.is_open())
@@ -82,20 +144,46 @@ int main()
         // read a command line
         while ( getline(TestFile,Buffer) )
         {
+            /*
+             if (Buffer.compare("who"))
+             {
+             cout << exampledb << endl;
+             }
+             */
+            
             // if the input is 'quit'
             if (Buffer.compare("quit")==0) 
             {
                 // quit the program   
                 cout << "\nThank you. ";
                 break; 
-            } 
+            }
+            
+            else if (Buffer.compare("who") == true)
+            {
+				cout << "\nInput the command line here: "<< Buffer <<endl;
+                cout << myDB;
+			}
+            
             else
             {
-                // print the command line
-                cout<<"\n# "<< ++num_Case <<" : "<<Buffer<<endl;
-
+                /* if (Buffer.compare("who"))
+                 {
+                 cout << exampledb << endl;
+                 } */
                 // process the command line
+				//cout<<"\n# "<<++num_Case <<
+                
+                // print the command line
+                //cout<<"\n# "<< ++num_Case <<" : "<<Buffer<<endl;
+
+                // print? process? the command line
                 Interpreter(Buffer);
+                
+                // i had the following line in my code from the teacher files
+                // but you had the above...
+                
+                cout << "\nInput the command line here: "<<Buffer<<endl;
             }
         }
 
@@ -155,6 +243,7 @@ tt    75
 Input the command line here:
 */
 
+// my versions are simpler
 
 // if input is a letter
 bool IsAChar(char str) { return ((str>='A'&&str<='Z')||(str>='a'&&str<='z')); }
@@ -167,6 +256,31 @@ bool IsAOperator(char str)
 {
     return ((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='='));
 }
+
+/*
+bool IsAChar(char str)
+{
+	bool Tag = false;
+	if((str>='A'&&str<='Z')||(str>='a'&&str<='z')) Tag = true;
+	return Tag;
+    
+}
+
+bool IsADigit(char str)
+{
+	bool Tag = false;
+	if((str>='0'&&str<='9')||(str=='.')) Tag = true;
+	return Tag;
+    
+}
+
+bool IsAOperator(char str)
+{
+	bool Tag = false;
+	if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
+	return Tag;
+    
+}*/
 
 private bool isEquals(string piece) {return (strcmp(piece,"=") == 0);}
 private bool isAdd(string piece) {return (strcmp(piece,"+") == 0);}
@@ -185,21 +299,34 @@ private bool isDivide(string piece) {return (strcmp(piece,"+") == 0);}
 
 
 // true for an error and false for okay makes NO SENSE
+
+// AT ALL
+
 // also in c++ strings are better than char*
 // ... prof must be used to C programming
 
 
-/*
+/* ----------------------------------------------------------------------------
  * Name:     assign
  * Purpose:  performs a simple assignment statement, like "x = 1";
  * Params:   lhs, rhs
  * Returns:  true if there is some error in the assignment, false otherwise
- */
+---------------------------------------------------------------------------- */
 bool assign(const char* lhs, const char* rhs)
 {
+    lhs = rhs;
+    if (lhs == rhs)
+    {
+        // return false otherwise
+        return false;
+    }
     // returns true if there is some error in the assignment
-    // return false otherwise
-    return false;
+    //else
+    //{
+        return true;
+    //}
+    // you can skip the else, because if the function returns before getting here...
+    // then it has already returned true
 }
 
 
@@ -397,6 +524,9 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
     // assuming these are the operator characters but not sure
     string p0 = piece[0]; 
     string p1 = piece[1];
+    
+    // simplified the if clauses
+    // but left them in commented below
 
     if( (strcmp(p0, "++") == 0) ||  (strcmp(p0, "--") == 0)) )
     {
@@ -443,7 +573,7 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
         isValid = true;
     }*/
 
-    return isValid;
+    return isValid; // return Tag; ? Tag is  USELESS name
 }
 
 //
@@ -477,6 +607,12 @@ bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
         }
         piece[i][segmt[i][1]] = '\0';
     }
+    // you wrote this
+    /* if((piece[0]>='A'&&piece[0]<='Z')||(piece[0]>='a'&&piece[0]<='z'))
+     {
+     
+     } */
+    // end of you
     if(strcmp(piece[1],"=")==0) // if the #2 piece is "="
     {
         strcpy(res, piece[0]);
@@ -611,7 +747,7 @@ void OpTranslator(OP op)
     /*if(op == ASN || op == ADD || op == MIN || op == MUL || op == DIV ||
        op == PRE_INC || op == PRE_DEC || op == POST_INC || op == POST_DEC)
     {
-        cout << op.toString();
+        cout << op.toString(); this would be more elegant but i'm not sure it will work sadly
         
     }*/
     switch(op)
