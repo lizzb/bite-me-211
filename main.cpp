@@ -46,6 +46,8 @@ bool IsAUnary(char*, int [][2], char*, OP&);
 // if it is a valid assignment
 bool IsAAsn(char*, int [][2], char*, char*);
 
+// IsABinary3 and IsABinary5 are hilarious names
+
 // if it is a valid binary operation
 bool IsABinary3(char*, int [][2], char*, char*, OP&);
 
@@ -282,6 +284,8 @@ bool IsAOperator(char str)
     
 }*/
 
+// i made these for readability of code but they're not necessary
+// especially since the body is so short
 private bool isEquals(string piece) {return (strcmp(piece,"=") == 0);}
 private bool isAdd(string piece) {return (strcmp(piece,"+") == 0);}
 private bool isMinus(string piece) {return (strcmp(piece,"-") == 0);}
@@ -339,9 +343,31 @@ bool assign(const char* lhs, const char* rhs)
 ---------------------------------------------------------------------------- */
 bool unary_op(const char* variable, OP unary_op)
 {
+    switch(unary_op) {
+        case PRE_INC:
+            ++variable;
+            return false;
+            break;
+        case PRE_DEC:
+            --variable;
+            return false;
+            break;
+        case POST_INC:
+            variable++;
+            return false;
+            break;
+        case POST_DEC:
+            variable--;
+            return false;
+            break;
+        default:
+            //cout << "UNRECOGNIZED OPERATOR" ;
+            return true;
+            break;
+    }
     // returns true if there is some error during the operation
     // return false otherwise
-    return false;
+    // return false;
 }
 
 
@@ -391,16 +417,16 @@ bool get_value(const char* expression, double& value)
 
 
 // prints out a CVariable
-ostream& operator<<(ostream& out, CVariable& cvar)
+/*ostream& operator<<(ostream& out, CVariable& cvar)
 {
     
-}
+}*/
 
 // prints out every CVariable in the DB
-ostream& operator<<(ostream& out, CVarDB& cdb)
+/*ostream& operator<<(ostream& out, CVarDB& cdb)
 {
     
-}
+}*/
 
 
 /* ----------------------------------------------------------------------------
@@ -694,7 +720,7 @@ bool IsABinary3(char* Buffer, int segmt[][2], char* operand_1, char* operand_2, 
 
 bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char* operand_2, OP& op)
 {
-    bool isValid = false; // Tag = false;bool Tag = false;
+    bool isValid = false; // bool Tag = false;
     char piece[5][50];
     for (int i = 0 ; i<5; i++)
     {
@@ -741,7 +767,7 @@ bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char*
     return isValid; //Tag;
 }
 
-// explain operators (??)
+// explain operators (?? what does this mean... you're just printing out a human-friendly version of the op...??)
 void OpTranslator(OP op) 
 {
     /*if(op == ASN || op == ADD || op == MIN || op == MUL || op == DIV ||
@@ -750,32 +776,25 @@ void OpTranslator(OP op)
         cout << op.toString(); this would be more elegant but i'm not sure it will work sadly
         
     }*/
+    
+    // usually i'm a fan of white space
+    // but it doesn't matter in compilation
+    // and in something like this its irritating when it takes up
+    // a shitton of vertical space
+    
     switch(op)
     {
-    case ASN:
-        cout << "ASN" ; break;
-    case ADD:
-        cout << "ADD" ; break;
-    case MIN:
-        cout << "MIN" ; break;
-    case MUL:
-        cout << "MUL" ; break;
-    case DIV:
-        cout << "DIV" ; break;
-    case PRE_INC:
-        cout << "PRE_INC" ;
-        break;
-    case PRE_DEC:
-        cout << "PRE_DEC" ;
-        break;
-    case POST_INC:
-        cout << "POST_INC" ;
-        break;
-    case POST_DEC:
-        cout << "POST_DEC" ;
-        break;
+    case ASN: cout << "ASN"; break;
+    case ADD: cout << "ADD"; break;
+    case MIN: cout << "MIN"; break;
+    case MUL: cout << "MUL"; break;
+    case DIV: cout << "DIV"; break;
+    case PRE_INC: cout << "PRE_INC";    break;
+    case PRE_DEC: cout << "PRE_DEC";    break;
+    case POST_INC: cout << "POST_INC";  break;
+    case POST_DEC: cout << "POST_DEC";  break;
     default:
-        cout << "UNRECOGNIZED OPERATOR" ;
+        cout << "UNRECOGNIZED OPERATOR";
         break;
     }
 }
