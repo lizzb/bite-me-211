@@ -1,4 +1,12 @@
-// http://pastebin.com/y4SQpmCS
+//
+//  cvariable.cpp
+//  Lab 5 Due 22414 SGZ
+//
+//  Created by student Sydney Zink on 2/23/14.
+//  Teacher: Hendrix
+//  Copyright (c) 2014 Sydney Zink. All rights reserved.
+//
+
 // Include the definitions for the CVariable and CVarDB classes in cvariable.h
 // Include the member function implementations for
 // the CVariable and CVarDB classes in cvariable.cpp.
@@ -33,11 +41,7 @@
 // ----------------------------------------------------------------------------
 
 
-    //can't remember how you deal with friends... declaration things
-    friend ostream& CVariable::operator<<(ostream& out, CVariable& cvar)
-{
-    
-}
+
 
     // initializes a CVariable - with a given name and value 0
     CVariable::CVariable(const char* init_name)
@@ -45,22 +49,68 @@
     	// store the name and value of a user-defined variable
         //char* name;   // char array (char*) to hold the name
         //double value; // double to store the variable value
-        name = init_name;
-        value = 0.0;
+        
+        // is this something you have to do because your prof
+        // likes to write in c even though this is a c++ class?
+        // my intuition tells me that you can set them directly equal
+        // to one another... but maybe since they're const char pointers
+        // and not strings like a normal person would use
+        // you have to do this jankyness
+        
+        name = new char(strlen(init_name)+1);
+        name = strcpy(name, init_name); // copy name into m_sName
+        value = 0;
+       
+        // YOU ARE OVERUSING "this"
+        // this->value = 0;
+        
+        // you only need to use the "this" keyword if
+        // the parameter has the same exact name as the member variable
+        // i.e. a param is called "name", and the private member var is also "name"
+        // then you would say this.name = name
+        // meaning set the "name" of THIS object equal to the "name" parameter value
+        
     }
     
     // Initializes a CVariable - with a given name and value
     CVariable::CVariable(const char* init_name, double init_value)
     {
-        name = init_name;
+        // name = init_name;
+        // again, if assigning your name works, stick with it
+        // stupid not using string...
+        
+        name = new char[strlen(init_name) + 1];
+        strcpy(name, init_name);
         value = init_value;
     }
     
     // Copy constructor
     CVariable::CVariable(const CVariable& copy)
     {
-        //char* name;
-        //double value;
+        //char* name; //double value;
+        
+        //CVariable m = copy;
+        
+        //this->name=new char(strlen(copy.name)+1);
+        // this->name isnt necessary, just name
+        name = new char(strlen(copy.name)+1);
+        // int i=0;
+        
+        for(int i=0; i<strlen(copy.name)+1; i++) //deep copy
+        {
+            this->name[i] = copy.name[i];
+        }
+        //this->name=copy.name;  //shallow copy, wrong
+        
+        //this->value = copy.value; // stop the this!
+        
+        value = copy.value; //okay b/c a single value
+        
+        // just to make sure you understand:
+        // shallow copy means it will simply *point* to the same data
+        // so if you change the "copy", it will change the original data
+        // whereas with a deep copy, you *actually make a duplicate* of the data
+        // and changing the copy will NOT change the original data
     }
     
     // return the name of this CVariable
@@ -147,8 +197,33 @@
 
 // these are declared here but defined in the main.cpp file...???
 
-// prints out a CVariable
+
 ostream& operator<<(ostream& out, CVariable& cvar);
 
-// prints out every CVariable in the DB
+
 ostream& operator<<(ostream& out, CVarDB& cdb);
+
+
+//lezbfriendsss
+
+// prints out a CVariable
+ostream& operator<<(ostream& out, CVariable& cvar)
+{
+    out<<"NAME:"<<cvar.name<<" VALUE:";
+    out << cvar.value;
+    return out;
+}
+
+// prints out every CVariable in the DB
+ostream& operator<<(ostream& out, CVarDB& cdb)
+{
+    
+    //cout << cdb;
+    //do for loop to go through every element in the database
+    for (int i = 0; i < cdb.m_nSize - 1; i++)
+    {
+        out << "name:" << ((cdb.db).at(i)).getName() << "  value:";
+        out << ((cdb.db).at(i)).Value() << endl;
+    }
+    return out;
+}
