@@ -28,7 +28,7 @@ public:
     
     // Getters & Setters
     // aka Accessors & Mutators
-    const char* getName() const;
+    char* getName() const;
     
     // char* Name() const { return name; }; // they gave you this specific definition
     // getters and setters are typically done with camelCase, starting with
@@ -75,7 +75,7 @@ public:
     CVarDB();
     ~CVarDB();
     bool add(CVariable& newVar);
-    void Initialize(); //return a valid ptr if found
+    //void Initialize(); //return a valid ptr if found
     // did they tell you to add Initialize? sounds suspiciously like what a constructor should do...
     CVariable* search(const char* name);
     

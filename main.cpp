@@ -66,6 +66,14 @@ int Partitioner(char*, int [][2], int&);
 bool IsAChar(char);     // if input is a letter
 bool IsADigit(char);    // if it is a digit
 bool IsAOperator(char); // if it is an operator
+bool isEquals(char* piece);
+bool isAdd(char* piece);
+bool isMinus(char* piece);
+bool isMult(char* piece);
+bool isDivide(char* piece);
+bool isDivide(char* piece);
+bool isInc(char* piece);
+bool isDec(char* piece);
 
 // honestly a better naming convention is IsChar IsDigit IsOperator...
 // but whatever professor says...
@@ -84,7 +92,7 @@ CVarDB myDB;
 int main()
 {
     //CVarDB myDB;
-    myDB.Initialize();
+    //myDB.Initialize();
     CVariable b = *new CVariable("r", 9);
     CVariable("m", 8);
     bool n = myDB.add(b);
@@ -109,10 +117,10 @@ int main()
     //cout<<strlen(a);return 0;
     
     // print welcome message
-	cout << endl;
-	cout << "\tWelcome to the EECS 211 MP#5: A Command Line Calculator" << endl;
-	cout << "\t\tSydney Zink, Northwestern University "<< endl;
-	cout << "\t\t   Copyright, 2014   " << endl;
+    cout << endl;
+    cout << "\tWelcome to the EECS 211 MP#5: A Command Line Calculator" << endl;
+    cout << "\t\tSydney Zink, Northwestern University "<< endl;
+    cout << "\t\t   Copyright, 2014   " << endl;
 
     // This will store the input
     string Buffer;
@@ -163,9 +171,9 @@ int main()
             
             else if (Buffer.compare("who") == true)
             {
-				cout << "\nInput the command line here: "<< Buffer <<endl;
+                cout << "\nInput the command line here: "<< Buffer <<endl;
                 cout << myDB;
-			}
+            }
             
             else
             {
@@ -174,7 +182,7 @@ int main()
                  cout << exampledb << endl;
                  } */
                 // process the command line
-				//cout<<"\n# "<<++num_Case <<
+                //cout<<"\n# "<<++num_Case <<
                 
                 // print the command line
                 //cout<<"\n# "<< ++num_Case <<" : "<<Buffer<<endl;
@@ -209,7 +217,7 @@ Input the command line here:a = 5
 Input the command line here:who
 
 ans 0
-a  	5
+a   5
 
 Input the command line here:b = a+5
 b = 10
@@ -217,7 +225,7 @@ b = 10
 Input the command line here:who
 
 ans 0
-a  	5
+a   5
 b  10
 
 
@@ -227,7 +235,7 @@ c = 15
 Input the command line here:who
 
 ans 0
-a  	5
+a   5
 b  10
 c  15
 
@@ -237,7 +245,7 @@ tt = 75
 Input the command line here:who
 
 ans     0
-a  	5
+a   5
 b    10
 c    15
 tt    75
@@ -262,36 +270,37 @@ bool IsAOperator(char str)
 /*
 bool IsAChar(char str)
 {
-	bool Tag = false;
-	if((str>='A'&&str<='Z')||(str>='a'&&str<='z')) Tag = true;
-	return Tag;
+    bool Tag = false;
+    if((str>='A'&&str<='Z')||(str>='a'&&str<='z')) Tag = true;
+    return Tag;
     
 }
 
 bool IsADigit(char str)
 {
-	bool Tag = false;
-	if((str>='0'&&str<='9')||(str=='.')) Tag = true;
-	return Tag;
+    bool Tag = false;
+    if((str>='0'&&str<='9')||(str=='.')) Tag = true;
+    return Tag;
     
 }
 
 bool IsAOperator(char str)
 {
-	bool Tag = false;
-	if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
-	return Tag;
+    bool Tag = false;
+    if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
+    return Tag;
     
 }*/
 
 // i made these for readability of code but they're not necessary
 // especially since the body is so short
-private bool isEquals(string piece) {return (strcmp(piece,"=") == 0);}
-private bool isAdd(string piece) {return (strcmp(piece,"+") == 0);}
-private bool isMinus(string piece) {return (strcmp(piece,"-") == 0);}
-private bool isMult(string piece) {return (strcmp(piece,"*") == 0);}
-private bool isDivide(string piece) {return (strcmp(piece,"/") == 0);}
-private bool isDivide(string piece) {return (strcmp(piece,"+") == 0);}
+ bool isEquals(char* piece) {return (strcmp(piece,"=") == 0);}
+ bool isAdd(char* piece) {return (strcmp(piece,"+") == 0);}
+ bool isMinus(char* piece) {return (strcmp(piece,"-") == 0);}
+ bool isMult(char* piece) {return (strcmp(piece,"*") == 0);}
+ bool isDivide(char* piece) {return (strcmp(piece,"/") == 0);}
+ bool isInc(char* piece) {return (strcmp(piece, "++") == 0); }
+ bool isDec(char* piece) {return (strcmp(piece, "--") == 0); }
 /*
  function determineOperator(string piece)
  {
@@ -377,7 +386,7 @@ bool unary_op(const char* variable, OP unary_op)
  Params:   left, operator, right
  Returns:  true if there is some error during the operation, false otherwise
 ---------------------------------------------------------------------------- */
-bool binary_op(const char* left, OP operator, const char* right)
+bool binary_op(char* left, OP op, char* right)
 {
     // returns true if there is some error during the operation
     // return false otherwise
@@ -391,7 +400,7 @@ bool binary_op(const char* left, OP operator, const char* right)
  Params:   assign_var, left, operator, right
  Returns:  true if there is an error during the operation, false otherwise
 ---------------------------------------------------------------------------- */
-bool binary_assign(const char* assign_var, const char* left, OP operator, const char* right)
+bool binary_assign(const char* assign_var, const char* left, OP op, const char* right)
 {
     // returns true if there is some error during the operation
     // return false otherwise --> this makes no sense
@@ -455,7 +464,8 @@ void Interpreter(string& Input)
 
     int iSeg = 0;       // number of segments in command line
 
-    bool Tag = false;   // why is this called Tag?!?
+    //bool Tag = false;   // why is this called Tag?!?
+    bool isValid = false;
 
     OP  op; // the operator in the command line
 
@@ -471,11 +481,14 @@ void Interpreter(string& Input)
         case 2: // the command line is possible to be unary operation
             {
                 // if it is a valid unary operation
-                Tag = IsAUnary(Buffer,segmt,operand_1,op); 
-                if(Tag)
+                //Tag = IsAUnary(Buffer,segmt,operand_1,op); 
+                //if(Tag)
+                if(IsAUnary(Buffer,segmt,operand_1,op))
                 {   // it is a valid unary operation, output the result
                     OpTranslator(op); 
                     cout << " " << operand_1 << endl;
+                    //Tag = true; // stupidest name
+                    isValid = true;
                 }  
                 break;      
             }
@@ -484,14 +497,14 @@ void Interpreter(string& Input)
                 // if it is a valid assignment
                 if(IsAAsn(Buffer,segmt,res,operand_1)) 
                 {   // it is a valid assignment, output the result
-                    Tag = true;
+                    isValid = true; //Tag = true;
                     cout << "ASN " << " " << operand_1<< " to " << res << endl;
                 }
 
                 // if it is a binary operation with assignment to default variable ans
                 else if(IsABinary3(Buffer,segmt,operand_1,operand_2,op)) 
                 {   // it is a binary operation, output the result
-                    Tag = true;
+                    isValid = true; //Tag = true;
                     OpTranslator(op);
                     cout << " " << operand_1<<" AND "<< operand_2 << " , THEN ASN to ans. "<<endl;
                 }
@@ -502,12 +515,13 @@ void Interpreter(string& Input)
         case 5: // the command line is possible to be binary operation and assignment
             {
                 // if it is a binary operation with assignment to a specified variable
-                Tag = IsABinary5(Buffer,segmt,res,operand_1,operand_2,op); 
+                //Tag = IsABinary5(Buffer,segmt,res,operand_1,operand_2,op); 
 
-                if(Tag)
+                if(IsABinary5(Buffer,segmt,res,operand_1,operand_2,op))
                 {   // it is a binary operation, so output the result
                     OpTranslator(op);
                     cout<<" "<<operand_1<<" AND "<<operand_2<<" , THEN ASN to "<< res <<endl;
+                    isValid = true;
                 }  
                 break;              
             }
@@ -516,7 +530,7 @@ void Interpreter(string& Input)
 
 
 
-    if (Tag == false) // if the command line is not valid
+    if (!isValid) //(Tag == false) // if the command line is not valid
     {
         cout<<"Sorry, do not understand." <<endl;
     }
@@ -548,13 +562,14 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
     }
 
     // assuming these are the operator characters but not sure
-    string p0 = piece[0]; 
-    string p1 = piece[1];
+    char* p0 = piece[0]; // these were strngs before whoops
+    char* p1 = piece[1];
     
     // simplified the if clauses
     // but left them in commented below
 
-    if( (strcmp(p0, "++") == 0) ||  (strcmp(p0, "--") == 0)) )
+    //if( (strcmp(p0, "++") == 0) ||  (strcmp(p0, "--") == 0) )
+    if( isInc(p0) || isDec(p0) )
     {
         if(strcmp(p0, "++") == 0) op = PRE_INC;
         else op = PRE_DEC;
@@ -576,7 +591,7 @@ bool IsAUnary(char* Buffer, int segmt[][2], char* operand, OP& op)
     }
     */
 
-    else if( (strcmp(p1, "++") == 0) ||  (strcmp(p1, "--") == 0)) )
+    else if( (strcmp(p1, "++") == 0) ||  (strcmp(p1, "--") == 0) )
     {
         if(strcmp(p1, "++") == 0) op = POST_INC;
         else op = POST_DEC;

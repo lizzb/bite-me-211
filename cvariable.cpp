@@ -32,7 +32,7 @@
 
 
 // ----------------------------------------------------------------------------
-// 	CVariable class
+//     CVariable class
 //
 // A class to represent the variables defined by the user
 // --> store the name and value of a user-defined variable
@@ -133,7 +133,7 @@ CVariable::~CVariable()
 }
 
 // Return the name of this CVariable
-CVariable::const char* getName() const
+char* CVariable::getName() const
 {
     return name;
 }
@@ -199,7 +199,7 @@ CVariable& CVariable::operator=(CVariable& otherCVar)
     //this->name = new char(strlen(otherCVar.getName())+1);
     //int i=0;
     //name = new char(strlen(otherCVar.getName())+1);
-    otherName = new char(strlen(otherCVar.getName())+1); // why do you do this
+    //otherName = new char(strlen(otherCVar.getName())+1); // why do you do this
     // wait why are you adding 1 to the length?
     // since indexes start at 0
     // the last index will always be length - 1
@@ -223,7 +223,7 @@ CVariable& CVariable::operator=(CVariable& otherCVar)
 
 
 // ----------------------------------------------------------------------------
-// 	CVarDB class
+//  CVarDB class
 //
 // CVarDB class should store and manage the collection of
 // all currently defined variables in a vector.
