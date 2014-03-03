@@ -4,11 +4,13 @@
 
 <h3> Objective </h3> 
 For Lab 6, you will extend your Lab 5 program to work on matrix inputs. In Lab 6, you will gain: 
+<pre>
 [1] more practice using classes, 
 [2] practice with class inheritance, 
 [3] further practice with operator overloading, 
 [4] more experience debugging, and 
 [5] more experience in software design. 
+</pre>
  
 <h3> Problem Description </h3> 
 <p>In Lab 5, you built a programmable calulator that could store, retrieve, and calculate expressions involving scalar values. A natural extension to this program is to enable calculations involving matrices and vectors. </p>
@@ -18,20 +20,26 @@ For Lab 6, you will extend your Lab 5 program to work on matrix inputs. In Lab 6
 <p>That is, you will need to extend your CVariable class to be able to store and manipulate matrix variables using the CMatrix class defined in Lab 4. Then, you should extend the CMatrix class to handle matrix addition and subtraction, scalar multiplication, and equality and inequality operators.</p>
 
 Specifically, you should implement the following functions in the CMatrix class:
+
+<pre>
 •	CMatrix operator+(CMatrix& mat): returns the result of adding two matrices; result is a null matrix if input matrices are not the same size
 •	CMatrix operator-(CMatrix& mat): returns the result of subtracting one matrix from another; result is a null matrix if input matrices are not the same size
 •	CMatrix operator*(CMatrix& mat): returns the result of multiplying this matrix by another matrix; the result can be a null matrix if neither this nor the given matrix are 1x1 (unless doing bonus)
 •	CMatrix operator/(CMatrix& mat): returns the result of dividing this matrix by a scalar (1x1 matrix); the result can be a null matrix if mat is not 1x1
 •	bool operator==(CMatrix& mat): returns true if the given CMatrix is the same size and contains all of the same values as this matrix (false otherwise) 
 •	bool operator!=(CMatrix& mat): returns false if the given CMatrix is the same size and contains all of the same values as this matrix (true otherwise) 
-The choice of how you wish to represent scalar and matrix values inside a CVariable object may make certain operations simpler or more complex. One way to implement this idea in your code is to change the value field of your CVariable class to have type CMatrix or CMatrix* rather than double, using "has-a" inheritance. 
+</pre>
+
+<p>The choice of how you wish to represent scalar and matrix values inside a CVariable object may make certain operations simpler or more complex. One way to implement this idea in your code is to change the value field of your CVariable class to have type CMatrix or CMatrix* rather than double, using "has-a" inheritance. </p>
 To allow CVariable to store and manipulate CMatrix values, you should add, replace, or modify the following member functions of CVariable:
+<pre>
 •	CVariable(const char* init_name, const CMatrix& init_value): constructs a new CVariable with the given name that stores a copy of the given CMatrix (new constructor)
 •	CMatrix& operator=(CMatrix& newValue): sets the CMatrix stored in this CVariable to the given matrix and returns it (new function)
 •	CMatrix& operator*(): returns a reference to the CMatrix stored in this CVariable (replaces double& operator*())
 •	CMatrix operator*() const: returns a copy of the CMatrix stored in a const CVariable (replaces double operator*() const)
 •	CVariable(const char* init_name, double init_value): constructs a new CVariable to store a given scalar value as 1x1 matrix (modification)
 •	CMatrix& operator=(double newValue): sets the CMatrix stored in this CVariable to a given scalar value (1x1 matrix) and returns a reference to the stored matrix (modification)
+</pre>
 
 <p>Finally, you will need to update the code in your interpreter (including any helper functions like binary_assign_op and getValue) to operate in terms of CMatrices rather than double values. Invalid matrix operations, like adding together matrices of different sizes or dividing by a matrix value, should result in an error message such as "Sorry, do not understand" or "Invalid operation, matrix size does not match."</p>
 
