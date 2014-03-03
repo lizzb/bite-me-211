@@ -1,70 +1,182 @@
-<h1>Machine Problem Lab 6: MiniMatlab 1.0</h1>
-<h4>EECS 211 Winter 2014</h4>
-<strong>Due:</strong> March 10, 11:59pm <br>
+<html>
+  <style>
+    .duedate {
+      color: hotpink;
+    }
+  </style>
+  <h1>
+    Machine Problem Lab 6: MiniMatlab 1.0
+  </h1>
+  <h4>
+    EECS 211 Winter 2014
+  </h4>
+  <strong>
+    Due:
+  </strong>
+  <span class="duedate">
+    March 10, 11:59pm
+  </span>
+  <br>
+  
+  <h3>
+    Objective
+  </h3>
+  For Lab 6, you will extend your Lab 5 program to work on matrix inputs. In Lab 6, you will gain:
+  <br>
+  <br>
+  [1] more practice using classes,<br>
+  [2] practice with class inheritance, <br>
+  [3] further practice with operator overloading, <br>
+  [4] more experience debugging, and <br>
+  [5] more experience in software design.
+  <br>
+  
+  
+  <h3>
+    Problem Description
+  </h3>
+  <p>
+    In Lab 5, you built a programmable calulator that could store, retrieve, and calculate expressions involving scalar values. A natural extension to this program is to enable calculations involving matrices and vectors.
+  </p>
+  
+  <p>
+    Starting from your Lab 4 and Lab 5 solutions (or the provided code and sample solution), <em>your MiniMatlab should be able to construct and manipulate matrix values and variables.</em>
+  </p>
+  
+  <p>
+    That is, you will need to <strong>extend your CVariable class to be able to store and manipulate matrix variables using the CMatrix class </strong>defined in Lab 4. Then, you should <strong>extend the CMatrix class </strong> to handle matrix addition and subtraction, scalar multiplication, and equality and inequality operators.
+  </p>
+  
+  Specifically, you should implement the following functions in the CMatrix class:
+  
+  <pre>
 
-<h3> Objective </h3> 
-For Lab 6, you will extend your Lab 5 program to work on matrix inputs. In Lab 6, you will gain: 
-<pre>
-[1] more practice using classes, 
-[2] practice with class inheritance, 
-[3] further practice with operator overloading, 
-[4] more experience debugging, and 
-[5] more experience in software design. 
+// Returns the result of adding two matrices;
+// Result is a null matrix if input matrices are not the same size
+•	CMatrix operator+(CMatrix& mat);
+
+// Returns the result of subtracting one matrix from another;
+// result is a null matrix if input matrices are not the same size
+•	CMatrix operator-(CMatrix& mat): 
+
+// Returns the result of multiplying this matrix
+// by another matrix;
+// the result can be a null matrix if
+// neither this nor the given matrix are 1x1
+// (unless doing bonus)
+•	CMatrix operator*(CMatrix& mat): 
+
+// Returns the result of dividing this matrix
+// by a scalar (1x1 matrix);
+// the result can be a null matrix if mat is not 1x1
+•	CMatrix operator/(CMatrix& mat): 
+
+
+// Returns true if the given CMatrix is the same size
+// and contains all of the same values as this matrix
+// (false otherwise) 
+•	bool operator==(CMatrix& mat): 
+
+
+// Returns false if the given CMatrix is the same size
+// and contains all of the same values as this matrix
+// (true otherwise) 
+•	bool operator!=(CMatrix& mat): 
+
 </pre>
- 
-<h3> Problem Description </h3> 
-<p>In Lab 5, you built a programmable calulator that could store, retrieve, and calculate expressions involving scalar values. A natural extension to this program is to enable calculations involving matrices and vectors. </p>
+  
+  <p>
+    The choice of how you wish to represent scalar and matrix values inside a CVariable object may make certain operations simpler or more complex. One way to implement this idea in your code is to <strong>change the value field of your CVariable class to have type CMatrix or CMatrix* rather than double, using "has-a" inheritance.</strong>
+    
+  </p>
+  To allow CVariable to store and manipulate CMatrix values, you should add, replace, or modify the following member functions of CVariable:
+  <pre>
+// Constructs a new CVariable with the given name that
+// stores a copy of the given CMatrix (new constructor)
+•	CVariable(const char* init_name, const CMatrix& init_value); 
 
-<p>Starting from your Lab 4 and Lab 5 solutions (or the provided code and sample solution), your MiniMatlab should be able to construct and manipulate matrix values and variables.</p>
+// Sets the CMatrix stored in this CVariable to
+// the given matrix and returns it (new function)
+•	CMatrix& operator=(CMatrix& newValue); 
 
-<p>That is, you will need to extend your CVariable class to be able to store and manipulate matrix variables using the CMatrix class defined in Lab 4. Then, you should extend the CMatrix class to handle matrix addition and subtraction, scalar multiplication, and equality and inequality operators.</p>
 
-Specifically, you should implement the following functions in the CMatrix class:
+// returns a reference to the CMatrix stored in this CVariable
+// (replaces double& operator*())
+•	CMatrix& operator*();
 
-<pre>
-•	CMatrix operator+(CMatrix& mat): returns the result of adding two matrices; result is a null matrix if input matrices are not the same size
-•	CMatrix operator-(CMatrix& mat): returns the result of subtracting one matrix from another; result is a null matrix if input matrices are not the same size
-•	CMatrix operator*(CMatrix& mat): returns the result of multiplying this matrix by another matrix; the result can be a null matrix if neither this nor the given matrix are 1x1 (unless doing bonus)
-•	CMatrix operator/(CMatrix& mat): returns the result of dividing this matrix by a scalar (1x1 matrix); the result can be a null matrix if mat is not 1x1
-•	bool operator==(CMatrix& mat): returns true if the given CMatrix is the same size and contains all of the same values as this matrix (false otherwise) 
-•	bool operator!=(CMatrix& mat): returns false if the given CMatrix is the same size and contains all of the same values as this matrix (true otherwise) 
+
+// returns a copy of the CMatrix stored in a const CVariable 
+// (replaces double operator*() const)
+•	CMatrix operator*() const;
+
+
+
+// Constructs a new CVariable to store a given scalar value
+// as a 1x1 matrix (modification)
+•	CVariable(const char* init_name, double init_value);
+
+
+
+// Sets the CMatrix stored in this CVariable to a 
+// given scalar value (1x1 matrix) and
+// returns a reference to the stored matrix (modification)
+•	CMatrix& operator=(double newValue); 
+
 </pre>
-
-<p>The choice of how you wish to represent scalar and matrix values inside a CVariable object may make certain operations simpler or more complex. One way to implement this idea in your code is to change the value field of your CVariable class to have type CMatrix or CMatrix* rather than double, using "has-a" inheritance. </p>
-To allow CVariable to store and manipulate CMatrix values, you should add, replace, or modify the following member functions of CVariable:
-<pre>
-•	CVariable(const char* init_name, const CMatrix& init_value): constructs a new CVariable with the given name that stores a copy of the given CMatrix (new constructor)
-•	CMatrix& operator=(CMatrix& newValue): sets the CMatrix stored in this CVariable to the given matrix and returns it (new function)
-•	CMatrix& operator*(): returns a reference to the CMatrix stored in this CVariable (replaces double& operator*())
-•	CMatrix operator*() const: returns a copy of the CMatrix stored in a const CVariable (replaces double operator*() const)
-•	CVariable(const char* init_name, double init_value): constructs a new CVariable to store a given scalar value as 1x1 matrix (modification)
-•	CMatrix& operator=(double newValue): sets the CMatrix stored in this CVariable to a given scalar value (1x1 matrix) and returns a reference to the stored matrix (modification)
-</pre>
-
-<p>Finally, you will need to update the code in your interpreter (including any helper functions like binary_assign_op and getValue) to operate in terms of CMatrices rather than double values. Invalid matrix operations, like adding together matrices of different sizes or dividing by a matrix value, should result in an error message such as "Sorry, do not understand" or "Invalid operation, matrix size does not match."</p>
-
-<p>Some test cases are provided in "TestCases.txt", and the expected output for these test cases is shown in the "Output.jpg".</p>
-
-<h3> Helpful hints </h3>
-
-<p>You may find it easiest to start by implementing the new CVariable functions and testing these with a separate main() function from your main MiniMatlab program.</p>
-
-<p>From there, you can incorporate the improved CVariables into your MiniMatlab modifying the getValue and assign_op functions to allow your program to handle assignment statements involving matrices (e.g., mat_1 = [1 2; 3 4]). You should also test to ensure that your code can still handle simple numeric assignments, like pi = 3.1415 without error. </p>
-
-<p>The next major hurdle will be implementing the new matrix operations, +, -, *, /, ==, and !=. You may wish to implement and test these one by one using a separate main() function that only constructs some sample matrices, performs the operations, and prints the results. You should be sure to test that the operations work as expected for both valid and invalid inputs.</p> 
-
-<p>Finally, incorporate the new matrix operations by modifying the binary_assign_op and binary_op functions in your interpreter code. You can test these changes on the provided test file, as well as any cases that you used in testing the matrix operations in the previous step. </p>
-
-<h3> How to submit your work </h3>
-
-<p>You should submit 5 files for this MP: cvariable.h and cvariable.cpp, which define the classes used to store and manipulate variables; cmatrix.h and cmatrix.cpp, which define the CMatrix class; and main.cpp, which is the parser and interpreter that run your MiniMatlab program. Your submission should read test cases from the file "TestCase.txt".
-</p>
-<p>
-Ten points extra credit will be awarded if your solution is able to handle (non-scalar) matrix multiplication as well. For example, if the variables a and b are defined by a = [1 2; 3 4] and b = [5 9; 3 1], a * b should yield the output [11 11; 27 31 (not [5 18; 9 4]).
-</p>
-
-<h3> Grading </h3>
-25% Correct usage of C++ concepts  <br>
-25% Visual appearance of the code  <br>
-50% Correct functionality  <br>
-
+  
+  <p>
+    Finally, you will need to <strong>update the code in your interpreter</strong> (including any helper functions like binary_assign_op and getValue) to <strong>operate in terms of CMatrices rather than double values. </strong> <mark>Invalid matrix operations,</mark> like adding together matrices of different sizes or dividing by a matrix value, <mark>should result in an error message</mark> such as "Sorry, do not understand" or "Invalid operation, matrix size does not match."
+  </p>
+  
+  <p>
+    Some test cases are provided in "TestCases.txt", and the expected output for these test cases is shown in the "Output.jpg".
+  </p>
+  
+  <h3>
+    Helpful hints
+  </h3>
+  
+  <p>
+    You may find it easiest to start by implementing the new CVariable functions and testing these with a separate main() function from your main MiniMatlab program.
+  </p>
+  
+  <p>
+    From there, you can incorporate the improved CVariables into your MiniMatlab modifying the getValue and assign_op functions to allow your program to handle assignment statements involving matrices (e.g., mat_1 = [1 2; 3 4]). You should also test to ensure that your code can still handle simple numeric assignments, like pi = 3.1415 without error.
+  </p>
+  
+  <p>
+    The next major hurdle will be implementing the new matrix operations, +, -, *, /, ==, and !=. You may wish to implement and test these one by one using a separate main() function that only constructs some sample matrices, performs the operations, and prints the results. You should be sure to test that the operations work as expected for both valid and invalid inputs.
+  </p>
+  
+  <p>
+    Finally, incorporate the new matrix operations by modifying the binary_assign_op and binary_op functions in your interpreter code. You can test these changes on the provided test file, as well as any cases that you used in testing the matrix operations in the previous step.
+  </p>
+  
+  <h3>
+    How to submit your work
+  </h3>
+  
+  <p>
+    You should submit 5 files for this MP: 
+    <li>cvariable.h and cvariable.cpp, 
+      which define the classes used to store and manipulate variables; </li>
+    <li>cmatrix.h and cmatrix.cpp, which define the CMatrix class; </li>
+    <li>and main.cpp, which is the parser and interpreter that run your MiniMatlab program. </li>
+   <li> Your submission should read test cases from the file "TestCase.txt".</li>
+  </p>
+  <p>
+    Ten points extra credit will be awarded if your solution is able to handle (non-scalar) matrix multiplication as well. For example, if the variables a and b are defined by a = [1 2; 3 4] and b = [5 9; 3 1], a * b should yield the output [11 11; 27 31 (not [5 18; 9 4]).
+  </p>
+  
+  <h3>
+    Grading
+  </h3>
+  25% Correct usage of C++ concepts
+  
+  <br>
+  25% Visual appearance of the code
+  <br>
+  50% Correct functionality
+  <br>
+  
+</html>
