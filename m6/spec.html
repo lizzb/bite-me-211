@@ -1,131 +1,220 @@
 <html>
-  <style>
-    .duedate {
-      color: hotpink;
-    }
-  </style>
-  <h1>
-    Machine Problem Lab 6: MiniMatlab 1.0
-  </h1>
-  <h4>
-    EECS 211 Winter 2014
-  </h4>
-  <strong>
-    Due:
-  </strong>
-  <span class="duedate">
-    March 10, 11:59pm
-  </span>
-  <br>
   
   <h3>
-    Objective
+    How to submit your work
   </h3>
-  For Lab 6, you will extend your Lab 5 program to work on matrix inputs. In Lab 6, you will gain:
-  <br>
-  <br>
-  [1] more practice using classes,<br>
-  [2] practice with class inheritance, <br>
-  [3] further practice with operator overloading, <br>
-  [4] more experience debugging, and <br>
-  [5] more experience in software design.
-  <br>
-  
-  
-  <h3>
-    Problem Description
-  </h3>
-  <p>
-    In Lab 5, you built a programmable calulator that could store, retrieve, and calculate expressions involving scalar values. A natural extension to this program is to enable calculations involving matrices and vectors.
-  </p>
   
   <p>
-    Starting from your Lab 4 and Lab 5 solutions (or the provided code and sample solution), <em>your MiniMatlab should be able to construct and manipulate matrix values and variables.</em>
+    You should submit 5 files for this MP: 
+    <li>
+      cvariable.h and cvariable.cpp, 
+      which define the classes used to store and manipulate variables; 
+    </li>
+    <li>
+      cmatrix.h and cmatrix.cpp, which define the CMatrix class; 
+    </li>
+    <li>
+      and main.cpp, which is the parser and interpreter that run your MiniMatlab program. 
+    </li>
+    <li>
+      Your submission should read test cases from the file "TestCase.txt".
+    </li>
+  </p>
+  <p>
+    Ten points extra credit will be awarded if your solution is able to handle (non-scalar) matrix multiplication as well. For example, if the variables a and b are defined by a = [1 2; 3 4] and b = [5 9; 3 1], a * b should yield the output [11 11; 27 31 (not [5 18; 9 4]).
+  </p>
+    <p>
+    Starting from your Lab 4 and Lab 5 solutions (or the provided code and sample solution), 
+    <em>
+      your MiniMatlab should be able to construct and manipulate matrix values and variables.
+    </em>
   </p>
   
-  <p>
-    That is, you will need to <strong>extend your CVariable class to be able to store and manipulate matrix variables using the CMatrix class </strong>defined in Lab 4. Then, you should <strong>extend the CMatrix class </strong> to handle matrix addition and subtraction, scalar multiplication, and equality and inequality operators.
-  </p>
+    
+Extended CVariable class
+able to store and manipulate matrix variables using the CMatrix class 
+    
+  Extended the CMatrix class
+  handle matrix addition and subtraction, scalar multiplication, and equality and inequality operators.
+ 
   
   Specifically, you should implement the following functions in the CMatrix class:
+  
+  
+  <hr/>
+  
+  <h3> cmatrix.h  </h3>
+  
   
   <pre>
 
 // Returns the result of adding two matrices;
 // Result is a null matrix if input matrices are not the same size
-•	CMatrix operator+(CMatrix& mat);
+CMatrix operator+(CMatrix& mat);
 
 // Returns the result of subtracting one matrix from another;
 // result is a null matrix if input matrices are not the same size
-•	CMatrix operator-(CMatrix& mat): 
+CMatrix operator-(CMatrix& mat);
 
-// Returns the result of multiplying this matrix
-// by another matrix;
+// Returns the result of multiplying this matrix by another matrix;
 // the result can be a null matrix if
 // neither this nor the given matrix are 1x1
-// (unless doing bonus)
-•	CMatrix operator*(CMatrix& mat): 
+CMatrix operator*(CMatrix& mat);
 
-// Returns the result of dividing this matrix
-// by a scalar (1x1 matrix);
-// the result can be a null matrix if mat is not 1x1
-•	CMatrix operator/(CMatrix& mat): 
+// Returns the result of dividing this matrix by a scalar (1x1 matrix)
+// result can be a null matrix if mat is not 1x1
+CMatrix operator/(CMatrix& mat); 
 
 
 // Returns true if the given CMatrix is the same size
 // and contains all of the same values as this matrix
 // (false otherwise) 
-•	bool operator==(CMatrix& mat): 
+bool operator==(CMatrix& mat);
 
 
 // Returns false if the given CMatrix is the same size
 // and contains all of the same values as this matrix
 // (true otherwise) 
-•	bool operator!=(CMatrix& mat): 
+bool operator!=(CMatrix& mat);
 
 </pre>
   
+    <hr/>
+  
+  <h3> cmatrix.cpp  </h3>
+  <pre>
+
+  
+// Return result of adding two matrices
+// null if input matrices are not the same size
+CMatrix CMatrix::operator+(CMatrix& otherMatrix)
+{
+  // only matrices of the same size can be added/subtracted
+
+
+  // if input matrices are not the same size,
+  // result is a null matrix 
+  return null;
+}
+
+
+// Returns result of subtracting one matrix from another
+// null if input matrices are not the same size
+CMatrix CMatrix::operator-(CMatrix& otherMatrix)
+{
+  // Can only add/subtract matrices of the same size
+  //only matrices of the same size can be added/subtracted
+
+
+  // if input matrices are not the same size,
+  // result is a null matrix 
+  return null;
+}
+
+
+
+// Return result of multiplying this matrix by a scalar
+// null if neither matrix is a scalar (a 1x1 matrix)
+CMatrix CMatrix::operator*(CMatrix& otherMatrix)
+{
+  return null;
+}
+
+// Return result of dividing this matrix by a scalar
+// null if given matrix is not a scalar (a 1x1 matrix)
+CMatrix CMatrix::operator/(CMatrix& otherMatrix)
+{
+
+  return null;
+}
+
+
+// Returns true if the given CMatrix is the same size
+// and contains all of the same values as this matrix
+// (false otherwise) 
+bool CMatrix::operator==(CMatrix& otherMatrix)
+{
+// check that matrices are same size first
+// if not, return false
+// check that every value is the same in each
+// if any value is not the same, return false
+}
+
+
+// Returns false if the given CMatrix is the same size
+// and contains all of the same values as this matrix
+// (true otherwise) 
+bool CMatrix::operator!=(CMatrix& otherMatrix)
+{
+// return the opposite of the == operator
+}
+
+
+  </pre>
+  
+  
+   <hr/>
+  
   <p>
-    The choice of how you wish to represent scalar and matrix values inside a CVariable object may make certain operations simpler or more complex. One way to implement this idea in your code is to <strong>change the value field of your CVariable class to have type CMatrix or CMatrix* rather than double, using "has-a" inheritance.</strong>
+    The choice of how you wish to represent scalar and matrix values inside a CVariable object may make certain operations simpler or more complex. One way to implement this idea in your code is to 
+    <strong>
+      change the value field of your CVariable class to have type CMatrix or CMatrix* rather than double, using "has-a" inheritance.
+    </strong>
     
   </p>
   To allow CVariable to store and manipulate CMatrix values, you should add, replace, or modify the following member functions of CVariable:
   <pre>
 // Constructs a new CVariable with the given name that
 // stores a copy of the given CMatrix (new constructor)
-•	CVariable(const char* init_name, const CMatrix& init_value); 
+• CVariable(const char* init_name, const CMatrix& init_value); 
 
 // Sets the CMatrix stored in this CVariable to
 // the given matrix and returns it (new function)
-•	CMatrix& operator=(CMatrix& newValue); 
+• CMatrix& operator=(CMatrix& newValue); 
 
 
 // returns a reference to the CMatrix stored in this CVariable
 // (replaces double& operator*())
-•	CMatrix& operator*();
+• CMatrix& operator*();
 
 
 // returns a copy of the CMatrix stored in a const CVariable 
 // (replaces double operator*() const)
-•	CMatrix operator*() const;
+• CMatrix operator*() const;
 
 
 
 // Constructs a new CVariable to store a given scalar value
 // as a 1x1 matrix (modification)
-•	CVariable(const char* init_name, double init_value);
+• CVariable(const char* init_name, double init_value);
 
 
 
 // Sets the CMatrix stored in this CVariable to a 
 // given scalar value (1x1 matrix) and
 // returns a reference to the stored matrix (modification)
-•	CMatrix& operator=(double newValue); 
+• CMatrix& operator=(double newValue); 
 
 </pre>
   
   <p>
-    Finally, you will need to <strong>update the code in your interpreter</strong> (including any helper functions like binary_assign_op and getValue) to <strong>operate in terms of CMatrices rather than double values. </strong> <mark>Invalid matrix operations,</mark> like adding together matrices of different sizes or dividing by a matrix value, <mark>should result in an error message</mark> such as "Sorry, do not understand" or "Invalid operation, matrix size does not match."
+    Finally, you will need to 
+    <strong>
+      update the code in your interpreter
+    </strong>
+    (including any helper functions like binary_assign_op and getValue) to 
+    <strong>
+      operate in terms of CMatrices rather than double values. 
+    </strong>
+    
+    <mark>
+      Invalid matrix operations,
+    </mark>
+    like adding together matrices of different sizes or dividing by a matrix value, 
+    <mark>
+      should result in an error message
+    </mark>
+    such as "Sorry, do not understand" or "Invalid operation, matrix size does not match."
   </p>
   
   <p>
@@ -152,31 +241,8 @@
     Finally, incorporate the new matrix operations by modifying the binary_assign_op and binary_op functions in your interpreter code. You can test these changes on the provided test file, as well as any cases that you used in testing the matrix operations in the previous step.
   </p>
   
-  <h3>
-    How to submit your work
-  </h3>
   
-  <p>
-    You should submit 5 files for this MP: 
-    <li>cvariable.h and cvariable.cpp, 
-      which define the classes used to store and manipulate variables; </li>
-    <li>cmatrix.h and cmatrix.cpp, which define the CMatrix class; </li>
-    <li>and main.cpp, which is the parser and interpreter that run your MiniMatlab program. </li>
-   <li> Your submission should read test cases from the file "TestCase.txt".</li>
-  </p>
-  <p>
-    Ten points extra credit will be awarded if your solution is able to handle (non-scalar) matrix multiplication as well. For example, if the variables a and b are defined by a = [1 2; 3 4] and b = [5 9; 3 1], a * b should yield the output [11 11; 27 31 (not [5 18; 9 4]).
-  </p>
   
-  <h3>
-    Grading
-  </h3>
-  25% Correct usage of C++ concepts
   
-  <br>
-  25% Visual appearance of the code
-  <br>
-  50% Correct functionality
-  <br>
   
 </html>
