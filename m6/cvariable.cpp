@@ -5,7 +5,6 @@ Based off Lab 5 Sample Solution
 Extended CVariable class 
 able to store and manipulate matrix variables using the CMatrix class
 
-
 ---------------------------------------------------------------------------- */
 
 #include "cvariable.h"
@@ -38,20 +37,60 @@ CVariable::CVariable(const CVariable& copy)
   strncpy(name, copy.name, len+1);
 }
 
-const char* CVariable::getName() const
-{
-  return name;
-}
-
 CVariable::~CVariable()
 {
   delete name;
 }
 
+const char* CVariable::getName() const
+{
+  return name;
+}
+
+CVariable& CVariable::operator=(double val)
+{
+  value = val;
+  return *this;
+}
+
+CVariable& CVariable::operator=(CVariable& cvar)
+{
+  value = cvar.value;
+  return *this;
+}
+
+double& CVariable::operator*()
+{
+  return value;
+}
+
+double CVariable::operator*() const
+{
+  return value;
+}
+
+/* ----------------------------------------------------------------------------
+
+Based off Lab 5 Sample Solution
+
+CVarDB class to help organize and retrieve user-defined variables for your Mini-Matlab program.
+
+The CVarDB class should store and manage the collection of all currently defined variables in a vector.
+(The CVarDB should also manage the "automatic" variable ans.)
+
+---------------------------------------------------------------------------- */
+
+
+
 CVarDB::CVarDB()
 {
   CVariable ans("ans");
   db.push_back(ans);
+}
+
+CVarDB::~CVarDB()
+{
+  //db vector will deconstruct itself
 }
 
 bool CVarDB::add(CVariable& cvar)
@@ -86,32 +125,7 @@ CVariable* CVarDB::search(const char* name)
   return NULL;
 }
 
-CVariable& CVariable::operator=(double val)
-{
-  value = val;
-  return *this;
-}
 
-CVariable& CVariable::operator=(CVariable& cvar)
-{
-  value = cvar.value;
-  return *this;
-}
-
-double& CVariable::operator*()
-{
-  return value;
-}
-
-double CVariable::operator*() const
-{
-  return value;
-}
-
-CVarDB::~CVarDB()
-{
-  //db vector will deconstruct itself
-}
 
 ostream& operator<<(ostream& out, CVariable& cvar)
 {
