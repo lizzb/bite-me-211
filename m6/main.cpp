@@ -1,5 +1,17 @@
+/* ----------------------------------------------------------------------------
+
+Based off Lab 5 Sample Solution
+
+wow i love how thorough the commenting is so that the professor can clear up
+any misconceptions or common mistakes the students had... -_-
+
+... i'm also loving all of the SUPER subtle changes to names that could have
+students wondering why nothing will compile...
+
+---------------------------------------------------------------------------- */
+
 /**
- Lab 5:  a Programmable Calculator
+ Lab 5:  a Programmable Calculator (Sample Solution)
 
  This program can add, subtract, multiply, and divide numbers, as well as store
  and retrieve variable values.  It accepts a sequence of commands from the file
@@ -38,11 +50,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string>
+#include <string> // yeah pretty sure you don't need all this shit, esp not string AND string.h...
 #include <string.h>
 #include "cvariable.h"
 using namespace std; 
 
+// ewww why would you use define in this case WHYYY it should be const ugh
 #define INPUT_FILE "TestCase.txt"
 
 enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; 
@@ -54,6 +67,11 @@ typedef struct
   seg_t type;
 } segment_t;
 
+/*
+In order to have a single, universal database for variables,
+you may wish to declare a CVarDB pointer as a global variable
+and refer to this in your main.cpp file. 
+*/
 CVarDB* db; 
 
 void interpreter(const char* cmd);
@@ -311,6 +329,19 @@ bool isSpace(char c)
   }
 }
 
+/*
+You will need to update your main.cpp file from Lab 3
+so that your command interpreter will be able to accomplish the following:
+recognize variables, numbers, and operators
+perform operations for =, +, -, *, /, ++, and --
+(compound operators, like +=, -=, etc., are a bonus)
+construct and manage a "system variable database" to hold all the variables
+register, modify, and retrieve variable values as necessary
+recognize the "who" command and print out all of the currently defined variables in response
+report the results or appropriate error messages to the user
+recognize the "quit" command to end the program
+*/
+
 void interpreter(const char* cmd)
 {
 	char buffer[500];
@@ -458,6 +489,11 @@ op_t recognizeOp(const char* op)
     return BAD_OP;
 }
 
+// performs a binary operator assignment, such as " d = 6.28 * r";
+// returns true if there is some error during the operation and false otherwise
+// aka
+// bool binary_assign(const char* assign_var, const char* left, OP operator, const char* right)
+
 bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right)
 {
   double first, second, value;
@@ -495,11 +531,17 @@ bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* ri
   return true;
 }
 
+// performs a binary operator assignment, such as " d = 6.28 * r";
+// returns true if there is some error during the operation and false otherwise
+// aka binary_op(const char* left, OP operator, const char* right)
 bool binary_op(const char* left, op_t op, const char* right)
 {
   return binary_assign_op("ans", left, op, right);
 }
 
+// performs a unary operator statement,like "x++";
+// returns true if there is some error during the operation and false otherwise
+// aka unary_op(const char* variable, OP unary_op)
 bool unary_op(const char* operand, op_t op)
 {
   CVariable* obj;
@@ -524,6 +566,10 @@ bool unary_op(const char* operand, op_t op)
   return true;
 }
 
+// performs a simple assignment statement, like "x = 1";
+// returns true if there is some error in the assignment and false otherwise
+// ... it was just called assign in lab5...
+// aka assign(const char* lhs, const char* rhs)
 bool assign_op(const char* lhs, const char* rhs)
 {
   double value;
@@ -542,6 +588,10 @@ bool assign_op(const char* lhs, const char* rhs)
   return true;
 }
 
+
+// evaluates a numeric string or variable name to its numeric value;
+// returns true if expression is an invalid number or variable does not exist
+// aka get_value(const char* expression, double& value)
 bool getValue(const char* expr, double& value)
 {
   //Try to read as a double
