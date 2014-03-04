@@ -1,4 +1,20 @@
+/* ----------------------------------------------------------------------------
 
+cmatrix.cpp + cmatrix.h
+
+Define the CMatrix class
+
+---
+cmatrix.cpp
+
+
+Based off ... some lab solution i'm assuming....
+
+Extended CMatrix class 
+handle matrix addition and subtraction, scalar multiplication, 
+and equality and inequality operators.
+
+---------------------------------------------------------------------------- */
 
 #include "cmatrix.h"
 using namespace std;
