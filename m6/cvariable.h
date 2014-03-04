@@ -3,7 +3,8 @@
 Based off Lab 5 Sample Solution
 
 The CVariable class should store the name and value of a user-defined variable.
-epresent the variables defined by the user
+represent the variables defined by the user
+...allow CVariable to store and manipulate CMatrix values...
 
 Extended CVariable class 
 able to store and manipulate matrix variables using the CMatrix class
@@ -20,20 +21,48 @@ class CVariable
 
 private:
   /*
+  LAB 5
   As we are not going to incorporate matrix operations in this assignment, (m5)
   you can use a double to store the variable value
   and a char array (char*) to hold the name.
   */
   char* name;     // store the name of the variable 
-  double value;   // store the variable value
+  //double value;   // store the variable value
+
+  /*
+  LAB 6
+  The choice of how you wish to represent scalar and matrix values
+  inside a CVariable object may make certain operations simpler or more complex.
+  One way to implement this:
+  change the value field of your CVariable class
+  to have type CMatrix or CMatrix*
+  rather than double, using "has-a" inheritance. 
+  ---- i'm sure that everyone completely understands what this means -_-
+  */
+
+  CMatrix value;
+  // not yet clear to me if CMatrix or CMatrix* is what prof has in mind
+  
 
 public:
 
+  // Constructs a new CVariable with the given name that
+  // stores a copy of the given CMatrix
+  // (new constructor)
+  CVariable::CVariable(const char* init_name, const CMatrix& init_value);
+  
   // Initializes a CVariable - with a given name and value 0
   CVariable(const char* init_name);
   
-  // Initializes a CVariable - with a given name and value
-  CVariable(const char* init_name, double init_value);
+
+  // Constructs a new CVariable to store a given scalar value
+  // as a 1x1 matrix
+  // (modification)
+  // LAB 5 (OLD): Initializes a CVariable - with a given name and value
+  // CVariable(const char* init_name, double init_value);
+  CVariable::CVariable(const char* init_name, double init_value);
+
+  
   
   // Copy constructor
   CVariable(const CVariable& copy);
@@ -46,17 +75,39 @@ public:
   // return the name of this CVariable
   const char* getName() const;
 
+
+  // Returns a reference to the CMatrix stored in this CVariable
+  // (replaces double& operator*())
+  CMatrix& operator*();
+
+  // LAB 5
   // return a reference to the value stored in this CVariable
-  virtual double& operator*();
+  //virtual double& operator*();
 
+
+  // Returns a copy of the CMatrix stored in a const CVariable 
+  // (replaces double operator*() const)
+  CMatrix operator*() const;
+
+  // LAB 5
   // return the value stored in a const CVariable
-  virtual double operator*() const;
+  //virtual double operator*() const;
 
-  // set the value of this CVariable (returns the CVariable)
+  
+  // Sets the CMatrix stored in this CVariable to a 
+  // given scalar value (1x1 matrix) and
+  // returns a reference to the stored matrix
+  // (modification)
+  // LAB 5 (OLD): set the value of this CVariable (returns the CVariable)
   virtual CVariable& operator=(double newValue);
 
   // Set the value of this CVariable to match that of the given CVariable (returns the CVariable)
   virtual CVariable& operator=(CVariable& newValue);
+
+  // Sets the CMatrix stored in this CVariable to
+  // the given matrix and returns it
+  // (new function)
+  CMatrix& operator=(CMatrix& newValue); 
   
 };
 

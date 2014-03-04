@@ -1,5 +1,14 @@
 /* ----------------------------------------------------------------------------
 
+main.cpp 
+
+the parser and interpreter that run your MiniMatlab program.
+
+ Starting from your Lab 4 and Lab 5 solutions (or the provided code and sample solution), 
+your MiniMatlab should be able to construct and manipulate matrix values and variables
+---
+
+
 Based off Lab 5 Sample Solution
 
 wow i love how thorough the commenting is so that the professor can clear up
@@ -7,6 +16,33 @@ any misconceptions or common mistakes the students had... -_-
 
 ... i'm also loving all of the SUPER subtle changes to names that could have
 students wondering why nothing will compile...
+
+
+
+
+// main function
+// read input test cases from "TestCases.txt"
+// see expected output in "Output.jpg"
+
+// Your submission should read test cases from the file "TestCase.txt".
+
+
+// Update the code in the interpreter function
+// (including any helper fx's like binary_assign_op and getValue)
+// to operate in terms of CMatrices
+// rather than double values !!
+
+
+// Invalid matrix operations should result in an error message
+// such as "Sorry, do not understand" or
+// "Invalid operation, matrix size does not match."
+
+// Example invalid matrix operations:
+// (be sure to test each of these in your main function!)
+
+// Adding together matrices of different sizes
+
+// Dividing by a matrix (not scalar) value
 
 ---------------------------------------------------------------------------- */
 
@@ -58,6 +94,7 @@ using namespace std;
 // ewww why would you use define in this case WHYYY it should be const ugh
 #define INPUT_FILE "TestCase.txt"
 
+// lulz isn't it supposed to be ans like answer but its spelled wrong
 enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; 
 enum seg_t {VAR, NUM, MAT, OP, BAD_SEG};
 
@@ -136,6 +173,56 @@ int main()
   cin >> c;  
 
   return 0;  
+
+
+
+
+  /*
+
+  You should also test to ensure that your code can still handle
+  simple numeric assignments, like pi = 3.1415 without error.
+
+  */
+
+
+  /*
+
+  test these one by one
+  new matrix operations: +, -, *, /, ==, and !=
+
+  constructs some sample matrices, 
+  performs the operations, 
+  and prints the results. 
+  You should be sure to test that the operations work as expected 
+  for both valid and invalid inputs.
+
+  */
+
+
+  /* 
+  1) implement + test the new CVariable functions
+      test one at a time!
+  2) incorporate the improved CVariables
+      modifying getValue() and
+      modifying the assign_op function
+        to allow your program to handle
+        assignment statements involving matrices
+        (e.g., mat_1 = [1 2; 3 4]). 
+  3) test that basic numeric assignments still work
+  4) implement + test the new matrix operations: +, -, *, /, ==, and !=
+      test one at a time!
+  5) incorporate the new matrix operations
+      modifying the binary_assign_op fx and
+      modifying the binary_op fx
+        in your interpreter code
+
+
+You can test these changes on the provided test file,
+    as well as any cases that you used
+    in testing the matrix operations in the previous step.
+  ....
+  N) Your submission should read test cases from the file "TestCase.txt".
+  */
 }
 
 bool partitioner(const char* cmd, segment_t** segmt, int& numseg)
@@ -342,6 +429,12 @@ report the results or appropriate error messages to the user
 recognize the "quit" command to end the program
 */
 
+/* Ten points extra credit will be awarded if your solution
+is able to handle (non-scalar) matrix multiplication as well.
+For example, if the variables a and b are defined by
+a = [1 2; 3 4] and b = [5 9; 3 1], a * b should yield 
+the output [11 11; 27 31 (not [5 18; 9 4]).
+*/
 void interpreter(const char* cmd)
 {
 	char buffer[500];
