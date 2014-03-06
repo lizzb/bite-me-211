@@ -93,6 +93,14 @@ public:
   // return the value stored in a const CVariable
   //virtual double operator*() const;
 
+
+// Returns a reference to the CMatrix stored in this CVariable
+// (replaces double& operator*())
+//CMatrix& CVariable::operator*()
+
+// Returns a copy of the CMatrix stored in a const CVariable 
+// (replaces double operator*() const)
+//CMatrix CVariable::operator*() const
   
   // Sets the CMatrix stored in this CVariable to a 
   // given scalar value (1x1 matrix) and

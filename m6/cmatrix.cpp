@@ -1,17 +1,11 @@
 /* ----------------------------------------------------------------------------
 
-cmatrix.cpp + cmatrix.h
-
-Define the CMatrix class
-
----
 cmatrix.cpp
 
 
-Based off ... some lab solution i'm assuming....
+Extended CMatrix class (based off Lab 4 provided solution)
 
-Extended CMatrix class 
-handle matrix addition and subtraction, scalar multiplication, 
+Handles matrix addition and subtraction, scalar multiplication, 
 and equality and inequality operators.
 
 ---------------------------------------------------------------------------- */
@@ -40,7 +34,7 @@ CMatrix CMatrix::operator+(CMatrix& otherMatrix)
 CMatrix CMatrix::operator-(CMatrix& otherMatrix)
 {
   // Can only add/subtract matrices of the same size
-  //only matrices of the same size can be added/subtracted
+  // only matrices of the same size can be added/subtracted
 
 
   // if input matrices are not the same size,
@@ -223,6 +217,12 @@ CMatrix::~CMatrix()
 	delete[] m_aData;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 void CMatrix::swap(CMatrix &m)
 {
 	int tmp_i;
@@ -237,11 +237,23 @@ void CMatrix::swap(CMatrix &m)
 	tmp_p = m_aData; m_aData = m.m_aData; m.m_aData = tmp_p;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool CMatrix::IsNull()
 {
 	return m_aData == 0;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 void CMatrix::resize(int nRow, int nCol)
 {
 	// 1 Create a new matrix m.
@@ -271,6 +283,12 @@ int CMatrix::NCol()
 	return m_nCol;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 double &CMatrix::element(int i, int j)
 {
 	assert((i >= 0) && (i < m_nRow));
@@ -279,6 +297,12 @@ double &CMatrix::element(int i, int j)
 	return m_aData[i*m_nCol+j];
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 void PrintMatrix(CMatrix &m)
 {
 	if (m.IsNull())

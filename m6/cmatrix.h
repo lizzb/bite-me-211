@@ -1,24 +1,20 @@
-// matrix.h: interface of the CMatrix class
+/* ----------------------------------------------------------------------------
+
+cmatrix.h
+
+
+Extended CMatrix class (based off Lab 4 provided solution)
+
+Handles matrix addition and subtraction, scalar multiplication, 
+and equality and inequality operators.
+
+---------------------------------------------------------------------------- */
+
+// cmatrix.h: interface of the CMatrix class
 
 #ifndef CMATRIX_H
 #define CMATRIX_H
 
-
-/* ----------------------------------------------------------------------------
-
-cmatrix.cpp + cmatrix.h 	-	Define the CMatrix class
-
----
-cmatrix.h
-
-
-Based off ... some lab solution i'm assuming....
-
-Extended CMatrix class 
-handle matrix addition and subtraction, scalar multiplication, 
-and equality and inequality operators.
-
----------------------------------------------------------------------------- */
 
 class CMatrix
 {

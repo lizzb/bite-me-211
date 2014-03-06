@@ -4,9 +4,19 @@ main.cpp
 
 the parser and interpreter that run your MiniMatlab program.
 
- Starting from your Lab 4 and Lab 5 solutions (or the provided code and sample solution), 
-your MiniMatlab should be able to construct and manipulate matrix values and variables
+Starting from your Lab 4 and Lab 5 solutions
+(or the provided code and sample solution), 
+your MiniMatlab should be able to
+construct and manipulate matrix values and variables
 ---
+
+cvariable.cpp + cvariable.h
+Define the classes used to store and manipulate variables
+
+cmatrix.cpp + cmatrix.h   - Define the CMatrix class
+
+
+
 
 
 Based off Lab 5 Sample Solution
@@ -130,6 +140,12 @@ bool getValue(const char* expr, double& value);
 
 void add(CVariable& cvar);
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 int main()
 {
   db = new CVarDB();  
@@ -225,6 +241,13 @@ You can test these changes on the provided test file,
   */
 }
 
+
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool partitioner(const char* cmd, segment_t** segmt, int& numseg)
 {
   int pos, len, bpos, count;
@@ -363,12 +386,24 @@ bool partitioner(const char* cmd, segment_t** segmt, int& numseg)
   return true;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 void freeSegments(segment_t* segmt)
 {
   delete segmt[0].str;
   delete segmt;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool isChar(char c)
 {
   if (c >= 'a' && c <= 'z')
@@ -379,6 +414,12 @@ bool isChar(char c)
     return c == '_';
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool isDigit(char c)
 {
   if (c >= '0' && c <= '9')
@@ -387,6 +428,12 @@ bool isDigit(char c)
     return c == '.';
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool isOperator(char c)
 {
   switch(c)
@@ -402,6 +449,12 @@ bool isOperator(char c)
   }
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool isSpace(char c)
 {
   switch(c)
@@ -435,6 +488,12 @@ For example, if the variables a and b are defined by
 a = [1 2; 3 4] and b = [5 9; 3 1], a * b should yield 
 the output [11 11; 27 31 (not [5 18; 9 4]).
 */
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 void interpreter(const char* cmd)
 {
 	char buffer[500];
@@ -554,6 +613,12 @@ void interpreter(const char* cmd)
 		cout << "Sorry, I do not understand." << endl;  
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 op_t recognizeOp(const char* op)
 {
   if (strcmp(op, "=") == 0)
@@ -587,6 +652,12 @@ op_t recognizeOp(const char* op)
 // aka
 // bool binary_assign(const char* assign_var, const char* left, OP operator, const char* right)
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right)
 {
   double first, second, value;
@@ -624,6 +695,12 @@ bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* ri
   return true;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 // performs a binary operator assignment, such as " d = 6.28 * r";
 // returns true if there is some error during the operation and false otherwise
 // aka binary_op(const char* left, OP operator, const char* right)
@@ -632,6 +709,12 @@ bool binary_op(const char* left, op_t op, const char* right)
   return binary_assign_op("ans", left, op, right);
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 // performs a unary operator statement,like "x++";
 // returns true if there is some error during the operation and false otherwise
 // aka unary_op(const char* variable, OP unary_op)
@@ -659,6 +742,12 @@ bool unary_op(const char* operand, op_t op)
   return true;
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 // performs a simple assignment statement, like "x = 1";
 // returns true if there is some error in the assignment and false otherwise
 // ... it was just called assign in lab5...
@@ -682,6 +771,12 @@ bool assign_op(const char* lhs, const char* rhs)
 }
 
 
+/* ----------------------------------------------------------------------------
+ Name:     
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 // evaluates a numeric string or variable name to its numeric value;
 // returns true if expression is an invalid number or variable does not exist
 // aka get_value(const char* expression, double& value)
