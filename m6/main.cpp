@@ -105,8 +105,10 @@ using namespace std;
 #define INPUT_FILE "TestCase.txt"
 
 // lulz isn't it supposed to be ans like answer but its spelled wrong
-enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; 
-enum seg_t {VAR, NUM, MAT, OP, BAD_SEG};
+enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; // Niang
+enum seg_t {VAR, NUM, MAT, OP, BAD_SEG}; // Niang
+
+//  enum OP {ASN, ADD, MIN, MUL, DIV, PRE_INC, PRE_DEC,POST_INC,POST_DEC};  // Hendrix
 
 typedef struct
 {
@@ -121,10 +123,20 @@ and refer to this in your main.cpp file.
 */
 CVarDB* db; 
 
-void interpreter(const char* cmd);
+void interpreter(const char* cmd);  // Niang
+//  void Interpreter(string&);      // Hendrix
 
-op_t recognizeOp(const char* op);
+op_t recognizeOp(const char* op);   // Niang
+
+// output the operator
+//void OpTranslator(OP);            // Hendrix
+
+
 bool partitioner(const char* cmd, segment_t** segmt, int& numseg);
+
+// partitioning the command line into segments
+//int Partitioner(char*, int [][2], int&);           //Hendrix
+
 void freeSegments(segment_t* segmt);
 
 bool isChar(char c);
@@ -132,13 +144,56 @@ bool isDigit(char c);
 bool isOperator(char c);
 bool isSpace(char c);
 
-bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right);  
-bool binary_op(const char* left, op_t op, const char* right);  
-bool unary_op(const char* operand, op_t op);  
-bool assign_op(const char* lhs, const char* rhs);  
-bool getValue(const char* expr, double& value);  
+//bool IsAChar(char);     // if input is a letter    // Hendrix
+//bool IsADigit(char);    // if it is a digit        // Hendrix
+//bool IsAOperator(char); // if it is an operator    // Hendrix
 
-void add(CVariable& cvar);
+
+bool unary_op(const char* operand, op_t op);        // Niang
+
+// if the command line is valid unary operation
+//bool IsAUnary(char*, int [][2], char*, OP&);      // Hendrix
+
+
+
+// Niang
+bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right);
+
+// Niang
+bool binary_op(const char* left, op_t op, const char* right);
+
+bool assign_op(const char* lhs, const char* rhs);   // Niang
+
+bool getValue(const char* expr, double& value);     // Niang
+
+void add(CVariable& cvar);  // Niang
+
+ 
+
+ 
+ // if it is a valid assignment
+ //bool IsAAsn(char*, int [][2], char*, char*);     // Hendrix
+
+ // if it is a valid binary operation
+ //bool IsABinary3(char*, int [][2], char*, char*, OP&);    // Hendrix
+ 
+ // if it is a valid assignment and binary operation
+ //bool IsABinary5(char*, int [][2], char*, char*, char*, OP&); //Hendrix
+
+/*
+  // IsABinary3 and IsABinary5 are hilarious names
+ bool isEquals(char* piece); // zz
+ bool isAdd(char* piece);    // lizz made
+ bool isMinus(char* piece);  // lizz
+ bool isMult(char* piece);   //zz
+ bool isDivide(char* piece); //zz
+ bool isDivide(char* piece); //zz
+ bool isInc(char* piece);    //zz
+ bool isDec(char* piece);    //zz
+ */
+
+
+
 
 /* ----------------------------------------------------------------------------
  Name:     
@@ -411,7 +466,7 @@ bool isChar(char c)
   else if (c >= 'A' && c <= 'Z')
     return true;
   else
-    return c == '_';
+    return c == '_'; //... this actually doesnt make sense
 }
 
 /* ----------------------------------------------------------------------------
@@ -425,14 +480,11 @@ bool isDigit(char c)
   if (c >= '0' && c <= '9')
     return true;
   else
-    return c == '.';
+    return c == '.'; //... this actually doesnt make sense
 }
 
 /* ----------------------------------------------------------------------------
- Name:     
- Purpose:  
- Params:   
- Returns:  
+ Returns:  True if the given character is one of the valid operators
  ---------------------------------------------------------------------------- */
 bool isOperator(char c)
 {
@@ -450,13 +502,12 @@ bool isOperator(char c)
 }
 
 /* ----------------------------------------------------------------------------
- Name:     
- Purpose:  
- Params:   
- Returns:  
+ Returns:  True if the given character was a space
  ---------------------------------------------------------------------------- */
 bool isSpace(char c)
 {
+    return( c ==' ' || c =='\t' || c =='\n' || c == '\r');
+    /*
   switch(c)
   {
   case ' ':
@@ -467,6 +518,7 @@ bool isSpace(char c)
   default:
     return false;
   }
+     */
 }
 
 /*
@@ -785,8 +837,8 @@ bool getValue(const char* expr, double& value)
   //Try to read as a double
   istringstream iss(expr);
   iss >> value;
-  if (iss)
-    return true;
+  if (iss) return true;
+    //return true;
 
   //If that fails, search in DB
   CVariable* var = db->search(expr);
@@ -795,6 +847,332 @@ bool getValue(const char* expr, double& value)
     value = **var;
     return true;
   }
-  else
+  //else
     return false;
 }
+
+
+
+
+
+
+
+
+
+//
+// Input:
+// char* Buffer   : the input command line (known)
+// int segmt[][2] : the location of each segment in the command line (known)
+// char* res      : the reseult_name in the command line (to fill in)
+// char* operand  : the operand in the command line (to fill in)
+// Output:
+// boolean variable : 0 -- not a valid assignment, 1 -- valid assignment
+
+/* ----------------------------------------------------------------------------
+ Name:     IsAAsn
+ Purpose:  called if the input command line is a valid assignment
+ Params:   char* Buffer   - the input command line (known)
+ int segmt[][2] - location of each segment inthe command line (known)
+ char* operand  - the operand in the command line (to fill in)
+ OP& op         - the operator (to fill in)
+ Returns:  true / 1   - valid unary operation,
+ false / 0  - not a valid unary operation
+ ---------------------------------------------------------------------------- */
+/*bool IsAAsn(char* Buffer, int segmt[][2], char* res, char* operand)
+{
+    //bool Tag = false;
+    char piece[3][50];
+    for (int i = 0 ; i<3; i++)
+    {
+        for(int j = 0; j<segmt[i][1]; j++)
+        {
+            piece[i][j] = Buffer[j+segmt[i][0]];
+        }
+        piece[i][segmt[i][1]] = '\0';
+    }
+    
+    if(strcmp(piece[1],"=")==0) // if the #2 piece is "="
+    {
+        strcpy(res, piece[0]);
+        strcpy(operand, piece[2]);
+        return true; //Tag = true;
+    }
+    
+    // if we got here, it wasn't a valid assignment
+    return false; //Tag;
+}*/
+
+
+
+/* ----------------------------------------------------------------------------
+ Name:     IsABinary3
+ Purpose:  If the input command line is a binary operation
+ Params:   char* Buffer   - the input command line (known)
+ int segmt[][2] - location of each segment inthe command line (known)
+ char* operand  - the operand in the command line (to fill in)
+ char* operand_1- the operand_1 in the command line (to fill in)
+ char* operand_2- the operand_2 in the command line (to fill in)
+ OP& op         - the operator (to fill in)
+ Returns:  1 -- valid binary operation (true)
+ 0 -- not a valid binary operation (false)
+ ---------------------------------------------------------------------------- */
+/*bool IsABinary3(char* Buffer, int segmt[][2], char* operand_1, char* operand_2, OP& op)
+{
+    bool isValid = false; // Tag = false;
+    
+    char piece[3][50];
+    for (int i = 0 ; i<3; i++)
+    {
+        for(int j = 0; j<segmt[i][1]; j++)
+        {
+            piece[i][j] = Buffer[j+segmt[i][0]];
+        }
+        piece[i][segmt[i][1]] = '\0';
+    }
+    
+    // if the #2 piece is an operator
+    if(isAdd(piece[1]))                 // (strcmp(piece[1],"+")==0)
+    {
+        op = ADD;
+        isValid = true; //Tag = true;
+    }
+    else if(isMinus(piece[1]))          // (strcmp(piece[1],"-")==0)
+    {
+        op = MIN;
+        isValid = true; //Tag = true;
+    }
+    else if(isMult(piece[1]))           // (strcmp(piece[1],"*")==0)
+    {
+        op = MUL;
+        isValid = true; //Tag = true;
+    }
+    else ifisDivide(piece[1])           // (strcmp(piece[1],"/")==0)
+    {
+        op = DIV;
+        isValid = true; //Tag = true;
+    }
+    if (isValid) //(Tag)
+    {
+        strcpy(operand_1, piece[0]);
+        strcpy(operand_2, piece[2]);
+    }
+    
+    // if we got here, it wasn't a valid assignment
+    return isValid; // Tag;
+}*/
+
+// If the input command line is a binary operation and assignment
+// Input:
+// char* Buffer   : the input command line (known)
+// int segmt[][2] : the location of each segment in the command line (known)
+// char* res      : the reseult_name in the command line (to fill in)
+// char* operand_1: the operand_1 in the command line (to fill in)
+// char* operand_2: the operand_2 in the command line (to fill in)
+// OP& op         : the operator (to fill in)
+// Output:
+// boolean variable : 0 -- not a valid binary operation and assignment, 1 -- valid binary operation and assignment
+
+/*bool IsABinary5(char* Buffer, int segmt[][2], char* res , char* operand_1, char* operand_2, OP& op)
+{
+    bool isValid = false; // bool Tag = false;
+    char piece[5][50];
+    for (int i = 0 ; i<5; i++)
+    {
+        for(int j = 0; j<segmt[i][1]; j++)
+        {
+            piece[i][j] = Buffer[j+segmt[i][0]];
+        }
+        piece[i][segmt[i][1]] = '\0';
+    }
+    
+    
+    // if the #2 piece is "="
+    if(isEquals(piece[1]))                  // (strcmp(piece[1],"=")==0)
+    {
+        // if the #4 piece is an operator
+        if(isAdd(piece[3]))                 // (strcmp(piece[3],"+")==0)
+        {
+            op = ADD;
+            isValid = true; //Tag = true;
+        }
+        else if(isMinus(piece[3]))            // (strcmp(piece[3],"-")==0)
+        {
+            op = MIN;
+            isValid = true; //Tag = true;
+        }
+        else if(isMult(piece[3]))             // (strcmp(piece[3],"*")==0)
+        {
+            op = MUL;
+            isValid = true; //Tag = true;
+        }
+        else if(isDivide(piece[3]))         // (strcmp(piece[3],"/")==0)
+        {
+            op = DIV;
+            isValid = true; //Tag = true;
+        }
+        if (isValid) //(Tag)
+        {
+            // Not sure what this does
+            strcpy(res, piece[0]);
+            strcpy(operand_1, piece[2]);
+            strcpy(operand_2, piece[4]);
+        }
+    }
+    
+    return isValid; //Tag;
+}*/
+
+// explain operators (?? what does this mean..??)
+/*void OpTranslator(OP op)
+{
+    switch(op)
+    {
+        case ASN: cout << "ASN"; break;
+        case ADD: cout << "ADD"; break;
+        case MIN: cout << "MIN"; break;
+        case MUL: cout << "MUL"; break;
+        case DIV: cout << "DIV"; break;
+        case PRE_INC: cout << "PRE_INC";    break;
+        case PRE_DEC: cout << "PRE_DEC";    break;
+        case POST_INC: cout << "POST_INC";  break;
+        case POST_DEC: cout << "POST_DEC";  break;
+        default:
+            cout << "UNRECOGNIZED OPERATOR";
+            break;
+    }
+}*/
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// functions from MP#2
+/*
+int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
+{
+    // indicator
+    int st=0;
+    int ed=0;
+    int error_code = 1;
+    
+    int len = (int)strlen(Buffer)-1;
+    
+    
+    while(st<len)
+    {
+        while(Buffer[st]==' '&&st<len)st++;
+        
+        ed = st;
+        
+        if(st==len)
+        {
+            if (iSeg==0) { error_code = 0; }
+            break;
+        }
+        else
+        {
+            if(IsAChar(Buffer[st]))
+            {
+                while((ed<len)&&(IsAChar(Buffer[ed])||IsADigit(Buffer[ed])||Buffer[ed]=='_'))ed++;
+            }
+            else if(IsADigit(Buffer[st]))
+            {
+                while((ed<len)&&(IsADigit(Buffer[ed])||Buffer[ed]=='.'))ed++;
+            }
+            else if(IsAOperator(Buffer[st]))
+            {
+                while((ed<len)&&(IsAOperator(Buffer[ed])))ed++;
+            }
+            else if(Buffer[st]=='[')
+            {
+                ed = st+1;
+                while((ed<len)&&(Buffer[ed]!=']'))
+                {
+                    if(IsADigit(Buffer[ed])||(Buffer[ed]==',')||(Buffer[ed]==';')||(Buffer[ed]==' ')||(Buffer[ed]=='.'))
+                    {
+                        ed++;
+                    }
+                    else
+                    {
+                        cout << "Expect a ']' here." << endl;
+                        error_code = 0;
+                        break;
+                    }
+                    ed++;
+                }
+            }
+            else if(Buffer[st]==';')ed++;
+            else { error_code = 0; }
+            
+        }
+        if(error_code)
+        {
+            segmt[iSeg][0] = st;
+            segmt[iSeg][1] = ed-st;
+            iSeg = iSeg + 1;
+            st = ed;
+        }
+        else { break; }
+    } 
+    
+    return error_code;
+}
+
+*/
+
+
+
+/*
+ 
+ 
+ 
+ // if input is a letter - lizz version
+ bool IsAChar(char str) { return ((str>='A'&&str<='Z')||(str>='a'&&str<='z')); }
+ 
+ // if input is a digit - lizz version
+ bool IsADigit(char str) { return ((str>='0'&&str<='9')||(str=='.')); }
+ 
+ // if input is an operator - lizz version
+ bool IsAOperator(char str)
+ {
+ return ((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='='));
+ }
+ 
+ 
+ bool IsAChar(char str)
+ {
+ bool Tag = false;
+ if((str>='A'&&str<='Z')||(str>='a'&&str<='z')) Tag = true;
+ return Tag;
+ 
+ }
+ 
+ bool IsADigit(char str)
+ {
+ bool Tag = false;
+ if((str>='0'&&str<='9')||(str=='.')) Tag = true;
+ return Tag;
+ 
+ }
+ 
+ bool IsAOperator(char str)
+ {
+ bool Tag = false;
+ if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
+ return Tag;
+ 
+ }
+
+
+ // i made these for readability of code but they're not necessary
+ // especially since the body is so short
+bool isEquals(char* piece) {return (strcmp(piece,"=") == 0);}
+bool isAdd(char* piece) {return (strcmp(piece,"+") == 0);}
+bool isMinus(char* piece) {return (strcmp(piece,"-") == 0);}
+bool isMult(char* piece) {return (strcmp(piece,"*") == 0);}
+bool isDivide(char* piece) {return (strcmp(piece,"/") == 0);}
+bool isInc(char* piece) {return (strcmp(piece, "++") == 0); }
+bool isDec(char* piece) {return (strcmp(piece, "--") == 0); }
+ */
+

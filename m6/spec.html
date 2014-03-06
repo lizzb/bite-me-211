@@ -1,5 +1,5 @@
 <html>
-
+<h3>Machine Problem Lab 6 Due: March 10, 11:59pm</h3>
   
   <hr/>
    Extended CMatrix class <br/>
@@ -259,6 +259,10 @@ CMatrix CVariable::operator*() const
 
 </pre>
   
+Machine Problem Lab 6: MiniMatlab 1.0
+EECS 211 Winter 2014
+Due: March 10, 11:59pm
+
   <hr/>
     
   <h3>
@@ -313,7 +317,44 @@ CMatrix CVariable::operator*() const
   </p>
   
   
+  <h2> Bare bones .h files </h2>
+
+  <pre>
+
+cvariable.h
+// value member variable - change to type CMatrix or CMatrix* rather than double
+
+// new constructor
+CVariable(const char* init_name, const CMatrix& init_value);  
+
+// (modification)
+CVariable(const char* init_name, double init_value);    
+
+CMatrix& operator*();                   // REPLACE double& operator*()
+CMatrix operator*() const;              // REPLACE double operator*() const
+
+CMatrix& operator=(double newValue);    // (modification)
+CMatrix& operator=(CMatrix& newValue);  // new function
+
+
+
+
+cmatrix.h
+
+CMatrix operator+(CMatrix& mat);
+CMatrix operator-(CMatrix& mat);
+CMatrix operator*(CMatrix& mat);
+CMatrix operator/(CMatrix& mat);
+bool operator==(CMatrix& mat); 
+bool operator!=(CMatrix& mat);
   
+
+
   
+main.cpp
+// update interpreter function to handle CMatrix instead of double
+// update helper functions like binary_assign_op and getValue to handle CMatrix instead of double
+
+</pre>
   
 </html>
