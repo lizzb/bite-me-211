@@ -87,6 +87,9 @@ int main()
   cout << "\tWilliam Hendrix, Northwestern University "<< endl; 
   cout << "\tCopyright 2014   " << endl;    
 
+  CVariable('hello');
+
+/*
   if (!in.is_open())
     cout << "Unable to open input file " << INPUT_FILE << endl;   
   else
@@ -111,6 +114,7 @@ int main()
 
     in.close();  
   }
+  */
 
   delete db;  
   char c;  
