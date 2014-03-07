@@ -133,7 +133,15 @@ meap
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">¶</a>
               </div>
-              <p>Using * because programmers have lazy fingers.</p>
+              <p>Programmers are lazy. Or at least have lazy fingers.</p>
+
+              <code>*</code> :&nbsp;&nbsp; Just like when using a search engine, means "anything", basically. <br> <br>
+
+              <code>cd b*</code> :&nbsp;&nbsp; Changes to the folder/directory within the current directory that starts with the letter b. This is okay here, since we saw the list of folders and know that only one begins with b ("bite-me-211"). <br>
+              <br>
+
+              <code>cd b</code> :&nbsp;&nbsp; Does NOT work, because it is looking for an actual directory/folder named "b" to move to.
+              <br>
 
             </div>
             
@@ -145,6 +153,37 @@ meap
 
 <span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd b*
 <span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span>
+
+</pre></div></div>
+
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">¶</a>
+              </div>
+              <strong>Programmers are lazy. Or at least have lazy fingers.</strong> <br>
+
+              <code>.</code> :&nbsp;&nbsp; means "the current directory" <br>
+              <code>cd .</code> :&nbsp;&nbsp; Stay in the same directory. <br>
+              <br>
+              <code>..</code> :&nbsp;&nbsp; means "the parent of this current directory", i.e. the folder this folder sits inside. <br>
+              <code>cd ..</code> :&nbsp;&nbsp; Navigate to the parent directory of the current directory. <br>
+              <br>
+              <code>...</code> :&nbsp;&nbsp; NOT A THING. <br>
+              <code>cd ...</code> :&nbsp;&nbsp; Will try to change to a directory within the current directory wiht the name "..." <br>
+              <br>
+
+            </div>
+            
+            <div class="content">
+  <div class="highlight">
+<pre>
+
 
 <span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd .
 <span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd ..
@@ -182,7 +221,7 @@ lecture-code  mp2   mp4
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">¶</a>
               </div>
-              <p>Save bytes in the minified (but not gzipped) version:</p>
+              <p>Trying to move into a file instead of a directory.</p>
 
             </div>
             
@@ -190,7 +229,6 @@ lecture-code  mp2   mp4
             <div class="content">
   <div class="highlight">
 <pre>
-
 <span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> cd ..
 <span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> ls
 blackboard-uploads  m6      sydneym6
@@ -215,7 +253,9 @@ lab6_sgz_for_repo
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">¶</a>
               </div>
-              <p>Navigating from one folder to another</p>
+              <p>Navigating from one directory (folder) to another</p>
+
+              It is trying to find a file or directory based on the relative location of the current directory. Therefore, it is trying to change to ~/github/bite-me-211/sydneym6/blackboard-uploads/mp1/, which does not exist.
 
             </div>
             
