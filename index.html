@@ -5,13 +5,281 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>bite-me-211 by lizzb</title>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <!--link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"-->
+
+    
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <link rel="stylesheet" media="all" href="http://underscorejs.org/docs/docco.css">
+
+    <style>
+    mark {letter-spacing: .05em; background-color: #FFFCCF;}
+
+
+    </style>
   </head>
+
+<body style="">
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>lizz's crash <small>(and hopefully not burn)</small> course in basic git command line</h1>
+              </div>
+          </li>
+        
+        
+        
+       
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">¶</a>
+              </div>
+              <h2 id="baseline-setup">Some common and I-promise-not-scary commands</h2>
+            </div>
+        </li>
+        
+        
+        <li id="section-3"><div class="annotation">
+              <div class="pilwrap"><a class="pilcrow" href="#section-3">¶</a></div>
+        </div></li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">¶</a>
+              </div>
+
+              <p>
+              Open up your terminal application.
+               </p>
+
+              
+
+            </div>
+            
+            <div class="content">
+              On Mac: Access spotlight (command+space)
+              or set up Alfred and use alt/option+space
+              - because you know until you do lizz will keep mentioning it :). <br>Search for "terminal".
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">¶</a>
+              </div>
+              <code>cd</code> :&nbsp;&nbsp; <mark>&nbsp;c&nbsp;</mark>hange <mark>&nbsp;d&nbsp;</mark>irectory
+              <br>
+
+              <code>ls</code> :&nbsp;&nbsp; <code><strong>l</strong></code>i<code><strong>s</strong></code>ts the files in the current directory<br>
+              <br>
+
+              <p> <strong>c</strong>hange <strong>d</strong>irectory (<code>cd</code>) to where your github repository is stored in your files. If you're not sure what directory you are currently in, use <code>ls</code> to see what files are stored where you currently are. </p>
+
+              
+
+              <code>cd ~</code> :&nbsp;&nbsp; <mark>&nbsp;c&nbsp;</mark>hange <mark>&nbsp;d&nbsp;</mark>irectory to your user root folder (Where the  folders for Applications, Desktop, Library, Downloads, etc. are located.) Most people keep their github repositories in a folder in this directory.
+              <br>
+              
+
+            </div>
+            
+  <div class="content">
+  <div class="highlight">
+<pre>
+<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> ls
+Applications  Dropbox   Pictures  tmp
+Desktop       Library   Public    
+Documents     Movies    Sites 
+Downloads     Music     github         
+
+<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> cd github
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span>
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span> ls
+399
+NUWiCSite
+bite-me-211
+eecs330
+meap
+
+</pre></div></div>
+
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">¶</a>
+              </div>
+              <p>Using * because programmers have lazy fingers.</p>
+
+            </div>
+            
+            <div class="content">
+  <div class="highlight">
+<pre>
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd b
+-bash: cd: b: No such file or directory
+
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd b*
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span>
+
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd .
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd ..
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span> ls
+399
+NUWiCSite
+bite-me-211
+eecs330
+meap
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd ...
+-bash: cd: ...: No such file or directory
+
+<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd ~
+<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> ls
+Applications  Dropbox   Pictures  tmp
+Desktop       Library   Public    
+Documents     Movies    Sites 
+Downloads     Music     github   
+
+<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> cd github/b*/b*/
+<span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> 
+<span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> ls
+Lectures      mp1   mp3   mp5
+lecture-code  mp2   mp4
+
+</pre></div></div>
+
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">¶</a>
+              </div>
+              <p>Save bytes in the minified (but not gzipped) version:</p>
+
+            </div>
+            
+
+            <div class="content">
+  <div class="highlight">
+<pre>
+
+<span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> cd ..
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> ls
+blackboard-uploads  m6      sydneym6
+index.html    params.json
+javascripts   stylesheets
+
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd index.html
+-bash: cd: index.html: Not a directory
+
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd sydneym6
+<span class="hljs-keyword">lizz-natalia:sydneym6 lizz$ </span> ls
+lab6_sgz_for_repo
+            </pre></div></div>
+            
+        </li>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~ -->
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">¶</a>
+              </div>
+              <p>Navigating from one folder to another</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre> 
+<span class="hljs-keyword">lizz-natalia:sydneym6 lizz$ </span> cd blackboard-uploads/mp1/
+-bash: cd: blackboard-uploads/mp1/: No such file or directory
+<!--span class="hljs-keyword">lizz-natalia:sydneym6 lizz$ </span> cd ..
+
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> ls
+blackboard-uploads  m6            sydneym6
+index.html          params.json
+javascripts         stylesheets
+
+<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd blackboard-uploads/mp1/
+<span class="hljs-keyword">lizz-natalia:mp1 lizz$ </span> 
+<span class="hljs-keyword">lizz-natalia:mp1 lizz$ </span> ls
+lab1-solution-->
+<span class="hljs-keyword">lizz-natalia:mp1 lizz$ </span> cd ~/github/b*/blackboard-uploads/l*
+<span class="hljs-keyword">lizz-natalia:lecture-code lizz$ </span> ls
+bst                             maze
+complex                         menangerie-minilab
+complexity challenge solution   theater
+linkedlist
+<span class="hljs-keyword">lizz-natalia:lecture-code lizz$ </span> cd comp*
+<span class="hljs-keyword">lizz-natalia:complex lizz$ </span> cd ../comp*
+<span class="hljs-keyword">lizz-natalia:complex lizz$ </span> 
+
+            </pre></div></div>
+            
+        </li>
+        
+         <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">¶</a>
+              </div>
+              <pre><code>Underscore.js <span class="hljs-number">1.6</span><span class="hljs-number">.0</span>
+http:<span class="hljs-comment">//underscorejs.org</span>
+(c) <span class="hljs-number">2009</span>-<span class="hljs-number">2014</span> Jeremy Ashkenas, DocumentCloud and Investigative Reporters &amp; Editors
+Underscore may be freely distributed under the MIT license.
+</code></pre>
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+
+  
+        
+
+
+        
+
+        
+    </ul>
+  </div>
+
+
+</body>
+
+
+
+
   <body>
     <div class="wrapper">
       <header>
@@ -40,6 +308,23 @@ $ git checkout gh-pages
 
 <p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
+<li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">¶</a>
+              </div>
+              <pre><code>Underscore.js <span class="hljs-number">1.6</span><span class="hljs-number">.0</span>
+http:<span class="hljs-comment">//underscorejs.org</span>
+(c) <span class="hljs-number">2009</span>-<span class="hljs-number">2014</span> Jeremy Ashkenas, DocumentCloud and Investigative Reporters &amp; Editors
+Underscore may be freely distributed under the MIT license.
+</code></pre>
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+
 <h3>
 <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
 
@@ -60,10 +345,7 @@ $ git checkout gh-pages
 
 <p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/lizzb">lizzb</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+
     </div>
     <script src="javascripts/scale.fix.js"></script>
     
