@@ -3,341 +3,41 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>bite-me-211 by lizzb</title>
+    <title>eecs330.github.io by eecs330</title>
 
-    <!--link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css"-->
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.4.2/base-min.css">
 
-    
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <link rel="stylesheet" media="all" href="http://underscorejs.org/docs/docco.css">
-
-    <style>
-    mark {letter-spacing: .05em; background-color: #FFFCCF;}
 
 
-    </style>
   </head>
-
-<body style="">
-  <div id="container">
-    <div id="background"></div>
-    
-    <ul class="sections">
-        
-          <li id="title">
-              <div class="annotation">
-                  <h1>lizz's crash <small>(and hopefully not burn)</small> course in basic git command line</h1>
-              </div>
-          </li>
-        
-        
-        
-       
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">¶</a>
-              </div>
-              <h2 id="baseline-setup">Some common and I-promise-not-scary commands</h2>
-            </div>
-        </li>
-        
-        
-        <li id="section-3"><div class="annotation">
-              <div class="pilwrap"><a class="pilcrow" href="#section-3">¶</a></div>
-        </div></li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">¶</a>
-              </div>
-
-              <p>
-              Open up your terminal application.
-               </p>
-
-              
-
-            </div>
-            
-            <div class="content">
-              On Mac: Access spotlight (command+space)
-              or set up Alfred and use alt/option+space
-              - because you know until you do lizz will keep mentioning it :). <br>Search for "terminal".
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-5">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">¶</a>
-              </div>
-              <code>cd</code> :&nbsp;&nbsp; <mark>&nbsp;c&nbsp;</mark>hange <mark>&nbsp;d&nbsp;</mark>irectory
-              <br>
-
-              <code>ls</code> :&nbsp;&nbsp; <code><strong>l</strong></code>i<code><strong>s</strong></code>ts the files in the current directory<br>
-              <br>
-
-              <p> <strong>c</strong>hange <strong>d</strong>irectory (<code>cd</code>) to where your github repository is stored in your files. If you're not sure what directory you are currently in, use <code>ls</code> to see what files are stored where you currently are. </p>
-
-              
-
-              <code>cd ~</code> :&nbsp;&nbsp; <mark>&nbsp;c&nbsp;</mark>hange <mark>&nbsp;d&nbsp;</mark>irectory to your user root folder (Where the  folders for Applications, Desktop, Library, Downloads, etc. are located.) Most people keep their github repositories in a folder in this directory.
-              <br>
-              
-
-            </div>
-            
-  <div class="content">
-  <div class="highlight">
-<pre>
-<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> ls
-Applications  Dropbox   Pictures  tmp
-Desktop       Library   Public    
-Documents     Movies    Sites 
-Downloads     Music     github         
-
-<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> cd github
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span>
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span> ls
-399
-NUWiCSite
-bite-me-211
-eecs330
-meap
-
-</pre></div></div>
-
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">¶</a>
-              </div>
-              <p>Programmers are lazy. Or at least have lazy fingers.</p>
-
-              <code>*</code> :&nbsp;&nbsp; Just like when using a search engine, means "anything", basically. <br> <br>
-
-              <code>cd b*</code> :&nbsp;&nbsp; Changes to the folder/directory within the current directory that starts with the letter b. This is okay here, since we saw the list of folders and know that only one begins with b ("bite-me-211"). <br>
-              <br>
-
-              <code>cd b</code> :&nbsp;&nbsp; Does NOT work, because it is looking for an actual directory/folder named "b" to move to.
-              <br>
-
-            </div>
-            
-            <div class="content">
-  <div class="highlight">
-<pre>
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd b
--bash: cd: b: No such file or directory
-
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd b*
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span>
-
-</pre></div></div>
-
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">¶</a>
-              </div>
-              <strong>Programmers are lazy. Or at least have lazy fingers.</strong> <br>
-
-              <code>.</code> :&nbsp;&nbsp; means "the current directory" <br>
-              <code>cd .</code> :&nbsp;&nbsp; Stay in the same directory. <br>
-              <br>
-              <code>..</code> :&nbsp;&nbsp; means "the parent of this current directory", i.e. the folder this folder sits inside. <br>
-              <code>cd ..</code> :&nbsp;&nbsp; Navigate to the parent directory of the current directory. <br>
-              <br>
-              <code>...</code> :&nbsp;&nbsp; NOT A THING. <br>
-              <code>cd ...</code> :&nbsp;&nbsp; Will try to change to a directory within the current directory wiht the name "..." <br>
-              <br>
-
-            </div>
-            
-            <div class="content">
-  <div class="highlight">
-<pre>
-
-
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd .
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd ..
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span> ls
-399
-NUWiCSite
-bite-me-211
-eecs330
-meap
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd ...
--bash: cd: ...: No such file or directory
-
-<span class="hljs-keyword">lizz-natalia:github lizz$ </span> cd ~
-<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> ls
-Applications  Dropbox   Pictures  tmp
-Desktop       Library   Public    
-Documents     Movies    Sites 
-Downloads     Music     github   
-
-<span class="hljs-keyword">lizz-natalia:~ lizz$ </span> cd github/b*/b*/
-<span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> 
-<span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> ls
-Lectures      mp1   mp3   mp5
-lecture-code  mp2   mp4
-
-</pre></div></div>
-
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">¶</a>
-              </div>
-              <p>Trying to move into a file instead of a directory.</p>
-
-            </div>
-            
-
-            <div class="content">
-  <div class="highlight">
-<pre>
-<span class="hljs-keyword">lizz-natalia:blackboard-uploads lizz$ </span> cd ..
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> ls
-blackboard-uploads  m6      sydneym6
-index.html    params.json
-javascripts   stylesheets
-
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd index.html
--bash: cd: index.html: Not a directory
-
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd sydneym6
-<span class="hljs-keyword">lizz-natalia:sydneym6 lizz$ </span> ls
-lab6_sgz_for_repo
-            </pre></div></div>
-            
-        </li>
-        
-        <!-- ~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~ -->
-        
-        <li id="section-9">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">¶</a>
-              </div>
-              <p>Navigating from one directory (folder) to another</p>
-
-              It is trying to find a file or directory based on the relative location of the current directory. Therefore, it is trying to change to ~/github/bite-me-211/sydneym6/blackboard-uploads/mp1/, which does not exist.
-
-            </div>
-            
-            <div class="content"><div class="highlight"><pre> 
-<span class="hljs-keyword">lizz-natalia:sydneym6 lizz$ </span> cd blackboard-uploads/mp1/
--bash: cd: blackboard-uploads/mp1/: No such file or directory
-<!--span class="hljs-keyword">lizz-natalia:sydneym6 lizz$ </span> cd ..
-
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> ls
-blackboard-uploads  m6            sydneym6
-index.html          params.json
-javascripts         stylesheets
-
-<span class="hljs-keyword">lizz-natalia:bite-me-211 lizz$ </span> cd blackboard-uploads/mp1/
-<span class="hljs-keyword">lizz-natalia:mp1 lizz$ </span> 
-<span class="hljs-keyword">lizz-natalia:mp1 lizz$ </span> ls
-lab1-solution-->
-<span class="hljs-keyword">lizz-natalia:mp1 lizz$ </span> cd ~/github/b*/blackboard-uploads/l*
-<span class="hljs-keyword">lizz-natalia:lecture-code lizz$ </span> ls
-bst                             maze
-complex                         menangerie-minilab
-complexity challenge solution   theater
-linkedlist
-<span class="hljs-keyword">lizz-natalia:lecture-code lizz$ </span> cd comp*
-<span class="hljs-keyword">lizz-natalia:complex lizz$ </span> cd ../comp*
-<span class="hljs-keyword">lizz-natalia:complex lizz$ </span> 
-
-            </pre></div></div>
-            
-        </li>
-        
-         <li id="section-1">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-1">¶</a>
-              </div>
-              <pre><code>Underscore.js <span class="hljs-number">1.6</span><span class="hljs-number">.0</span>
-http:<span class="hljs-comment">//underscorejs.org</span>
-(c) <span class="hljs-number">2009</span>-<span class="hljs-number">2014</span> Jeremy Ashkenas, DocumentCloud and Investigative Reporters &amp; Editors
-Underscore may be freely distributed under the MIT license.
-</code></pre>
-            </div>
-            
-            <div class="content"><div class="highlight"><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></pre></div></div>
-            
-        </li>
-
-  
-        
-
-
-        
-
-        
-    </ul>
-  </div>
-
-
-</body>
-
-
-
-
   <body>
     <div class="wrapper">
       <header>
-        <h1>bite-me-211</h1>
-        <p>c++ sucks++</p>
-
-        <p class="view"><a href="https://github.com/lizzb/bite-me-211">View the Project on GitHub <small>lizzb/bite-me-211</small></a></p>
+        <h1> eecs 211</h1>
+        <p> c++ </p>
 
 
-        <ul>
-          <li><a href="https://github.com/lizzb/bite-me-211/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/lizzb/bite-me-211/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/lizzb/bite-me-211">View On <strong>GitHub</strong></a></li>
-        </ul>
+        <p class="view"><a href=""></a></p>
+<h3>
+<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Trials and Tribulations of 211 w14</h3>
+
+
+
+        
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+
+<h3>
+<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>
+Welcome to GitHub Pages.
+</h3>
 
 <p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
 
@@ -348,44 +48,25 @@ $ git checkout gh-pages
 
 <p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-<li id="section-1">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-1">¶</a>
-              </div>
-              <pre><code>Underscore.js <span class="hljs-number">1.6</span><span class="hljs-number">.0</span>
-http:<span class="hljs-comment">//underscorejs.org</span>
-(c) <span class="hljs-number">2009</span>-<span class="hljs-number">2014</span> Jeremy Ashkenas, DocumentCloud and Investigative Reporters &amp; Editors
-Underscore may be freely distributed under the MIT license.
-</code></pre>
-            </div>
-            
-            <div class="content"><div class="highlight"><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></pre></div></div>
-            
-        </li>
+
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>
+Rather Drive Stick?</h3>
 
 <p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
 
 <h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>
+Support or Contact</h3>
 
 <p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
-
+      <footer>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
     
