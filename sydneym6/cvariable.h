@@ -2,6 +2,8 @@
 #include <vector>
 using namespace std;
 
+//work
+
 class CVariable
 {
   friend ostream& operator<<(ostream& out, CVariable& cvar);
