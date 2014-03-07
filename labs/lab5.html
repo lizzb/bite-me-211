@@ -1,0 +1,752 @@
+<html>
+<link rel="stylesheet" href="../cpp2html.css">
+<!-- http://bedaux.net/cpp2html/ -->
+<body>
+
+<h2> CVariable.h </h2>
+
+<pre><span class="pre">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+</span><span class="keyword">using namespace</span> std<span class="operator">;</span><span class="keyword">
+
+class</span> CVariable<span class="operator">
+{</span><span class="keyword">
+  friend</span> ostream<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">&lt;&lt;(</span>ostream<span class="operator">&amp;</span> out<span class="operator">,</span> CVariable<span class="operator">&amp;</span> cvar<span class="operator">);</span><span class="keyword">
+private</span><span class="operator">:</span><span class="type">
+  char</span><span class="operator">*</span> name<span class="operator">;</span><span class="type">
+  double</span> value<span class="operator">;</span><span class="keyword">
+public</span><span class="operator">:</span>
+  CVariable<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> init_name<span class="operator">);</span>
+  CVariable<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> init_name<span class="operator">,</span><span class="type"> double</span> init_value<span class="operator">);</span>
+  CVariable<span class="operator">(</span><span class="keyword">const</span> CVariable<span class="operator">&amp;</span> copy<span class="operator">);</span><span class="keyword">
+  const</span><span class="type"> char</span><span class="operator">*</span> getName<span class="operator">()</span><span class="keyword"> const</span><span class="operator">;</span><span class="keyword">
+  virtual</span><span class="type"> double</span><span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">*();</span><span class="keyword">
+  virtual</span><span class="type"> double</span><span class="keyword"> operator</span><span class="operator">*()</span><span class="keyword"> const</span><span class="operator">;</span><span class="keyword">
+  virtual</span> CVariable<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">=(</span><span class="type">double</span> newValue<span class="operator">);</span><span class="keyword">
+  virtual</span> CVariable<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">=(</span>CVariable<span class="operator">&amp;</span> newValue<span class="operator">);</span><span class="keyword">
+  virtual</span><span class="operator"> ~</span>CVariable<span class="operator">();
+};</span><span class="keyword">
+
+class</span> CVarDB<span class="operator">
+{</span><span class="keyword">
+  friend</span> ostream<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">&lt;&lt;(</span>ostream<span class="operator">&amp;</span> out<span class="operator">,</span> CVarDB<span class="operator">&amp;</span> cdb<span class="operator">);</span><span class="keyword">
+private</span><span class="operator">:</span>
+  vector<span class="operator">&lt;</span>CVariable<span class="operator">&gt;</span> db<span class="operator">;</span><span class="keyword">
+public</span><span class="operator">:</span>
+  CVarDB<span class="operator">();</span><span class="type">
+  bool</span> add<span class="operator">(</span>CVariable<span class="operator">&amp;</span> newVar<span class="operator">);</span><span class="type">
+  bool</span> addNew<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> name<span class="operator">,</span><span class="type"> double</span> value<span class="operator">);</span>
+  CVariable<span class="operator">*</span> search<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> name<span class="operator">);
+  ~</span>CVarDB<span class="operator">();
+};</span>
+
+ostream<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">&lt;&lt;(</span>ostream<span class="operator">&amp;</span> out<span class="operator">,</span> CVariable<span class="operator">&amp;</span> cvar<span class="operator">);</span>
+ostream<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">&lt;&lt;(</span>ostream<span class="operator">&amp;</span> out<span class="operator">,</span> CVarDB<span class="operator">&amp;</span> cdb<span class="operator">);</span>
+</pre>
+
+
+
+
+<hr>
+
+<h2> CVariable.cpp </h2>
+
+
+<pre><span class="pre">#include "cvariable.h"
+</span><span class="keyword">using namespace</span> std<span class="operator">;</span>
+
+CVariable<span class="operator">::</span>CVariable<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> init_name<span class="operator">)
+{</span>
+  value<span class="operator"> =</span><span class="float"> 0.0</span><span class="operator">;</span><span class="type">
+
+  int</span> len<span class="operator"> =</span> strlen<span class="operator">(</span>init_name<span class="operator">);</span>
+  name<span class="operator"> =</span><span class="keyword"> new</span><span class="type"> char</span><span class="operator">[</span>len<span class="operator">+</span><span class="int">1</span><span class="operator">];</span>
+  strncpy<span class="operator">(</span>name<span class="operator">,</span> init_name<span class="operator">,</span> len<span class="operator">+</span><span class="int">1</span><span class="operator">);
+}</span>
+
+CVariable<span class="operator">::</span>CVariable<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> init_name<span class="operator">,</span><span class="type"> double</span> init_value<span class="operator">)
+{</span>
+  value<span class="operator"> =</span> init_value<span class="operator">;</span><span class="type">
+  
+  int</span> len<span class="operator"> =</span> strlen<span class="operator">(</span>init_name<span class="operator">);</span>
+  name<span class="operator"> =</span><span class="keyword"> new</span><span class="type"> char</span><span class="operator">[</span>len<span class="operator">+</span><span class="int">1</span><span class="operator">];</span>
+  strncpy<span class="operator">(</span>name<span class="operator">,</span> init_name<span class="operator">,</span> len<span class="operator">+</span><span class="int">1</span><span class="operator">);
+}</span>
+
+CVariable<span class="operator">::</span>CVariable<span class="operator">(</span><span class="keyword">const</span> CVariable<span class="operator">&amp;</span> copy<span class="operator">)
+{</span>
+  value<span class="operator"> =</span> copy<span class="operator">.</span>value<span class="operator">;</span><span class="type">
+  
+  int</span> len<span class="operator"> =</span> strlen<span class="operator">(</span>copy<span class="operator">.</span>name<span class="operator">);</span>
+  name<span class="operator"> =</span><span class="keyword"> new</span><span class="type"> char</span><span class="operator">[</span>len<span class="operator">+</span><span class="int">1</span><span class="operator">];</span>
+  strncpy<span class="operator">(</span>name<span class="operator">,</span> copy<span class="operator">.</span>name<span class="operator">,</span> len<span class="operator">+</span><span class="int">1</span><span class="operator">);
+}</span><span class="keyword">
+
+const</span><span class="type"> char</span><span class="operator">*</span> CVariable<span class="operator">::</span>getName<span class="operator">()</span><span class="keyword"> const</span><span class="operator">
+{</span><span class="flow">
+  return</span> name<span class="operator">;
+}</span>
+
+CVariable<span class="operator">::~</span>CVariable<span class="operator">()
+{</span><span class="keyword">
+  delete</span> name<span class="operator">;
+}</span>
+
+CVarDB<span class="operator">::</span>CVarDB<span class="operator">()
+{</span>
+  CVariable ans<span class="operator">(</span><span class="string">"ans"</span><span class="operator">);</span>
+  db<span class="operator">.</span>push_back<span class="operator">(</span>ans<span class="operator">);
+}</span><span class="type">
+
+bool</span> CVarDB<span class="operator">::</span>add<span class="operator">(</span>CVariable<span class="operator">&amp;</span> cvar<span class="operator">)
+{</span><span class="flow">
+  if</span><span class="operator"> (</span>search<span class="operator">(</span>cvar<span class="operator">.</span>getName<span class="operator">()) ==</span> NULL<span class="operator">)
+  {</span>
+    db<span class="operator">.</span>push_back<span class="operator">(</span>cvar<span class="operator">);</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;
+  }</span><span class="flow">
+  else
+    return</span><span class="bool"> true</span><span class="operator">;
+}</span><span class="type">
+
+bool</span> CVarDB<span class="operator">::</span>addNew<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> name<span class="operator">,</span><span class="type"> double</span> value<span class="operator">)
+{</span><span class="flow">
+  if</span><span class="operator"> (</span>search<span class="operator">(</span>name<span class="operator">) ==</span> NULL<span class="operator">)
+  {</span>
+    db<span class="operator">.</span>push_back<span class="operator">(</span>CVariable<span class="operator">(</span>name<span class="operator">,</span> value<span class="operator">));</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;
+  }</span><span class="flow">
+  else
+    return</span><span class="bool"> true</span><span class="operator">;
+}</span>
+
+CVariable<span class="operator">*</span> CVarDB<span class="operator">::</span>search<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> name<span class="operator">)
+{</span><span class="type">
+  int</span> len<span class="operator"> =</span> db<span class="operator">.</span>size<span class="operator">();</span><span class="flow">
+  for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> i<span class="operator"> &lt;</span> len<span class="operator">;</span> i<span class="operator">++)</span><span class="flow">
+    if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>name<span class="operator">,</span> db<span class="operator">[</span>i<span class="operator">].</span>getName<span class="operator">()) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+      return</span><span class="operator"> &amp;</span>db<span class="operator">[</span>i<span class="operator">];</span><span class="flow">
+
+  return</span> NULL<span class="operator">;
+}</span>
+
+CVariable<span class="operator">&amp;</span> CVariable<span class="operator">::</span><span class="keyword">operator</span><span class="operator">=(</span><span class="type">double</span> val<span class="operator">)
+{</span>
+  value<span class="operator"> =</span> val<span class="operator">;</span><span class="flow">
+  return</span><span class="operator"> *</span><span class="keyword">this</span><span class="operator">;
+}</span>
+
+CVariable<span class="operator">&amp;</span> CVariable<span class="operator">::</span><span class="keyword">operator</span><span class="operator">=(</span>CVariable<span class="operator">&amp;</span> cvar<span class="operator">)
+{</span>
+  value<span class="operator"> =</span> cvar<span class="operator">.</span>value<span class="operator">;</span><span class="flow">
+  return</span><span class="operator"> *</span><span class="keyword">this</span><span class="operator">;
+}</span><span class="type">
+
+double</span><span class="operator">&amp;</span> CVariable<span class="operator">::</span><span class="keyword">operator</span><span class="operator">*()
+{</span><span class="flow">
+  return</span> value<span class="operator">;
+}</span><span class="type">
+
+double</span> CVariable<span class="operator">::</span><span class="keyword">operator</span><span class="operator">*()</span><span class="keyword"> const</span><span class="operator">
+{</span><span class="flow">
+  return</span> value<span class="operator">;
+}</span>
+
+CVarDB<span class="operator">::~</span>CVarDB<span class="operator">()
+{</span><span class="comment">
+  //db vector will deconstruct itself
+</span><span class="operator">}</span>
+
+ostream<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">&lt;&lt;(</span>ostream<span class="operator">&amp;</span> out<span class="operator">,</span> CVariable<span class="operator">&amp;</span> cvar<span class="operator">)
+{</span><span class="flow">
+  return</span> out<span class="operator"> &lt;&lt;</span> cvar<span class="operator">.</span>name<span class="operator"> &lt;&lt;</span><span class="string"> ":\t"</span><span class="operator"> &lt;&lt;</span> cvar<span class="operator">.</span>value<span class="operator">;
+}</span>
+
+ostream<span class="operator">&amp;</span><span class="keyword"> operator</span><span class="operator">&lt;&lt;(</span>ostream<span class="operator">&amp;</span> out<span class="operator">,</span> CVarDB<span class="operator">&amp;</span> cdb<span class="operator">)
+{</span>
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "Variables: \n"</span><span class="operator">;</span><span class="type">
+  int</span> len<span class="operator"> =</span> cdb<span class="operator">.</span>db<span class="operator">.</span>size<span class="operator">();</span><span class="flow">
+  for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> i<span class="operator"> &lt;</span> len<span class="operator">;</span> i<span class="operator">++)</span>
+    out<span class="operator"> &lt;&lt;</span> cdb<span class="operator">.</span>db<span class="operator">[</span>i<span class="operator">] &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+  return</span> out<span class="operator">;
+}</span>
+</pre>
+
+
+
+
+
+
+<hr>
+
+<h2> main.cpp - Jiang? </h2>
+
+<pre><span class="comment">/**
+ Lab 5:  a Programmable Calculator
+
+ This program can add, subtract, multiply, and divide numbers, as well as store
+ and retrieve variable values.  It accepts a sequence of commands from the file
+ "TestCase.txt" and outputs the reponses to those commands to the console.  The
+ program accepts 5 basic types of commands, listed below.
+
+ Binary operation
+   Command that takes two values or variables and combines them according to
+   one of the 4 basic operations (+, -, *, /).  The result is printed and 
+   stored in the variable ans.
+   
+   Examples:  3 * 7, a + 5
+
+ Assignment
+   Command that assigns a value to a variable.  May also assign the value of
+   one variable to another.  If the variable on the LHS of the assignment does
+   not yet exist, it is created.  Otherwise, the existing variable is updated.
+   
+   If a compound assignment operator (+=, -=, *=, /=) is used in place of the
+   standard assignment operator (=), the variable on the LHS is modified by the
+   value on the RHS of the compound assignment (according to +, -, *, /) and
+   the new value is saved.
+
+   Examples:  myVar = 42, x = y, var_1 += 3.5
+
+ Binary operation and assignment
+   Command that performs a binary operation and assigns the result to a 
+   variable.  If the variable on the LHS of the assignment does not exist, it
+   is created.  Otherwise, the existing variable is updated.  Compound
+   operators are not supported with this command type.
+
+
+   
+ */</span><span class="pre">
+
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;string&gt;
+#include &lt;string.h&gt;
+#include "cvariable.h"
+</span><span class="keyword">using namespace</span> std<span class="operator">;</span><span class="pre"> 
+
+#define INPUT_FILE "TestCase.txt"
+</span><span class="keyword">
+enum</span> op_t<span class="operator">  {</span>ASN<span class="operator">,</span> ADD<span class="operator">,</span> SUB<span class="operator">,</span> MULT<span class="operator">,</span> DIV<span class="operator">,</span> INC<span class="operator">,</span> DEC<span class="operator">,</span> ADDASN<span class="operator">,</span> SUBASN<span class="operator">,</span> MULTASN<span class="operator">,</span> DIVASN<span class="operator">,</span> BAD_OP<span class="operator">};</span><span class="keyword"> 
+enum</span> seg_t<span class="operator"> {</span>VAR<span class="operator">,</span> NUM<span class="operator">,</span> MAT<span class="operator">,</span> OP<span class="operator">,</span> BAD_SEG<span class="operator">};</span><span class="keyword">
+
+typedef struct</span><span class="operator">
+{</span><span class="type">
+  char</span><span class="operator">*</span> str<span class="operator">;</span>
+  seg_t type<span class="operator">;
+}</span> segment_t<span class="operator">;</span>
+
+CVarDB<span class="operator">*</span> db<span class="operator">;</span><span class="type"> 
+
+void</span> interpreter<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> cmd<span class="operator">);</span>
+
+op_t recognizeOp<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> op<span class="operator">);</span><span class="type">
+bool</span> partitioner<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> cmd<span class="operator">,</span> segment_t<span class="operator">**</span> segmt<span class="operator">,</span><span class="type"> int</span><span class="operator">&amp;</span> numseg<span class="operator">);</span><span class="type">
+void</span> freeSegments<span class="operator">(</span>segment_t<span class="operator">*</span> segmt<span class="operator">);</span><span class="type">
+
+bool</span> isChar<span class="operator">(</span><span class="type">char</span> c<span class="operator">);</span><span class="type">
+bool</span> isDigit<span class="operator">(</span><span class="type">char</span> c<span class="operator">);</span><span class="type">
+bool</span> isOperator<span class="operator">(</span><span class="type">char</span> c<span class="operator">);</span><span class="type">
+bool</span> isSpace<span class="operator">(</span><span class="type">char</span> c<span class="operator">);</span><span class="type">
+
+bool</span> binary_assign_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> lhs<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> left<span class="operator">,</span> op_t op<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> right<span class="operator">);</span><span class="type">  
+bool</span> binary_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> left<span class="operator">,</span> op_t op<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> right<span class="operator">);</span><span class="type">  
+bool</span> unary_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> operand<span class="operator">,</span> op_t op<span class="operator">);</span><span class="type">  
+bool</span> assign_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> lhs<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> rhs<span class="operator">);</span><span class="type">  
+bool</span> getValue<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> expr<span class="operator">,</span><span class="type"> double</span><span class="operator">&amp;</span> value<span class="operator">);</span><span class="type">  
+
+void</span> add<span class="operator">(</span>CVariable<span class="operator">&amp;</span> cvar<span class="operator">);</span><span class="type">
+
+int</span><span class="keyword"> main</span><span class="operator">()
+{</span>
+  db<span class="operator"> =</span><span class="keyword"> new</span> CVarDB<span class="operator">();</span><span class="comment">  
+
+  //Get the input
+</span>  string cmd<span class="operator">;</span> 
+  ifstream in<span class="operator">(</span>INPUT_FILE<span class="operator">);</span><span class="comment">   // read from file
+</span>
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "\tWelcome to EECS 211 Lab 5:  Programmable Calculator"</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span> 
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "\tWilliam Hendrix, Northwestern University "</span><span class="operator">&lt;&lt;</span> endl<span class="operator">;</span> 
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "\tCopyright 2014   "</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">    
+
+  if</span><span class="operator"> (!</span>in<span class="operator">.</span>is_open<span class="operator">())</span>
+    cout<span class="operator"> &lt;&lt;</span><span class="string"> "Unable to open input file "</span><span class="operator"> &lt;&lt;</span> INPUT_FILE<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">   
+  else</span><span class="operator">
+  {</span><span class="flow">
+    while</span><span class="operator"> (</span>getline<span class="operator">(</span>in<span class="operator">,</span> cmd<span class="operator">))
+    {</span><span class="comment">
+      //Special commands:  quit and who
+</span><span class="flow">      if</span><span class="operator"> (</span>cmd<span class="operator"> ==</span><span class="string"> "quit"</span><span class="operator">)
+      {</span>
+        cout<span class="operator"> &lt;&lt;</span><span class="string"> "Thank you. Now closing...\n"</span><span class="operator">;</span><span class="flow">  
+        break</span><span class="operator">;
+      }</span><span class="flow">
+      else if</span><span class="operator"> (</span>cmd<span class="operator"> ==</span><span class="string"> "who"</span><span class="operator">)
+      {</span>
+        cout<span class="operator"> &lt;&lt; *</span>db<span class="operator">;</span><span class="flow">
+        continue</span><span class="operator">; 
+      }</span><span class="comment">
+
+      //Otherwise, interpret and run the command normally
+</span>      interpreter<span class="operator">(</span>cmd<span class="operator">.</span>c_str<span class="operator">()); 
+    }</span>
+
+    in<span class="operator">.</span>close<span class="operator">();  
+  }</span><span class="keyword">
+
+  delete</span> db<span class="operator">;</span><span class="type">  
+  char</span> c<span class="operator">;</span>  
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "Type 'q' to quit: "</span><span class="operator">;</span>  
+  cin<span class="operator"> &gt;&gt;</span> c<span class="operator">;</span><span class="flow">  
+
+  return</span><span class="int"> 0</span><span class="operator">;  
+}</span><span class="type">
+
+bool</span> partitioner<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> cmd<span class="operator">,</span> segment_t<span class="operator">**</span> segmt<span class="operator">,</span><span class="type"> int</span><span class="operator">&amp;</span> numseg<span class="operator">)
+{</span><span class="type">
+  int</span> pos<span class="operator">,</span> len<span class="operator">,</span> bpos<span class="operator">,</span> count<span class="operator">;</span><span class="type">
+  char</span><span class="operator">*</span> buffer<span class="operator">;</span><span class="type">
+  char</span> c<span class="operator">;</span><span class="comment">
+
+  //First loop:  input checking and segment counting
+</span>  pos<span class="operator"> =</span> numseg<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span>
+  len<span class="operator"> =</span> strlen<span class="operator">(</span>cmd<span class="operator">);</span><span class="flow">
+  while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator">)
+  {</span>
+    c<span class="operator"> =</span> cmd<span class="operator">[</span>pos<span class="operator">];</span><span class="flow">
+    if</span><span class="operator"> (</span>isChar<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Variable
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="comment">
+      //Characters after the first are allowed to be 0-9
+</span><span class="flow">      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp; (</span>isChar<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]) || (</span>cmd<span class="operator">[</span>pos<span class="operator">] &gt;=</span><span class="char"> '0'</span><span class="operator"> &amp;&amp;</span> cmd<span class="operator">[</span>pos<span class="operator">] &lt;=</span><span class="char"> '9'</span><span class="operator">)))</span> 
+        pos<span class="operator">++;
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>c<span class="operator"> ==</span><span class="char"> '-'</span><span class="operator">)</span><span class="comment">  //Negative number or operator
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="flow">
+      if</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isDigit<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span><span class="comment"> //Negative number
+</span><span class="flow">        while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isDigit<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+          pos<span class="operator">++;</span><span class="flow">
+      else if</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isOperator<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span><span class="comment"> //Operator
+</span><span class="flow">        while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isOperator<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+          pos<span class="operator">++;
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>isOperator<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Operator
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="flow">
+      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isOperator<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+        pos<span class="operator">++;
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>isDigit<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Scalar
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="flow">
+      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isDigit<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+        pos<span class="operator">++;
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>c<span class="operator"> ==</span><span class="char"> '['</span><span class="operator">)</span><span class="comment"> //Matrix
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="comment">
+      //We'll check matrix validity in CMatrix (Lab 6)
+      //We won't worry about it here
+</span><span class="flow">      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> cmd<span class="operator">[</span>pos<span class="operator">] !=</span><span class="char"> ']'</span><span class="operator">)</span>
+        pos<span class="operator">++;</span>
+      pos<span class="operator">++;</span><span class="comment"> //Skip over ']'
+</span><span class="operator">    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>isSpace<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Whitespace
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="flow">
+      continue</span><span class="operator">;</span><span class="comment"> //Don't advance to next segment!
+</span><span class="operator">    }</span><span class="flow">
+    else</span><span class="comment"> //Unrecognized case
+</span><span class="flow">      return</span><span class="bool"> false</span><span class="operator">;</span>
+    numseg<span class="operator">++;
+  }</span><span class="comment">
+
+  //Macro function to make code easier to read
+</span><span class="pre">#define push_to_buffer() {buffer[bpos] = cmd[pos]; pos++; bpos++;}
+</span><span class="comment">
+  //Second loop:  populating segmt structure
+</span><span class="operator">  *</span>segmt<span class="operator"> =</span><span class="keyword"> new</span> segment_t<span class="operator">[</span>numseg<span class="operator">];</span>
+  buffer<span class="operator"> =</span><span class="keyword"> new</span><span class="type"> char</span><span class="operator">[</span>len<span class="operator"> +</span> numseg<span class="operator">];</span>
+
+  bpos<span class="operator"> =</span> pos<span class="operator"> =</span> count<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span><span class="flow">
+  while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator">)
+  {
+    (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>str<span class="operator"> = &amp;</span>buffer<span class="operator">[</span>bpos<span class="operator">];</span><span class="comment"> //Segment count starts at this position
+</span>    c<span class="operator"> =</span> cmd<span class="operator">[</span>pos<span class="operator">];</span><span class="flow">
+    if</span><span class="operator"> (</span>isChar<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Variable
+</span><span class="operator">    {
+      (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>type<span class="operator"> =</span> VAR<span class="operator">;</span><span class="comment">
+
+      //Characters after the first are allowed to be 0-9
+</span><span class="flow">      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp; (</span>isChar<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]) || (</span>cmd<span class="operator">[</span>pos<span class="operator">] &gt;=</span><span class="char"> '0'</span><span class="operator"> &amp;&amp;</span> cmd<span class="operator">[</span>pos<span class="operator">] &lt;=</span><span class="char"> '9'</span><span class="operator">)))</span> 
+        push_to_buffer<span class="operator">();
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>c<span class="operator"> ==</span><span class="char"> '-'</span><span class="operator">)</span><span class="comment">  //Negative number or operator
+</span><span class="operator">    {</span>
+      buffer<span class="operator">[</span>bpos<span class="operator">] =</span><span class="char"> '-'</span><span class="operator">;</span>
+      pos<span class="operator">++;</span>
+      bpos<span class="operator">++;</span><span class="flow">
+      if</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isDigit<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span><span class="comment"> //Negative number
+</span><span class="operator">      {
+        (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>type<span class="operator"> =</span> NUM<span class="operator">;</span><span class="flow">
+        while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isDigit<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+          push_to_buffer<span class="operator">();
+      }</span><span class="flow">
+      else</span><span class="comment"> //Operator
+</span><span class="operator">      {
+        (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>type<span class="operator"> =</span> OP<span class="operator">;</span><span class="flow">
+        while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isOperator<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+          push_to_buffer<span class="operator">();
+      }
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>isOperator<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Operator
+</span><span class="operator">    {
+      (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>type<span class="operator"> =</span> OP<span class="operator">;</span><span class="flow">
+      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isOperator<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+        push_to_buffer<span class="operator">();
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>isDigit<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Scalar
+</span><span class="operator">    {
+      (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>type<span class="operator"> =</span> NUM<span class="operator">;</span><span class="flow">
+      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> isDigit<span class="operator">(</span>cmd<span class="operator">[</span>pos<span class="operator">]))</span>
+        push_to_buffer<span class="operator">();
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>c<span class="operator"> ==</span><span class="char"> '['</span><span class="operator">)</span><span class="comment"> //Matrix
+</span><span class="operator">    {
+      (*</span>segmt<span class="operator">)[</span>count<span class="operator">].</span>type<span class="operator"> =</span> MAT<span class="operator">;</span><span class="flow">
+      while</span><span class="operator"> (</span>pos<span class="operator"> &lt;</span> len<span class="operator"> &amp;&amp;</span> cmd<span class="operator">[</span>pos<span class="operator">] !=</span><span class="char"> ']'</span><span class="operator">)</span>
+        push_to_buffer<span class="operator">();</span><span class="comment">
+      //Add ']' to buffer, as well
+</span>      push_to_buffer<span class="operator">();
+    }</span><span class="flow">
+    else if</span><span class="operator"> (</span>isSpace<span class="operator">(</span>c<span class="operator">))</span><span class="comment"> //Whitespace
+</span><span class="operator">    {</span>
+      pos<span class="operator">++;</span><span class="flow">
+      continue</span><span class="operator">;</span><span class="comment"> //Don't advance to next segment!
+</span><span class="operator">    }</span><span class="flow">
+    else</span><span class="comment"> //Should never execute
+</span><span class="operator">    {</span><span class="keyword">
+      delete</span> buffer<span class="operator">;</span><span class="keyword">
+      delete</span> segmt<span class="operator">;</span><span class="flow">
+      return</span><span class="bool"> false</span><span class="operator">;
+    }</span>
+    
+    buffer<span class="operator">[</span>bpos<span class="operator">] =</span><span class="char"> '\0'</span><span class="operator">;</span><span class="comment">  //Null-terminate this segment
+</span>    bpos<span class="operator">++;</span>
+    count<span class="operator">++;</span><span class="comment"> //Advance to next segment
+</span><span class="operator">  }</span><span class="flow">
+
+  return</span><span class="bool"> true</span><span class="operator">;
+}</span><span class="type">
+
+void</span> freeSegments<span class="operator">(</span>segment_t<span class="operator">*</span> segmt<span class="operator">)
+{</span><span class="keyword">
+  delete</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span><span class="keyword">
+  delete</span> segmt<span class="operator">;
+}</span><span class="type">
+
+bool</span> isChar<span class="operator">(</span><span class="type">char</span> c<span class="operator">)
+{</span><span class="flow">
+  if</span><span class="operator"> (</span>c<span class="operator"> &gt;=</span><span class="char"> 'a'</span><span class="operator"> &amp;&amp;</span> c<span class="operator"> &lt;=</span><span class="char"> 'z'</span><span class="operator">)</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>c<span class="operator"> &gt;=</span><span class="char"> 'A'</span><span class="operator"> &amp;&amp;</span> c<span class="operator"> &lt;=</span><span class="char"> 'Z'</span><span class="operator">)</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  else
+    return</span> c<span class="operator"> ==</span><span class="char"> '_'</span><span class="operator">;
+}</span><span class="type">
+
+bool</span> isDigit<span class="operator">(</span><span class="type">char</span> c<span class="operator">)
+{</span><span class="flow">
+  if</span><span class="operator"> (</span>c<span class="operator"> &gt;=</span><span class="char"> '0'</span><span class="operator"> &amp;&amp;</span> c<span class="operator"> &lt;=</span><span class="char"> '9'</span><span class="operator">)</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  else
+    return</span> c<span class="operator"> ==</span><span class="char"> '.'</span><span class="operator">;
+}</span><span class="type">
+
+bool</span> isOperator<span class="operator">(</span><span class="type">char</span> c<span class="operator">)
+{</span><span class="flow">
+  switch</span><span class="operator">(</span>c<span class="operator">)
+  {</span><span class="flow">
+  case</span><span class="char"> '='</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '+'</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '-'</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '*'</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '/'</span><span class="operator">:</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  default</span><span class="operator">:</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;
+  }
+}</span><span class="type">
+
+bool</span> isSpace<span class="operator">(</span><span class="type">char</span> c<span class="operator">)
+{</span><span class="flow">
+  switch</span><span class="operator">(</span>c<span class="operator">)
+  {</span><span class="flow">
+  case</span><span class="char"> ' '</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '\t'</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '\n'</span><span class="operator">:</span><span class="flow">
+  case</span><span class="char"> '\r'</span><span class="operator">:</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  default</span><span class="operator">:</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;
+  }
+}</span><span class="type">
+
+void</span> interpreter<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> cmd<span class="operator">)
+{</span><span class="type">
+	char</span> buffer<span class="operator">[</span><span class="int">500</span><span class="operator">];</span>
+	segment_t<span class="operator">*</span> segmt<span class="operator">;</span><span class="type">
+	char</span><span class="operator">*</span> lhs<span class="operator">;</span><span class="type">
+  char</span><span class="operator">*</span> left<span class="operator">;</span><span class="type">
+  char</span><span class="operator">*</span> right<span class="operator">;</span>
+  op_t op<span class="operator">;</span><span class="type">
+  int</span> numSeg<span class="operator">;</span><span class="type">
+  bool</span> success<span class="operator">;</span><span class="flow">
+
+  if</span><span class="operator"> (</span>partitioner<span class="operator">(</span>cmd<span class="operator">, &amp;</span>segmt<span class="operator">,</span> numSeg<span class="operator">))
+	{</span><span class="pre">
+#ifdef DEBUG
+</span><span class="flow">    for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> i<span class="operator"> &lt;</span> numSeg<span class="operator">;</span> i<span class="operator">++)
+    {</span><span class="flow">
+      if</span><span class="operator"> (</span>segmt<span class="operator">[</span>i<span class="operator">].</span>type<span class="operator"> ==</span> VAR<span class="operator">)</span>
+        cout<span class="operator"> &lt;&lt;</span><span class="string"> "Variable:  "</span><span class="operator"> &lt;&lt;</span> segmt<span class="operator">[</span>i<span class="operator">].</span>str<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+      else if</span><span class="operator"> (</span>segmt<span class="operator">[</span>i<span class="operator">].</span>type<span class="operator"> ==</span> NUM<span class="operator">)</span>
+        cout<span class="operator"> &lt;&lt;</span><span class="string"> "Scalar:    "</span><span class="operator"> &lt;&lt;</span> segmt<span class="operator">[</span>i<span class="operator">].</span>str<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+      else if</span><span class="operator"> (</span>segmt<span class="operator">[</span>i<span class="operator">].</span>type<span class="operator"> ==</span> OP<span class="operator">)</span>
+        cout<span class="operator"> &lt;&lt;</span><span class="string"> "Operator:  "</span><span class="operator"> &lt;&lt;</span> segmt<span class="operator">[</span>i<span class="operator">].</span>str<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+      else if</span><span class="operator"> (</span>segmt<span class="operator">[</span>i<span class="operator">].</span>type<span class="operator"> ==</span> MAT<span class="operator">)</span>
+        cout<span class="operator"> &lt;&lt;</span><span class="string"> "Matrix:    "</span><span class="operator"> &lt;&lt;</span> segmt<span class="operator">[</span>i<span class="operator">].</span>str<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+      else</span>
+        cout<span class="operator"> &lt;&lt;</span><span class="string"> "Error in parsing\n"</span><span class="operator">;
+    }</span><span class="pre">
+#endif
+</span>
+    success<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span>
+    cout<span class="operator"> &lt;&lt;</span> cmd<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+		switch</span><span class="operator"> (</span>numSeg<span class="operator">)</span><span class="comment"> //Must have 2, 3, or 5 segments
+</span><span class="operator">		{</span><span class="flow">
+		case</span><span class="int"> 2</span><span class="operator">:</span><span class="comment"> //Unary operation
+</span><span class="flow">      if</span><span class="operator"> (</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> ==</span> OP<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>type<span class="operator"> ==</span> VAR<span class="operator">)
+      {</span>
+        left<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">;</span>
+        op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">);
+      }</span><span class="flow">
+      else if</span><span class="operator"> (</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> ==</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>type<span class="operator"> ==</span> OP<span class="operator">)
+      {</span>
+        left<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span>
+        op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">);
+      }</span><span class="flow">
+      else</span>
+        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+
+      if</span><span class="operator"> (</span>success<span class="operator">)</span>
+        success<span class="operator"> =</span> unary_op<span class="operator">(</span>left<span class="operator">,</span> op<span class="operator">);</span><span class="flow">
+			break</span><span class="operator">;</span><span class="flow">       
+		case</span><span class="int"> 3</span><span class="operator">:</span><span class="comment"> //Binary operation or assignment
+</span><span class="flow">			if</span><span class="operator"> ((</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">)
+       || (</span>segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">))
+      {</span>
+        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+        break</span><span class="operator">;
+      }</span>
+
+      left<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span>
+      op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">);</span>
+      right<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>str<span class="operator">;</span><span class="flow">
+      
+      if</span><span class="operator"> (</span>op<span class="operator"> ==</span> ASN<span class="operator">)</span><span class="comment"> //Assign
+</span><span class="operator">      {</span><span class="flow">
+        if</span><span class="operator"> (</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">)</span><span class="comment"> //1 + 2 is ok, 1 = 2 is not
+</span>          success<span class="operator"> =</span> assign_op<span class="operator">(</span>left<span class="operator">,</span> right<span class="operator">);</span><span class="flow">
+        else</span>
+          success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;
+      }</span><span class="flow">
+      else if</span><span class="operator"> (</span>op<span class="operator"> ==</span> ADD<span class="operator"> ||</span> op<span class="operator"> ==</span> SUB<span class="operator"> ||</span> op<span class="operator"> ==</span> MULT<span class="operator"> ||</span> op<span class="operator"> ==</span> DIV<span class="operator">)</span><span class="comment"> //Binary operation
+</span>        success<span class="operator"> =</span> binary_op<span class="operator">(</span>left<span class="operator">,</span> op<span class="operator">,</span> right<span class="operator">);</span><span class="flow">
+      else if</span><span class="operator"> (</span>op<span class="operator"> ==</span> ADDASN<span class="operator">)</span><span class="comment"> //Compound assignment:  a = a + b
+</span>        success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>left<span class="operator">,</span> left<span class="operator">,</span> ADD<span class="operator">,</span> right<span class="operator">);</span><span class="flow">
+      else if</span><span class="operator"> (</span>op<span class="operator"> ==</span> SUBASN<span class="operator">)</span>
+        success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>left<span class="operator">,</span> left<span class="operator">,</span> SUB<span class="operator">,</span> right<span class="operator">);</span><span class="flow">
+      else if</span><span class="operator"> (</span>op<span class="operator"> ==</span> MULTASN<span class="operator">)</span>
+        success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>left<span class="operator">,</span> left<span class="operator">,</span> MULT<span class="operator">,</span> right<span class="operator">);</span><span class="flow">
+      else if</span><span class="operator"> (</span>op<span class="operator"> ==</span> DIVASN<span class="operator">)</span>
+        success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>left<span class="operator">,</span> left<span class="operator">,</span> DIV<span class="operator">,</span> right<span class="operator">);</span><span class="flow">
+      else</span>
+        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+      break</span><span class="operator">;</span><span class="flow">
+		case</span><span class="int"> 5</span><span class="operator">:</span><span class="comment"> //Binary operation and assignment
+</span>      lhs<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span>
+      op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">);</span><span class="flow">
+      if</span><span class="operator"> (</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> ||</span> op<span class="operator"> !=</span> ASN<span class="operator">)
+      {</span>
+        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+        break</span><span class="operator">;
+      }</span>
+
+      left<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>str<span class="operator">;</span>
+      op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">3</span><span class="operator">].</span>str<span class="operator">);</span>
+      right<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">4</span><span class="operator">].</span>str<span class="operator">;</span><span class="flow">
+      if</span><span class="operator"> (</span>op<span class="operator"> ==</span> BAD_OP<span class="operator">
+        || (</span>segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">)
+        || (</span>segmt<span class="operator">[</span><span class="int">4</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">4</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">))
+      {</span>
+        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+        break</span><span class="operator">;
+      }</span><span class="flow">
+
+			if</span><span class="operator"> (</span>success<span class="operator">)</span>
+				success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>lhs<span class="operator">,</span> left<span class="operator">,</span> op<span class="operator">,</span> right<span class="operator">);</span><span class="flow"> 
+      break</span><span class="operator">;</span><span class="flow"> 
+    default</span><span class="operator">:</span>
+      success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;
+		}</span><span class="comment">
+    //*/
+</span>
+    freeSegments<span class="operator">(</span>segmt<span class="operator">);
+	}</span><span class="flow">
+  else</span>
+    success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+  
+	if</span><span class="operator"> (!</span>success<span class="operator">)</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "Sorry, I do not understand."</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;  
+}</span>
+
+op_t recognizeOp<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> op<span class="operator">)
+{</span><span class="flow">
+  if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "="</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> ASN<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "+"</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> ADD<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "-"</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> SUB<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "*"</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> MULT<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "/"</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> DIV<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "++"</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> INC<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "--"</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> DEC<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "+="</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> ADDASN<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "-="</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> SUBASN<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "*="</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> MULTASN<span class="operator">;</span><span class="flow">
+  else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>op<span class="operator">,</span><span class="string"> "/="</span><span class="operator">) ==</span><span class="int"> 0</span><span class="operator">)</span><span class="flow">
+    return</span> DIVASN<span class="operator">;</span><span class="flow">
+  else
+    return</span> BAD_OP<span class="operator">;
+}</span><span class="type">
+
+bool</span> binary_assign_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> lhs<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> left<span class="operator">,</span> op_t op<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> right<span class="operator">)
+{</span><span class="type">
+  double</span> first<span class="operator">,</span> second<span class="operator">,</span> value<span class="operator">;</span>
+  CVariable<span class="operator">*</span> assign<span class="operator">;</span><span class="flow">
+  
+  if</span><span class="operator"> (!</span>getValue<span class="operator">(</span>left<span class="operator">,</span> first<span class="operator">) || !</span>getValue<span class="operator">(</span>right<span class="operator">,</span> second<span class="operator">))</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+
+  switch</span><span class="operator"> (</span>op<span class="operator">)
+  {</span><span class="flow">
+  case</span> ADD<span class="operator">:</span>
+    value<span class="operator"> =</span> first<span class="operator"> +</span> second<span class="operator">;</span><span class="flow">
+    break</span><span class="operator">;</span><span class="flow">
+  case</span> SUB<span class="operator">:</span>
+    value<span class="operator"> =</span> first<span class="operator"> -</span> second<span class="operator">;</span><span class="flow">
+    break</span><span class="operator">;</span><span class="flow">
+  case</span> MULT<span class="operator">:</span>
+    value<span class="operator"> =</span> first<span class="operator"> *</span> second<span class="operator">;</span><span class="flow">
+    break</span><span class="operator">;</span><span class="flow">
+  case</span> DIV<span class="operator">:</span>
+    value<span class="operator"> =</span> first<span class="operator"> /</span> second<span class="operator">;</span><span class="flow">
+    break</span><span class="operator">;</span><span class="flow">
+  default</span><span class="operator">:</span><span class="comment">
+    //cout &lt;&lt; "Bad operator\n";
+</span><span class="flow">    return</span><span class="bool"> false</span><span class="operator">;
+  }</span>
+
+  assign<span class="operator"> =</span> db<span class="operator">-&gt;</span>search<span class="operator">(</span>lhs<span class="operator">);</span><span class="flow">
+  if</span><span class="operator"> (</span>assign<span class="operator"> ==</span> NULL<span class="operator">)</span>
+    db<span class="operator">-&gt;</span>addNew<span class="operator">(</span>lhs<span class="operator">,</span> value<span class="operator">);</span><span class="flow">
+  else</span><span class="operator">
+    *</span>assign<span class="operator"> =</span> value<span class="operator">;</span>
+
+  cout<span class="operator"> &lt;&lt;</span> lhs<span class="operator"> &lt;&lt;</span><span class="string"> " = "</span><span class="operator"> &lt;&lt;</span> value<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+  return</span><span class="bool"> true</span><span class="operator">;
+}</span><span class="type">
+
+bool</span> binary_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> left<span class="operator">,</span> op_t op<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> right<span class="operator">)
+{</span><span class="flow">
+  return</span> binary_assign_op<span class="operator">(</span><span class="string">"ans"</span><span class="operator">,</span> left<span class="operator">,</span> op<span class="operator">,</span> right<span class="operator">);
+}</span><span class="type">
+
+bool</span> unary_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> operand<span class="operator">,</span> op_t op<span class="operator">)
+{</span>
+  CVariable<span class="operator">*</span> obj<span class="operator">;</span>
+
+  obj<span class="operator"> =</span> db<span class="operator">-&gt;</span>search<span class="operator">(</span>operand<span class="operator">);</span><span class="flow">
+  if</span><span class="operator"> (</span>obj<span class="operator"> ==</span> NULL<span class="operator">)</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+
+  switch</span><span class="operator"> (</span>op<span class="operator">)
+  {</span><span class="flow">
+  case</span> INC<span class="operator">:
+    (**</span>obj<span class="operator">)++;</span><span class="flow">
+    break</span><span class="operator">;</span><span class="flow">
+  case</span> DEC<span class="operator">:
+    (**</span>obj<span class="operator">)--;</span><span class="flow">
+    break</span><span class="operator">;</span><span class="flow">
+  default</span><span class="operator">:</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;
+  }</span>
+
+  cout<span class="operator"> &lt;&lt;</span> operand<span class="operator"> &lt;&lt;</span><span class="string"> " = "</span><span class="operator"> &lt;&lt; **</span>obj<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+  return</span><span class="bool"> true</span><span class="operator">;
+}</span><span class="type">
+
+bool</span> assign_op<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> lhs<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator">*</span> rhs<span class="operator">)
+{</span><span class="type">
+  double</span> value<span class="operator">;</span>
+  CVariable<span class="operator">*</span> assign<span class="operator">;</span><span class="flow">
+
+  if</span><span class="operator"> (!</span>getValue<span class="operator">(</span>rhs<span class="operator">,</span> value<span class="operator">))</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;</span>
+
+  assign<span class="operator"> =</span> db<span class="operator">-&gt;</span>search<span class="operator">(</span>lhs<span class="operator">);</span><span class="flow">
+  if</span><span class="operator"> (</span>assign<span class="operator"> ==</span> NULL<span class="operator">)</span>
+    db<span class="operator">-&gt;</span>addNew<span class="operator">(</span>lhs<span class="operator">,</span> value<span class="operator">);</span><span class="flow">
+  else</span><span class="operator">
+    *</span>assign<span class="operator"> =</span> value<span class="operator">;</span>
+
+  cout<span class="operator"> &lt;&lt;</span> lhs<span class="operator"> &lt;&lt;</span><span class="string"> " = "</span><span class="operator"> &lt;&lt;</span> value<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
+  return</span><span class="bool"> true</span><span class="operator">;
+}</span><span class="type">
+
+bool</span> getValue<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> expr<span class="operator">,</span><span class="type"> double</span><span class="operator">&amp;</span> value<span class="operator">)
+{</span><span class="comment">
+  //Try to read as a double
+</span>  istringstream iss<span class="operator">(</span>expr<span class="operator">);</span>
+  iss<span class="operator"> &gt;&gt;</span> value<span class="operator">;</span><span class="flow">
+  if</span><span class="operator"> (</span>iss<span class="operator">)</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;</span><span class="comment">
+
+  //If that fails, search in DB
+</span>  CVariable<span class="operator">*</span> var<span class="operator"> =</span> db<span class="operator">-&gt;</span>search<span class="operator">(</span>expr<span class="operator">);</span><span class="flow">
+  if</span><span class="operator"> (</span>var<span class="operator"> !=</span> NULL<span class="operator">)
+  {</span>
+    value<span class="operator"> = **</span>var<span class="operator">;</span><span class="flow">
+    return</span><span class="bool"> true</span><span class="operator">;
+  }</span><span class="flow">
+  else
+    return</span><span class="bool"> false</span><span class="operator">;
+}</span>
+</pre>
+
+
+
+
+</body>
+</html>

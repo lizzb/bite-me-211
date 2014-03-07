@@ -1,0 +1,209 @@
+<html>
+<link rel="stylesheet" href="../cpp2html.css">
+<!-- http://bedaux.net/cpp2html/ -->
+<body>
+<pre><span class="comment">//
+//  main.cpp
+//  Patitioner
+//
+//  Created by Nan Jiang on 1/20/14.
+//  Copyright (c) 2014 Nan Jiang. All rights reserved.
+//
+</span><span class="pre">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;fstream&gt;
+</span><span class="keyword">
+using namespace</span> std<span class="operator">;</span><span class="type">
+
+bool</span> IsAChar<span class="operator">(</span><span class="type">char</span><span class="operator">);</span><span class="comment"> // check if the input is a character or not ('a'~'z', 'A'~'Z')
+</span><span class="type">
+bool</span> IsADigit<span class="operator">(</span><span class="type">char</span><span class="operator">);</span><span class="comment"> // check if the input is a digit or not ('1'~'9' or the dot '.' in decimal, like 3.14)
+</span><span class="type">
+bool</span> IsAOperator<span class="operator">(</span><span class="type">char</span><span class="operator">);</span><span class="comment"> // check if the input is a operator or not (+ , - , * , \, ++, --)
+</span><span class="type">
+bool</span> Partitioner<span class="operator">(</span>string<span class="operator">&amp;);</span><span class="comment"> // function to process the command line
+</span><span class="type">
+
+int</span><span class="keyword"> main</span><span class="operator">(</span><span class="type">int</span> argc<span class="operator">,</span><span class="keyword"> const</span><span class="type"> char</span><span class="operator"> *</span> argv<span class="operator">[])
+{</span><span class="comment">
+  // print welcome message
+</span> cout<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span>
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "\tWelcome to the EECS 211 MP#2: A Command Line Partitioner"</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span>
+  cout<span class="operator"> &lt;&lt;</span><span class="string"> "\t\t     Your Name "</span><span class="operator">&lt;&lt;</span> endl<span class="operator">;</span><span class="comment"> // your name here
+</span> cout<span class="operator"> &lt;&lt;</span><span class="string"> "\t\t   Copyright, 2014   "</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="comment">
+    
+  //Get the input
+</span> string Buffer<span class="operator">;</span><span class="type">
+    
+  int</span> num_Case<span class="operator">=</span><span class="int">0</span><span class="operator">;</span>
+
+  ifstream TestFile<span class="operator">(</span><span class="string">"TestCases.txt"</span><span class="operator">);</span><span class="comment"> // read from file
+</span><span class="flow">    
+  if</span><span class="operator"> (</span>TestFile<span class="operator">.</span>is_open<span class="operator">())</span><span class="comment">// open file
+</span><span class="operator">  {</span><span class="flow">
+    while</span><span class="operator"> (</span> getline<span class="operator">(</span>TestFile<span class="operator">,</span>Buffer<span class="operator">) )</span><span class="comment">// read a command line
+</span><span class="operator">    {</span><span class="flow">
+      if</span><span class="operator"> (</span>Buffer<span class="operator">.</span>compare<span class="operator">(</span><span class="string">"quit"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)</span><span class="comment"> // if the input is 'quit'
+</span><span class="operator">      {</span>
+        cout<span class="operator">&lt;&lt;</span><span class="string">"\nThank you. "</span><span class="operator">;</span><span class="comment"> //quit the program
+</span><span class="operator">      }</span><span class="flow">
+      else</span><span class="operator">
+      {</span><span class="comment">
+        // process the command line
+</span>       cout<span class="operator">&lt;&lt;</span><span class="string">"\n# "</span><span class="operator">&lt;&lt;++</span>num_Case<span class="operator"> &lt;&lt;</span><span class="string">" : "</span><span class="operator">&lt;&lt;</span>Buffer<span class="operator">&lt;&lt;</span>endl<span class="operator">;</span><span class="comment"> // print the command line
+        
+        // function Patitioner(Buffer) returns 1 when the parsing is completed. And the segments are printed on screen.
+        // function Patitioner(Buffer) returns 0 when the input command line is not valid.
+</span><span class="flow">        if</span><span class="operator"> (</span>Partitioner<span class="operator">(</span>Buffer<span class="operator">)==</span><span class="int">0</span><span class="operator">)
+        {</span>
+          cout<span class="operator">&lt;&lt;</span><span class="string">"Sorry, do not understand."</span><span class="operator">&lt;&lt;</span>endl<span class="operator">;
+        }
+      }
+    }</span>
+    TestFile<span class="operator">.</span>close<span class="operator">();
+  }</span><span class="flow">
+    
+  else</span><span class="operator">
+  {</span>
+    cout<span class="operator"> &lt;&lt;</span><span class="string"> "Unable to open file"</span><span class="operator">;
+  }</span>
+    
+    
+  cout<span class="operator">&lt;&lt;</span><span class="string">"Press any key to exit..."</span><span class="operator">&lt;&lt;</span>endl<span class="operator">;</span>
+  getchar<span class="operator">();
+    
+    
+    
+    
+}</span><span class="type">
+
+
+
+bool</span> Partitioner<span class="operator">(</span>string<span class="operator">&amp;</span> Input<span class="operator">)
+{</span><span class="type">
+  char</span> Buffer<span class="operator">[</span><span class="int">500</span><span class="operator">];</span>
+  strncpy<span class="operator">(</span>Buffer<span class="operator">,</span> Input<span class="operator">.</span>c_str<span class="operator">(),</span><span class="keyword"> sizeof</span><span class="operator">(</span>Buffer<span class="operator">));</span>
+  Buffer<span class="operator">[</span><span class="keyword">sizeof</span><span class="operator">(</span>Buffer<span class="operator">) -</span><span class="int"> 1</span><span class="operator">] =</span><span class="int"> 0</span><span class="operator">;</span><span class="comment">
+    
+  // indicator
+</span><span class="type">  int</span> st<span class="operator">=</span><span class="int">0</span><span class="operator">;</span><span class="comment"> // start point
+</span><span class="type">  int</span> ed<span class="operator">=</span><span class="int">0</span><span class="operator">;</span><span class="comment"> // end point
+</span><span class="type">  bool</span> error_code<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="type">
+  int</span> iSeg<span class="operator">=</span><span class="int">0</span><span class="operator">;</span><span class="comment"> // number of segments in command line
+</span><span class="type">  int</span> segmt<span class="operator">[</span><span class="int">10</span><span class="operator">][</span><span class="int">2</span><span class="operator">];</span><span class="comment"> // the location of each segment: start point, length
+    
+  // get the length of command line
+</span><span class="type">  int</span> len<span class="operator"> = (</span><span class="type">int</span><span class="operator">)</span>strlen<span class="operator">(</span>Buffer<span class="operator">);</span><span class="flow">
+    
+    
+  while</span><span class="operator">(</span>st<span class="operator">&lt;</span>len<span class="operator">)
+  {</span><span class="flow">
+    while</span><span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]==</span><span class="char">' '</span><span class="operator">&amp;&amp;</span>st<span class="operator">&lt;</span>len<span class="operator">)</span>st<span class="operator">++;</span>
+        
+    ed<span class="operator"> =</span> st<span class="operator">;</span><span class="flow">
+        
+    if</span><span class="operator">(</span>st<span class="operator">==</span>len<span class="operator">)
+    {</span>
+      error_code<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+      break</span><span class="operator">;
+    }</span><span class="flow">
+    else</span><span class="operator">
+    {</span><span class="flow">
+      if</span><span class="operator">(</span>IsAChar<span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]))</span><span class="comment"> // check consecutive characters
+</span><span class="operator">      {</span><span class="flow">
+        while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>IsAChar<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">'_'</span><span class="operator">))</span>ed<span class="operator">++;
+      }</span><span class="flow">
+      else if</span><span class="operator">(</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]))</span><span class="comment"> // check consecutive digits
+</span><span class="operator">      {</span><span class="flow">
+        while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">'.'</span><span class="operator">))</span>ed<span class="operator">++;
+      }</span><span class="flow">
+      else if</span><span class="operator">(</span>IsAOperator<span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]))</span><span class="comment"> // check consecutive operators
+</span><span class="operator">      {</span><span class="flow">
+        while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>IsAOperator<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])))</span>ed<span class="operator">++;
+      }</span><span class="flow">
+      else if</span><span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]==</span><span class="char">'['</span><span class="operator">)</span><span class="comment"> // check matrix
+</span><span class="operator">      {</span>
+        ed<span class="operator"> =</span> st<span class="operator">+</span><span class="int">1</span><span class="operator">;</span><span class="flow">
+        while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>Buffer<span class="operator">[</span>ed<span class="operator">]!=</span><span class="char">']'</span><span class="operator">))
+        {</span><span class="flow">
+          if</span><span class="operator">(</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">','</span><span class="operator">)||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">';'</span><span class="operator">)||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">' '</span><span class="operator">)||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">'.'</span><span class="operator">))
+          {</span>
+            ed<span class="operator">++;
+          }</span><span class="flow">
+          else</span><span class="operator">
+          {</span>
+            cout<span class="operator">&lt;&lt;</span><span class="string">"Expect a ']' here."</span><span class="operator">&lt;&lt;</span>endl<span class="operator">;</span>
+            error_code<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+            break</span><span class="operator">;
+          }</span>
+          ed<span class="operator">++;
+        }
+      }</span><span class="flow">
+      else if</span><span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]==</span><span class="char">';'</span><span class="operator">)</span>ed<span class="operator">++;</span><span class="flow">
+      else</span><span class="operator">
+      {</span>
+        error_code<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;
+      }
+            
+    }</span><span class="flow">
+    if</span><span class="operator">(</span>error_code<span class="operator">)
+    {</span>
+      segmt<span class="operator">[</span>iSeg<span class="operator">][</span><span class="int">0</span><span class="operator">] =</span> st<span class="operator">;</span>
+      segmt<span class="operator">[</span>iSeg<span class="operator">][</span><span class="int">1</span><span class="operator">] =</span> ed<span class="operator">-</span>st<span class="operator">;</span>
+      iSeg<span class="operator"> =</span> iSeg<span class="operator">+</span><span class="int">1</span><span class="operator">;</span>
+      st<span class="operator"> =</span> ed<span class="operator">;
+    }</span><span class="flow">
+    else</span><span class="operator">
+    {</span><span class="flow">
+      return</span> error_code<span class="operator">;
+    }
+  }</span><span class="comment">
+    
+  // print each segment
+</span><span class="flow">  for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int">0</span><span class="operator">;</span> i<span class="operator">&lt;</span>iSeg<span class="operator">;</span> i<span class="operator">++)
+  {</span><span class="flow">
+    for</span><span class="operator"> (</span><span class="type">int</span> j<span class="operator">=</span><span class="int">0</span><span class="operator">;</span> j<span class="operator">&lt;</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">];</span> j<span class="operator">++)
+    {</span>
+      cout<span class="operator">&lt;&lt;</span>Buffer<span class="operator">[</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">0</span><span class="operator">]+</span>j<span class="operator">];
+            
+    }</span>
+    cout<span class="operator">&lt;&lt;</span>endl<span class="operator">;
+  }</span><span class="flow">
+    
+  return</span> error_code<span class="operator">;
+}</span><span class="type">
+
+bool</span> IsAChar<span class="operator">(</span><span class="type">char</span> str<span class="operator">)
+{</span><span class="type">
+  bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+  if</span><span class="operator">((</span>str<span class="operator">&gt;=</span><span class="char">'A'</span><span class="operator">&amp;&amp;</span>str<span class="operator">&lt;=</span><span class="char">'Z'</span><span class="operator">)||(</span>str<span class="operator">&gt;=</span><span class="char">'a'</span><span class="operator">&amp;&amp;</span>str<span class="operator">&lt;=</span><span class="char">'z'</span><span class="operator">))</span> Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  return</span> Tag<span class="operator">;
+    
+}</span><span class="type">
+
+bool</span> IsADigit<span class="operator">(</span><span class="type">char</span> str<span class="operator">)
+{</span><span class="type">
+  bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+  if</span><span class="operator">((</span>str<span class="operator">&gt;=</span><span class="char">'0'</span><span class="operator">&amp;&amp;</span>str<span class="operator">&lt;=</span><span class="char">'9'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'.'</span><span class="operator">))</span> Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  return</span> Tag<span class="operator">;
+    
+}</span><span class="type">
+
+bool</span> IsAOperator<span class="operator">(</span><span class="type">char</span> str<span class="operator">)
+{</span><span class="type">
+  bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+  if</span><span class="operator">((</span>str<span class="operator">==</span><span class="char">'+'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'-'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'*'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'/'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'='</span><span class="operator">))</span> Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+  return</span> Tag<span class="operator">;
+    
+}</span>
+
+
+</pre>
+
+
+
+
+
+</body>
+</html>

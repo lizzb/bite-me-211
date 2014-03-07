@@ -1,0 +1,499 @@
+<html>
+<link rel="stylesheet" href="../cpp2html.css">
+<!-- http://bedaux.net/cpp2html/ -->
+<body>
+
+<pre><span class="comment">//
+// EECS 211 MP#2: A Command Line Interpretation
+// Nan Jiang, Northwestern University
+// Copyright, 2014
+//
+// This project is to  Resolve a command line by checking the grammar of the command
+// and explain the command line
+</span><span class="pre">
+#include "stdafx.h"
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;fstream&gt;
+</span><span class="keyword">
+using namespace</span> std<span class="operator">;</span><span class="keyword">
+
+enum</span> OP<span class="operator"> {</span>ASN<span class="operator">,</span> ADD<span class="operator">,</span> MIN<span class="operator">,</span> MUL<span class="operator">,</span> DIV<span class="operator">,</span> PRE_INC<span class="operator">,</span> PRE_DEC<span class="operator">,</span>POST_INC<span class="operator">,</span>POST_DEC<span class="operator">};</span><span class="comment"> // enumeration of operator types
+
+//function declaration
+</span><span class="type">void</span> Interpreter<span class="operator">(</span>string<span class="operator">&amp;);</span><span class="type"> 
+bool</span> IsAUnary<span class="operator">(</span><span class="type">char</span><span class="operator">*,</span><span class="type"> int</span><span class="operator"> [][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*,</span> OP<span class="operator">&amp;);</span><span class="comment"> // if the command line is valid unary operation
+</span><span class="type">bool</span> IsAAsn<span class="operator">(</span><span class="type">char</span><span class="operator">*,</span><span class="type"> int</span><span class="operator"> [][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*,</span><span class="type"> char</span><span class="operator">*);</span><span class="comment"> // if it is a valid assignment
+</span><span class="type">bool</span> IsABinary3<span class="operator">(</span><span class="type">char</span><span class="operator">*,</span><span class="type"> int</span><span class="operator"> [][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*,</span><span class="type"> char</span><span class="operator">*,</span> OP<span class="operator">&amp;);</span><span class="comment"> // if it is a valid binary operation
+</span><span class="type">bool</span> IsABinary5<span class="operator">(</span><span class="type">char</span><span class="operator">*,</span><span class="type"> int</span><span class="operator"> [][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*,</span><span class="type"> char</span><span class="operator">*,</span><span class="type"> char</span><span class="operator">*,</span> OP<span class="operator">&amp;);</span><span class="comment">// if it is a valid assignment and binary operation
+</span><span class="type">void</span> OpTranslator<span class="operator">(</span>OP<span class="operator">);</span><span class="comment"> // output the operator
+
+
+// functions from the previous project
+</span><span class="type">int</span> Partitioner<span class="operator">(</span><span class="type">char</span><span class="operator">*,</span><span class="type"> int</span><span class="operator"> [][</span><span class="int">2</span><span class="operator">],</span><span class="type"> int</span><span class="operator">&amp;);</span><span class="comment"> // partitioning the command line into segments
+</span><span class="type">bool</span> IsAChar<span class="operator">(</span><span class="type">char</span><span class="operator">);</span><span class="comment"> // if input is a letter
+</span><span class="type">bool</span> IsADigit<span class="operator">(</span><span class="type">char</span><span class="operator">);</span><span class="comment"> // if it is a digit
+</span><span class="type">bool</span> IsAOperator<span class="operator">(</span><span class="type">char</span><span class="operator">);</span><span class="comment"> // if it is an operator
+</span><span class="type">
+
+void</span><span class="keyword"> main</span><span class="operator">()
+{</span><span class="comment">
+	// print welcome message
+</span>	cout<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span>
+	cout<span class="operator"> &lt;&lt;</span><span class="string"> "\tWelcome to the EECS 211 MP#3: A Command Line Interpreter"</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span>
+	cout<span class="operator"> &lt;&lt;</span><span class="string"> "\t\tNan Jiang, Northwestern University "</span><span class="operator">&lt;&lt;</span> endl<span class="operator">;</span>
+	cout<span class="operator"> &lt;&lt;</span><span class="string"> "\t\t   Copyright, 2014   "</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="comment">   
+
+	//Get the input
+</span>	string Buffer<span class="operator">;</span><span class="type">
+
+	int</span> num_Case<span class="operator">=</span><span class="int">0</span><span class="operator">;</span>
+
+	ifstream TestFile<span class="operator">(</span><span class="string">"TestCase.txt"</span><span class="operator">);</span><span class="comment"> // read from file
+</span><span class="flow">
+	if</span><span class="operator"> (</span>TestFile<span class="operator">.</span>is_open<span class="operator">())</span><span class="comment">// open file
+</span><span class="operator">	{</span><span class="flow">
+		while</span><span class="operator"> (</span> getline<span class="operator">(</span>TestFile<span class="operator">,</span>Buffer<span class="operator">) )</span><span class="comment">// read a command line
+</span><span class="operator">		{</span><span class="flow">
+			if</span><span class="operator"> (</span>Buffer<span class="operator">.</span>compare<span class="operator">(</span><span class="string">"quit"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)</span><span class="comment"> // if the input is 'quit'
+</span><span class="operator">			{</span>
+				cout<span class="operator">&lt;&lt;</span><span class="string">"\nThank you. "</span><span class="operator">;</span><span class="comment"> //quit the program
+</span><span class="flow">				break</span><span class="operator">;
+			}</span><span class="flow"> 
+			else</span><span class="operator">
+			{</span><span class="comment">
+				// process the command line
+</span>				cout<span class="operator">&lt;&lt;</span><span class="string">"\n# "</span><span class="operator">&lt;&lt;++</span>num_Case<span class="operator"> &lt;&lt;</span><span class="string">" : "</span><span class="operator">&lt;&lt;</span>Buffer<span class="operator">&lt;&lt;</span>endl<span class="operator">;</span><span class="comment"> // print the command line
+</span>				Interpreter<span class="operator">(</span>Buffer<span class="operator">);
+			}
+		}</span>
+		TestFile<span class="operator">.</span>close<span class="operator">();
+	}</span><span class="flow">
+
+	else</span><span class="operator"> 
+	{</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "Unable to open file"</span><span class="operator">; 
+	}</span>
+
+
+	cout<span class="operator">&lt;&lt;</span><span class="string">"Press any key to exit..."</span><span class="operator">&lt;&lt;</span>endl<span class="operator">;</span>
+	getchar<span class="operator">();        
+
+
+}</span><span class="comment">
+
+////////////////////////////////////////////////////////////////////////////////
+// functions related to the command line interpreter
+
+// We only allow:
+// type asn:   e.g., a = b              (iSeg = 3)
+// type unary: e.g., a++                (iSeg = 2)
+// type binary:e.g., a + b or c = a+b   (iSeg = 3 or 5)
+</span><span class="type">
+
+void</span> Interpreter<span class="operator">(</span>string<span class="operator">&amp;</span> Input<span class="operator">)
+{</span><span class="type">
+	char</span> Buffer<span class="operator">[</span><span class="int">500</span><span class="operator">];</span><span class="comment"> // array buffer to hold the command line
+</span>	strncpy<span class="operator">(</span>Buffer<span class="operator">,</span> Input<span class="operator">.</span>c_str<span class="operator">(),</span><span class="keyword"> sizeof</span><span class="operator">(</span>Buffer<span class="operator">));</span>
+	Buffer<span class="operator">[</span><span class="keyword">sizeof</span><span class="operator">(</span>Buffer<span class="operator">) -</span><span class="int"> 1</span><span class="operator">] =</span><span class="int"> 0</span><span class="operator">;</span><span class="type">
+
+	int</span> segmt<span class="operator">[</span><span class="int">10</span><span class="operator">][</span><span class="int">2</span><span class="operator">];</span><span class="comment"> // record the location of each segment
+</span><span class="type">
+	int</span> iSeg<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span><span class="comment"> // number of segments in command line
+</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span>
+
+	OP  op<span class="operator">;</span><span class="comment"> // the operator in the command line
+</span><span class="type">
+	char</span> res<span class="operator">[</span><span class="int">50</span><span class="operator">],</span> operand_1<span class="operator">[</span><span class="int">50</span><span class="operator">],</span> operand_2<span class="operator">[</span><span class="int">50</span><span class="operator">];</span><span class="comment"> // result_name, operand_1 and operand_2
+</span><span class="flow">
+	if</span><span class="operator">(</span>Partitioner<span class="operator">(</span>Buffer<span class="operator">,</span>segmt<span class="operator">,</span>iSeg<span class="operator">))</span><span class="comment">// if the command line can be successfully segment
+</span><span class="operator">	{</span><span class="flow">
+
+		switch</span><span class="operator"> (</span>iSeg<span class="operator">)</span><span class="comment"> // valid cases can be : 2, 3 or 5
+</span><span class="operator">		{</span><span class="flow">
+		case</span><span class="int"> 2</span><span class="operator">:</span><span class="comment"> // the command line is possible to be unary operation
+</span><span class="operator">			{</span>
+				Tag<span class="operator"> =</span> IsAUnary<span class="operator">(</span>Buffer<span class="operator">,</span>segmt<span class="operator">,</span>operand_1<span class="operator">,</span>op<span class="operator">);</span><span class="comment"> // if it is a valid unary operation
+</span><span class="flow">				if</span><span class="operator">(</span>Tag<span class="operator">)
+				{</span><span class="comment">   // it is a valid unary operation, output the result
+</span>					OpTranslator<span class="operator">(</span>op<span class="operator">);</span> 
+					cout<span class="operator">&lt;&lt;</span><span class="string">" "</span><span class="operator">&lt;&lt;</span>operand_1<span class="operator">&lt;&lt;</span>endl<span class="operator">;
+				}</span><span class="flow">  
+				break</span><span class="operator">;      
+			}</span><span class="flow">
+		case</span><span class="int"> 3</span><span class="operator">:</span><span class="comment"> // the command line is possible to be binary operation or assignment
+</span><span class="operator">			{</span><span class="flow">
+				if</span><span class="operator">(</span>IsAAsn<span class="operator">(</span>Buffer<span class="operator">,</span>segmt<span class="operator">,</span>res<span class="operator">,</span>operand_1<span class="operator">))</span><span class="comment"> // if it is a valid assignment
+</span><span class="operator">				{</span><span class="comment">   // it is a valid assignment, output the result
+</span>					Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span>
+					cout<span class="operator">&lt;&lt;</span><span class="string">"ASN "</span><span class="operator">&lt;&lt;</span><span class="string">" "</span><span class="operator">&lt;&lt;</span>operand_1<span class="operator">&lt;&lt;</span><span class="string">" to "</span><span class="operator">&lt;&lt;</span> res<span class="operator"> &lt;&lt;</span>endl<span class="operator">;
+				}</span><span class="flow">
+				else if</span><span class="operator">(</span>IsABinary3<span class="operator">(</span>Buffer<span class="operator">,</span>segmt<span class="operator">,</span>operand_1<span class="operator">,</span>operand_2<span class="operator">,</span>op<span class="operator">))</span><span class="comment"> // if it is a binary operation with assignment to default variable ans
+</span><span class="operator">				{</span><span class="comment">   // it is a binary operation, output the result
+</span>					Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span>
+					OpTranslator<span class="operator">(</span>op<span class="operator">);</span>
+					cout<span class="operator">&lt;&lt;</span><span class="string">" "</span><span class="operator">&lt;&lt;</span>operand_1<span class="operator">&lt;&lt;</span><span class="string">" AND "</span><span class="operator">&lt;&lt;</span>operand_2<span class="operator">&lt;&lt;</span><span class="string">" , THEN ASN to ans. "</span><span class="operator">&lt;&lt;</span>endl<span class="operator">;
+				}</span><span class="flow">
+				break</span><span class="operator">;
+			}</span><span class="flow">
+		case</span><span class="int"> 5</span><span class="operator">:</span><span class="comment"> // the command line is possible to be binary operation and assignment
+</span><span class="operator">			{</span>
+				Tag<span class="operator"> =</span> IsABinary5<span class="operator">(</span>Buffer<span class="operator">,</span>segmt<span class="operator">,</span>res<span class="operator">,</span>operand_1<span class="operator">,</span>operand_2<span class="operator">,</span>op<span class="operator">);</span><span class="comment"> // if it is a binary operation with assignment to a specified variable
+</span><span class="flow">				if</span><span class="operator">(</span>Tag<span class="operator">)
+				{</span><span class="comment">   // it is a binary operation, output the result
+</span>					OpTranslator<span class="operator">(</span>op<span class="operator">);</span>
+					cout<span class="operator">&lt;&lt;</span><span class="string">" "</span><span class="operator">&lt;&lt;</span>operand_1<span class="operator">&lt;&lt;</span><span class="string">" AND "</span><span class="operator">&lt;&lt;</span>operand_2<span class="operator">&lt;&lt;</span><span class="string">" , THEN ASN to "</span><span class="operator">&lt;&lt;</span> res<span class="operator"> &lt;&lt;</span>endl<span class="operator">;
+				}</span><span class="flow">  
+				break</span><span class="operator">;              
+			}
+		}
+	}</span><span class="flow">
+
+
+
+	if</span><span class="operator"> (</span>Tag<span class="operator"> ==</span><span class="bool"> false</span><span class="operator">)</span><span class="comment"> // if the command line is not valid
+</span><span class="operator">	{</span>
+		cout<span class="operator">&lt;&lt;</span><span class="string">"Sorry, do not understand."</span><span class="operator"> &lt;&lt;</span>endl<span class="operator">;
+	}
+
+}</span><span class="comment">
+
+// If the input command line is a valid unary operation
+// Input:
+// char* Buffer   : the input command line (known)
+// int segmt[][2] : the location of each segment in the command line (known)
+// char* operand  : the operand in the command line (to fill in)
+// OP&amp; op         : the operator (to fill in)
+// Output:
+// boolean variable : 0 -- not a valid unary operation, 1 -- valid unary operation
+</span><span class="type">bool</span> IsAUnary<span class="operator">(</span><span class="type">char</span><span class="operator">*</span> Buffer<span class="operator">,</span><span class="type"> int</span> segmt<span class="operator">[][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*</span> operand<span class="operator">,</span> OP<span class="operator">&amp;</span> op<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="type">
+	char</span> piece<span class="operator">[</span><span class="int">2</span><span class="operator">][</span><span class="int">50</span><span class="operator">];</span><span class="flow">
+	for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator"> ;</span> i<span class="operator">&lt;</span><span class="int">2</span><span class="operator">;</span> i<span class="operator">++)
+	{</span><span class="flow">
+		for</span><span class="operator">(</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> j<span class="operator">&lt;</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">];</span> j<span class="operator">++)
+		{</span>
+			piece<span class="operator">[</span>i<span class="operator">][</span>j<span class="operator">] =</span> Buffer<span class="operator">[</span>j<span class="operator">+</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">0</span><span class="operator">]];
+		}</span>
+		piece<span class="operator">[</span>i<span class="operator">][</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">]] =</span><span class="char"> '\0'</span><span class="operator">;
+	}</span><span class="flow">
+	if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">0</span><span class="operator">],</span><span class="string">"++"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> PRE_INC<span class="operator">;</span>
+		strcpy<span class="operator">(</span>operand<span class="operator">,</span> piece<span class="operator">[</span><span class="int">1</span><span class="operator">]);</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">0</span><span class="operator">],</span><span class="string">"--"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> PRE_DEC<span class="operator">;</span>
+		strcpy<span class="operator">(</span>operand<span class="operator">,</span> piece<span class="operator">[</span><span class="int">1</span><span class="operator">]);</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"++"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> POST_INC<span class="operator">;</span>
+		strcpy<span class="operator">(</span>operand<span class="operator">,</span> piece<span class="operator">[</span><span class="int">0</span><span class="operator">]);</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	else if</span><span class="operator"> (</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"--"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> POST_DEC<span class="operator">;</span>
+		strcpy<span class="operator">(</span>operand<span class="operator">,</span> piece<span class="operator">[</span><span class="int">0</span><span class="operator">]);</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+
+	return</span> Tag<span class="operator">;
+}</span><span class="comment">
+
+// If the input command line is a valid assignment
+// Input:
+// char* Buffer   : the input command line (known)
+// int segmt[][2] : the location of each segment in the command line (known)
+// char* res      : the reseult_name in the command line (to fill in)
+// char* operand  : the operand in the command line (to fill in)
+// Output:
+// boolean variable : 0 -- not a valid assignment, 1 -- valid assignment
+</span><span class="type">
+bool</span> IsAAsn<span class="operator">(</span><span class="type">char</span><span class="operator">*</span> Buffer<span class="operator">,</span><span class="type"> int</span> segmt<span class="operator">[][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*</span> res<span class="operator">,</span><span class="type"> char</span><span class="operator">*</span> operand<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="type">
+	char</span> piece<span class="operator">[</span><span class="int">3</span><span class="operator">][</span><span class="int">50</span><span class="operator">];</span><span class="flow">
+	for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator"> ;</span> i<span class="operator">&lt;</span><span class="int">3</span><span class="operator">;</span> i<span class="operator">++)
+	{</span><span class="flow">
+		for</span><span class="operator">(</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> j<span class="operator">&lt;</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">];</span> j<span class="operator">++)
+		{</span>
+			piece<span class="operator">[</span>i<span class="operator">][</span>j<span class="operator">] =</span> Buffer<span class="operator">[</span>j<span class="operator">+</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">0</span><span class="operator">]];
+		}</span>
+		piece<span class="operator">[</span>i<span class="operator">][</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">]] =</span><span class="char"> '\0'</span><span class="operator">;
+	}</span><span class="flow">
+	if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"="</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)</span><span class="comment"> // if the #2 piece is "="
+</span><span class="operator">	{</span>
+		strcpy<span class="operator">(</span>res<span class="operator">,</span> piece<span class="operator">[</span><span class="int">0</span><span class="operator">]);</span>
+		strcpy<span class="operator">(</span>operand<span class="operator">,</span> piece<span class="operator">[</span><span class="int">2</span><span class="operator">]);</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	return</span> Tag<span class="operator">;
+}</span><span class="comment">
+
+// If the input command line is a binary operation
+// Input:
+// char* Buffer   : the input command line (known)
+// int segmt[][2] : the location of each segment in the command line (known)
+// char* operand_1: the operand_1 in the command line (to fill in)
+// char* operand_2: the operand_2 in the command line (to fill in)
+// OP&amp; op         : the operator (to fill in)
+// Output:
+// boolean variable : 0 -- not a valid binary operation, 1 -- valid binary operation
+</span><span class="type">
+bool</span> IsABinary3<span class="operator">(</span><span class="type">char</span><span class="operator">*</span> Buffer<span class="operator">,</span><span class="type"> int</span> segmt<span class="operator">[][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*</span> operand_1<span class="operator">,</span><span class="type"> char</span><span class="operator">*</span> operand_2<span class="operator">,</span> OP<span class="operator">&amp;</span> op<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="type">
+	char</span> piece<span class="operator">[</span><span class="int">3</span><span class="operator">][</span><span class="int">50</span><span class="operator">];</span><span class="flow">
+	for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator"> ;</span> i<span class="operator">&lt;</span><span class="int">3</span><span class="operator">;</span> i<span class="operator">++)
+	{</span><span class="flow">
+		for</span><span class="operator">(</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> j<span class="operator">&lt;</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">];</span> j<span class="operator">++)
+		{</span>
+			piece<span class="operator">[</span>i<span class="operator">][</span>j<span class="operator">] =</span> Buffer<span class="operator">[</span>j<span class="operator">+</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">0</span><span class="operator">]];
+		}</span>
+		piece<span class="operator">[</span>i<span class="operator">][</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">]] =</span><span class="char"> '\0'</span><span class="operator">;
+	}</span><span class="flow">
+	if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"+"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)</span><span class="comment"> // if the #2 piece is an operator
+</span><span class="operator">	{</span>
+		op<span class="operator"> =</span> ADD<span class="operator">;</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"-"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> MIN<span class="operator">;</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"*"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> MUL<span class="operator">;</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"/"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+	{</span>
+		op<span class="operator"> =</span> DIV<span class="operator">;</span>
+		Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+	}</span><span class="flow">
+	if</span><span class="operator"> (</span>Tag<span class="operator">)
+	{</span>
+		strcpy<span class="operator">(</span>operand_1<span class="operator">,</span> piece<span class="operator">[</span><span class="int">0</span><span class="operator">]);</span>
+		strcpy<span class="operator">(</span>operand_2<span class="operator">,</span> piece<span class="operator">[</span><span class="int">2</span><span class="operator">]);
+	}</span><span class="flow">
+	return</span> Tag<span class="operator">;
+}</span><span class="comment">
+
+// If the input command line is a binary operation and assignment
+// Input:
+// char* Buffer   : the input command line (known)
+// int segmt[][2] : the location of each segment in the command line (known)
+// char* res      : the reseult_name in the command line (to fill in)
+// char* operand_1: the operand_1 in the command line (to fill in)
+// char* operand_2: the operand_2 in the command line (to fill in)
+// OP&amp; op         : the operator (to fill in)
+// Output:
+// boolean variable : 0 -- not a valid binary operation and assignment, 1 -- valid binary operation and assignment
+</span><span class="type">
+bool</span> IsABinary5<span class="operator">(</span><span class="type">char</span><span class="operator">*</span> Buffer<span class="operator">,</span><span class="type"> int</span> segmt<span class="operator">[][</span><span class="int">2</span><span class="operator">],</span><span class="type"> char</span><span class="operator">*</span> res<span class="operator"> ,</span><span class="type"> char</span><span class="operator">*</span> operand_1<span class="operator">,</span><span class="type"> char</span><span class="operator">*</span> operand_2<span class="operator">,</span> OP<span class="operator">&amp;</span> op<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="type">
+	char</span> piece<span class="operator">[</span><span class="int">5</span><span class="operator">][</span><span class="int">50</span><span class="operator">];</span><span class="flow">
+	for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator"> ;</span> i<span class="operator">&lt;</span><span class="int">5</span><span class="operator">;</span> i<span class="operator">++)
+	{</span><span class="flow">
+		for</span><span class="operator">(</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> j<span class="operator">&lt;</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">];</span> j<span class="operator">++)
+		{</span>
+			piece<span class="operator">[</span>i<span class="operator">][</span>j<span class="operator">] =</span> Buffer<span class="operator">[</span>j<span class="operator">+</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">0</span><span class="operator">]];
+		}</span>
+		piece<span class="operator">[</span>i<span class="operator">][</span>segmt<span class="operator">[</span>i<span class="operator">][</span><span class="int">1</span><span class="operator">]] =</span><span class="char"> '\0'</span><span class="operator">;
+	}</span><span class="flow">
+	if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">1</span><span class="operator">],</span><span class="string">"="</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)</span><span class="comment"> // if the #2 piece is "=" 
+</span><span class="operator">	{</span><span class="flow">
+		if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">3</span><span class="operator">],</span><span class="string">"+"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)</span><span class="comment"> // if the #4 piece is an operator 
+</span><span class="operator">		{</span>
+			op<span class="operator"> =</span> ADD<span class="operator">;</span>
+			Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+		}</span><span class="flow">
+		else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">3</span><span class="operator">],</span><span class="string">"-"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+		{</span>
+			op<span class="operator"> =</span> MIN<span class="operator">;</span>
+			Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+		}</span><span class="flow">
+		else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">3</span><span class="operator">],</span><span class="string">"*"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+		{</span>
+			op<span class="operator"> =</span> MUL<span class="operator">;</span>
+			Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+		}</span><span class="flow">
+		else if</span><span class="operator">(</span>strcmp<span class="operator">(</span>piece<span class="operator">[</span><span class="int">3</span><span class="operator">],</span><span class="string">"/"</span><span class="operator">)==</span><span class="int">0</span><span class="operator">)
+		{</span>
+			op<span class="operator"> =</span> DIV<span class="operator">;</span>
+			Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;
+		}</span><span class="flow">
+		if</span><span class="operator"> (</span>Tag<span class="operator">)
+		{</span>
+			strcpy<span class="operator">(</span>res<span class="operator">,</span> piece<span class="operator">[</span><span class="int">0</span><span class="operator">]);</span>
+			strcpy<span class="operator">(</span>operand_1<span class="operator">,</span> piece<span class="operator">[</span><span class="int">2</span><span class="operator">]);</span>
+			strcpy<span class="operator">(</span>operand_2<span class="operator">,</span> piece<span class="operator">[</span><span class="int">4</span><span class="operator">]);
+		}
+	}</span><span class="flow">
+
+	return</span> Tag<span class="operator">;
+}</span><span class="comment">
+
+// explain operators
+</span><span class="type">void</span> OpTranslator<span class="operator">(</span>OP op<span class="operator">) 
+{</span><span class="flow">
+	switch</span><span class="operator">(</span>op<span class="operator">){</span><span class="flow">
+	case</span> ASN<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "ASN"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> ADD<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "ADD"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> MIN<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "MIN"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> MUL<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "MUL"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> DIV<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "DIV"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> PRE_INC<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "PRE_INC"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> PRE_DEC<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "PRE_DEC"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> POST_INC<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "POST_INC"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	case</span> POST_DEC<span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "POST_DEC"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;</span><span class="flow">
+	default</span><span class="operator">:</span>
+		cout<span class="operator"> &lt;&lt;</span><span class="string"> "UNRECOGNIZED OPERATOR"</span><span class="operator"> ;</span><span class="flow">
+		break</span><span class="operator">;
+	}
+}</span><span class="comment">
+
+////////////////////////////////////////////////////////////////////////////////
+// functions from MP#2
+</span><span class="type">
+int</span> Partitioner<span class="operator">(</span><span class="type">char</span><span class="operator">*</span> Buffer<span class="operator">,</span><span class="type">  int</span> segmt<span class="operator">[][</span><span class="int">2</span><span class="operator">],</span><span class="type"> int</span><span class="operator">&amp;</span> iSeg<span class="operator">)
+{</span><span class="comment">
+	// indicator
+</span><span class="type">	int</span> st<span class="operator">=</span><span class="int">0</span><span class="operator">;</span><span class="type">
+	int</span> ed<span class="operator">=</span><span class="int">0</span><span class="operator">;</span><span class="type">
+	int</span> error_code<span class="operator"> =</span><span class="int"> 1</span><span class="operator">;</span><span class="type">
+
+	int</span> len<span class="operator"> = (</span><span class="type">int</span><span class="operator">)</span>strlen<span class="operator">(</span>Buffer<span class="operator">);</span><span class="flow">
+
+
+	while</span><span class="operator">(</span>st<span class="operator">&lt;</span>len<span class="operator">)
+	{</span><span class="flow">
+		while</span><span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]==</span><span class="char">' '</span><span class="operator">&amp;&amp;</span>st<span class="operator">&lt;</span>len<span class="operator">)</span>st<span class="operator">++;</span>
+
+		ed<span class="operator"> =</span> st<span class="operator">;</span><span class="flow">
+
+		if</span><span class="operator">(</span>st<span class="operator">==</span>len<span class="operator">)
+		{</span><span class="flow">
+			if</span><span class="operator"> (</span>iSeg<span class="operator">==</span><span class="int">0</span><span class="operator">)
+			{</span>
+				error_code<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;
+			}</span><span class="flow"> 			
+			break</span><span class="operator">;
+		}</span><span class="flow">
+		else</span><span class="operator">
+		{</span><span class="flow">
+			if</span><span class="operator">(</span>IsAChar<span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]))
+			{</span><span class="flow">
+				while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>IsAChar<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">'_'</span><span class="operator">))</span>ed<span class="operator">++;
+			}</span><span class="flow">
+			else if</span><span class="operator">(</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]))
+			{</span><span class="flow">
+				while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">'.'</span><span class="operator">))</span>ed<span class="operator">++;
+			}</span><span class="flow">
+			else if</span><span class="operator">(</span>IsAOperator<span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]))
+			{</span><span class="flow">
+				while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>IsAOperator<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])))</span>ed<span class="operator">++;
+			}</span><span class="flow">
+			else if</span><span class="operator">((</span>Buffer<span class="operator">[</span>st<span class="operator">]==</span><span class="char">'['</span><span class="operator">))
+			{</span>
+				ed<span class="operator"> =</span> st<span class="operator">+</span><span class="int">1</span><span class="operator">;</span><span class="flow">
+				while</span><span class="operator">((</span>ed<span class="operator">&lt;</span>len<span class="operator">)&amp;&amp;(</span>Buffer<span class="operator">[</span>ed<span class="operator">]!=</span><span class="char">']'</span><span class="operator">))
+				{</span><span class="flow">
+					if</span><span class="operator">(</span>IsADigit<span class="operator">(</span>Buffer<span class="operator">[</span>ed<span class="operator">])||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">','</span><span class="operator">)||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">';'</span><span class="operator">)||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">' '</span><span class="operator">)||(</span>Buffer<span class="operator">[</span>ed<span class="operator">]==</span><span class="char">'.'</span><span class="operator">))
+					{</span>
+						ed<span class="operator">++;
+					}</span><span class="flow">
+					else</span><span class="operator">
+					{</span>
+						cout<span class="operator">&lt;&lt;</span><span class="string">"Expect a ']' here."</span><span class="operator">&lt;&lt;</span>endl<span class="operator">;</span>
+						error_code<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span><span class="flow">
+						break</span><span class="operator">;
+					}</span>
+					ed<span class="operator">++;
+				}
+			}</span><span class="flow">
+			else if</span><span class="operator">(</span>Buffer<span class="operator">[</span>st<span class="operator">]==</span><span class="char">';'</span><span class="operator">)</span>ed<span class="operator">++;</span><span class="flow">
+			else</span><span class="operator">
+			{</span>
+				error_code<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;
+			}
+
+		}</span><span class="flow">
+		if</span><span class="operator">(</span>error_code<span class="operator">)
+		{</span>
+			segmt<span class="operator">[</span>iSeg<span class="operator">][</span><span class="int">0</span><span class="operator">] =</span> st<span class="operator">;</span>
+			segmt<span class="operator">[</span>iSeg<span class="operator">][</span><span class="int">1</span><span class="operator">] =</span> ed<span class="operator">-</span>st<span class="operator">;</span>
+			iSeg<span class="operator"> =</span> iSeg<span class="operator">++;</span>
+			st<span class="operator"> =</span> ed<span class="operator">;
+		}</span><span class="flow">  
+		else</span><span class="operator">
+		{</span><span class="flow">
+			break</span><span class="operator">;
+		}  
+	}</span><span class="flow"> 
+
+	return</span> error_code<span class="operator">;
+}</span><span class="type">
+
+bool</span> IsAChar<span class="operator">(</span><span class="type">char</span> str<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+	if</span><span class="operator">((</span>str<span class="operator">&gt;=</span><span class="char">'A'</span><span class="operator">&amp;&amp;</span>str<span class="operator">&lt;=</span><span class="char">'Z'</span><span class="operator">)||(</span>str<span class="operator">&gt;=</span><span class="char">'a'</span><span class="operator">&amp;&amp;</span>str<span class="operator">&lt;=</span><span class="char">'z'</span><span class="operator">))</span> Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+	return</span> Tag<span class="operator">;
+
+}</span><span class="type">
+
+bool</span> IsADigit<span class="operator">(</span><span class="type">char</span> str<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+	if</span><span class="operator">((</span>str<span class="operator">&gt;=</span><span class="char">'0'</span><span class="operator">&amp;&amp;</span>str<span class="operator">&lt;=</span><span class="char">'9'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'.'</span><span class="operator">))</span> Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+	return</span> Tag<span class="operator">;
+
+}</span><span class="type">
+
+bool</span> IsAOperator<span class="operator">(</span><span class="type">char</span> str<span class="operator">)
+{</span><span class="type">
+	bool</span> Tag<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+	if</span><span class="operator">((</span>str<span class="operator">==</span><span class="char">'+'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'-'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'*'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'/'</span><span class="operator">)||(</span>str<span class="operator">==</span><span class="char">'='</span><span class="operator">))</span> Tag<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+	return</span> Tag<span class="operator">;
+
+}</span>
+
+</pre>
+
+
+
+
+
+
+
+</body>
+</html>
