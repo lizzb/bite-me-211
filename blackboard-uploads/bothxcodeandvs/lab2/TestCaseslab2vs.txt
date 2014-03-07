@@ -1,0 +1,11 @@
+this is for test
+res = var_1 + 3.1415
+M_1 = [1 2 3; 3 4 5; 4 3 2]
+a++
+      c = d
+th(is) mp is 4 fun 
+a_123 = 123
+++m
+a = b +c -d *9
+h e l l o
+quit
