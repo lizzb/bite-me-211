@@ -2,7 +2,6 @@
 
 cmatrix.cpp
 
-
 Extended CMatrix class (based off Lab 4 provided solution)
 
 Handles matrix addition and subtraction, scalar multiplication, 

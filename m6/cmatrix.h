@@ -2,7 +2,6 @@
 
 cmatrix.h
 
-
 Extended CMatrix class (based off Lab 4 provided solution)
 
 Handles matrix addition and subtraction, scalar multiplication, 
@@ -23,10 +22,10 @@ class CMatrix
 	double* m_aData;
     
 public:
-	CMatrix(); // make a null matrix
-	CMatrix(double d); // 1 by 1 matrix
-	CMatrix(int nRow, int nCol); // nRow by nCol zero matrix
+	CMatrix(); 			// make a null matrix
 	CMatrix(char *str); // matrix from string
+	CMatrix(double d); 	// 1 by 1 matrix
+	CMatrix(int nRow, int nCol);	// nRow by nCol zero matrix
 	~CMatrix();
     
 	bool isNull();

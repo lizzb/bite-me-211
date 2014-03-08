@@ -2,10 +2,8 @@
 
 cvariable.cpp
 
+Extended CVariable class (based off Lab 5 Sample Solution)
 
-Based off Lab 5 Sample Solution
-
-Extended CVariable class 
 able to store and manipulate matrix variables using the CMatrix class
 
 ---------------------------------------------------------------------------- */

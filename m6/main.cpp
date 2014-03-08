@@ -3,9 +3,6 @@
 main.cpp 
 
 the parser and interpreter that run your MiniMatlab program.
-
-Starting from your Lab 4 and Lab 5 solutions
-(or the provided code and sample solution), 
 your MiniMatlab should be able to
 construct and manipulate matrix values and variables
 ---

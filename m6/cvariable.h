@@ -1,5 +1,4 @@
 /* ----------------------------------------------------------------------------
-nvjhfhkvkhkhjgkjhgkhgkhjgkjhgkjhg
 Based off Lab 5 Sample Solution
 
 The CVariable class should store the name and value of a user-defined variable.
