@@ -5,49 +5,223 @@
 
 
 <h2>CMatrix.h</h2>
-<pre><span class="comment">// matrix.h: interface of the CMatrix class
-</span><span class="pre">
-#ifndef CMATRIX_H
-#define CMATRIX_H
-</span><span class="keyword">
-class</span> CMatrix<span class="operator">
+<pre><span class="pre">#include &lt;iostream&gt;
+#include &lt;string.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdlib.h&gt; // UPDATE from 4/8
+#include "CMatrix.h"
+</span><span class="comment">
+// for string input, we get something from previous projects
+</span><span class="keyword">enum</span> MATRIX_INPUT<span class="operator"> {</span>NUM<span class="operator">,</span> SEP<span class="operator">,</span> END<span class="operator">,</span> ERR<span class="operator">};</span>
+
+MATRIX_INPUT MatrixPiece<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator"> *</span>buffer<span class="operator">,</span><span class="type"> int</span><span class="operator"> &amp;</span>st<span class="operator">,</span><span class="type"> char</span><span class="operator"> *</span>piece<span class="operator">)
+{</span><span class="flow">
+  while</span><span class="operator"> (</span>buffer<span class="operator">[</span>st<span class="operator">] ==</span><span class="char"> ' '</span><span class="operator">)</span>
+    st<span class="operator">++;</span><span class="flow">
+
+  if</span><span class="operator"> (((</span>buffer<span class="operator">[</span>st<span class="operator">] &lt;=</span><span class="char"> '9'</span><span class="operator">) &amp;&amp; (</span>buffer<span class="operator">[</span>st<span class="operator">] &gt;=</span><span class="char"> '0'</span><span class="operator">)) || (</span>buffer<span class="operator">[</span>st<span class="operator">] ==</span><span class="char"> '.'</span><span class="operator">))
+  {</span><span class="type">
+    int</span> ed<span class="operator"> =</span> st<span class="operator">;</span><span class="flow">
+    while</span><span class="operator"> (((</span>buffer<span class="operator">[</span>ed<span class="operator">] &lt;=</span><span class="char"> '9'</span><span class="operator">) &amp;&amp; (</span>buffer<span class="operator">[</span>ed<span class="operator">] &gt;=</span><span class="char"> '0'</span><span class="operator">)) || (</span>buffer<span class="operator">[</span>ed<span class="operator">] ==</span><span class="char"> '.'</span><span class="operator">))
+    {</span>
+      piece<span class="operator">[</span>ed<span class="operator">-</span>st<span class="operator">] =</span> buffer<span class="operator">[</span>ed<span class="operator">];</span>
+      ed<span class="operator">++;
+    }</span>
+    piece<span class="operator">[</span>ed<span class="operator">-</span>st<span class="operator">] =</span><span class="int"> 0</span><span class="operator">;</span>
+    st<span class="operator"> =</span> ed<span class="operator">;</span><span class="flow">
+    return</span> NUM<span class="operator">;
+  }</span><span class="flow">
+  else if</span><span class="operator"> (</span>buffer<span class="operator">[</span>st<span class="operator">] ==</span><span class="char"> ']'</span><span class="operator">)
+  {
+    ++</span>st<span class="operator">;</span><span class="flow">
+    return</span> END<span class="operator">;
+  }</span><span class="flow">
+  else if</span><span class="operator"> (</span>buffer<span class="operator">[</span>st<span class="operator">] ==</span><span class="char"> ';'</span><span class="operator">)
+  {
+    ++</span>st<span class="operator">;</span><span class="flow">
+    return</span> SEP<span class="operator">;
+  }</span><span class="flow">
+  else
+    return</span> ERR<span class="operator">;
+}</span><span class="type">
+
+bool</span> GetRowCol<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator"> *</span>str<span class="operator">,</span><span class="type"> int</span><span class="operator"> &amp;</span>nRow<span class="operator">,</span><span class="type"> int</span><span class="operator"> &amp;</span>nCol<span class="operator">)
+{</span>
+  nRow<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span>
+  nCol<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span><span class="comment">
+
+  // should start with a '['
+</span><span class="flow">  if</span><span class="operator"> (</span>str<span class="operator">[</span><span class="int">0</span><span class="operator">] !=</span><span class="char"> '['</span><span class="operator">)</span><span class="flow">
+    return</span><span class="bool"> false</span><span class="operator">;</span><span class="type">
+
+  char</span> piece<span class="operator">[</span><span class="int">100</span><span class="operator">];</span><span class="type">
+  int</span> col<span class="operator"> =</span><span class="int"> 0</span><span class="operator">,</span> st<span class="operator"> =</span><span class="int"> 1</span><span class="operator">;</span><span class="flow">
+  for</span><span class="operator"> (;;)</span><span class="flow">
+  switch</span><span class="operator"> (</span>MatrixPiece<span class="operator">(</span>str<span class="operator">,</span> st<span class="operator">,</span> piece<span class="operator">))
+  {</span><span class="flow">
+    case</span> SEP<span class="operator">:</span><span class="comment"> // new row
+</span><span class="flow">      if</span><span class="operator"> ((</span>nRow<span class="operator"> !=</span><span class="int"> 0</span><span class="operator">) &amp;&amp; (</span>col<span class="operator"> !=</span> nCol<span class="operator">))</span><span class="flow">
+        return</span><span class="bool"> false</span><span class="operator">;</span>
+      nCol<span class="operator"> =</span> col<span class="operator">;
+      ++</span>nRow<span class="operator">;</span>
+      col<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span><span class="flow">
+      break</span><span class="operator">;</span><span class="flow">
+    case</span> NUM<span class="operator">:</span><span class="comment"> // new number
+</span><span class="operator">      ++</span>col<span class="operator">;</span><span class="flow">
+      break</span><span class="operator">;</span><span class="flow">
+    case</span> END<span class="operator">:</span><span class="flow">
+      if</span><span class="operator"> ((</span>nRow<span class="operator"> !=</span><span class="int"> 0</span><span class="operator">) &amp;&amp; (</span>col<span class="operator"> !=</span> nCol<span class="operator">))</span><span class="flow">
+        return</span><span class="bool"> false</span><span class="operator">;</span>
+      nCol<span class="operator"> =</span> col<span class="operator">;
+      ++</span>nRow<span class="operator">;</span><span class="flow">
+      return</span><span class="bool"> true</span><span class="operator">;</span><span class="flow">
+    case</span> ERR<span class="operator">:</span><span class="flow">
+      return</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+    default</span><span class="operator">:</span><span class="flow">
+      return</span><span class="bool"> false</span><span class="operator">;
+  }</span><span class="flow">
+  return</span><span class="bool"> false</span><span class="operator">;
+}</span><span class="type">
+
+void</span> FillArray<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator"> *</span>str<span class="operator">,</span><span class="type"> double</span><span class="operator"> *</span>array<span class="operator">,</span><span class="type"> int</span> size<span class="operator">)
+{</span><span class="comment">
+  // call GetRowCol first, this one should not fail
+</span><span class="type">
+  char</span> piece<span class="operator">[</span><span class="int">100</span><span class="operator">];</span><span class="type">
+  int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">,</span> st<span class="operator"> =</span><span class="int"> 1</span><span class="operator">;</span><span class="flow">
+  for</span><span class="operator"> (;</span> i<span class="operator"> &lt;</span> size<span class="operator">;)</span><span class="flow">
+    switch</span><span class="operator"> (</span>MatrixPiece<span class="operator">(</span>str<span class="operator">,</span> st<span class="operator">,</span> piece<span class="operator">))
+  {</span><span class="flow">
+    case</span> SEP<span class="operator">:</span><span class="flow">
+      break</span><span class="operator">;</span><span class="flow">
+    case</span> NUM<span class="operator">:</span>
+      array<span class="operator">[</span>i<span class="operator">] =</span> atof<span class="operator">(</span>piece<span class="operator">);
+      ++</span>i<span class="operator">;</span><span class="flow">
+      break</span><span class="operator">;</span><span class="flow">
+    case</span> END<span class="operator">:</span><span class="flow">
+      return</span><span class="operator">;</span><span class="flow">
+    case</span> ERR<span class="operator">:</span>
+      assert<span class="operator">(</span><span class="bool">false</span><span class="operator">);</span><span class="flow">
+    default</span><span class="operator">:</span>
+      assert<span class="operator">(</span><span class="bool">false</span><span class="operator">);
+  }
+}</span>
+
+CMatrix<span class="operator">::</span>CMatrix<span class="operator">()
+  :</span> m_nRow<span class="operator">(</span><span class="int">0</span><span class="operator">),</span> m_nCol<span class="operator">(</span><span class="int">0</span><span class="operator">),</span> m_aData<span class="operator">(</span><span class="int">0</span><span class="operator">)
+{
+}</span>
+
+CMatrix<span class="operator">::</span>CMatrix<span class="operator">(</span><span class="type">double</span> d<span class="operator">)
+  :</span> m_nRow<span class="operator">(</span><span class="int">1</span><span class="operator">),</span> m_nCol<span class="operator">(</span><span class="int">1</span><span class="operator">),</span> m_aData<span class="operator">(</span><span class="keyword">new</span><span class="type"> double</span><span class="operator">[</span><span class="int">1</span><span class="operator">])
+{</span>
+  element<span class="operator">(</span><span class="int">0</span><span class="operator">,</span><span class="int"> 0</span><span class="operator">) =</span> d<span class="operator">;
+}</span>
+
+CMatrix<span class="operator">::</span>CMatrix<span class="operator">(</span><span class="type">int</span> nRow<span class="operator">,</span><span class="type"> int</span> nCol<span class="operator">)
+  :</span> m_nRow<span class="operator">(</span>nRow<span class="operator">),</span> m_nCol<span class="operator">(</span>nCol<span class="operator">),</span> m_aData<span class="operator">(</span><span class="keyword">new</span><span class="type"> double</span><span class="operator">[</span>nRow<span class="operator">*</span>nCol<span class="operator">])
+{</span><span class="flow">
+  for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> i<span class="operator"> &lt;</span> m_nRow<span class="operator">; ++</span>i<span class="operator">)</span><span class="flow">
+    for</span><span class="operator"> (</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> j<span class="operator"> &lt;</span> m_nCol<span class="operator">; ++</span>j<span class="operator">)</span>
+      element<span class="operator">(</span>i<span class="operator">,</span> j<span class="operator">) =</span><span class="int"> 0</span><span class="operator">;
+}</span>
+
+CMatrix<span class="operator">::</span>CMatrix<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator"> *</span>str<span class="operator">)
+  :</span> m_nRow<span class="operator">(</span><span class="int">0</span><span class="operator">),</span> m_nCol<span class="operator">(</span><span class="int">0</span><span class="operator">),</span> m_aData<span class="operator">(</span><span class="int">0</span><span class="operator">)
 {</span><span class="type">
-  int</span>    m_nRow<span class="operator">;</span><span class="comment"> // # of rows
-</span><span class="type">  int</span>    m_nCol<span class="operator">;</span><span class="comment"> // # of columns
-</span><span class="type">  double</span><span class="operator">  *</span>m_aData<span class="operator">;</span><span class="keyword">
+  int</span> nRow<span class="operator">,</span> nCol<span class="operator">;</span><span class="flow">
+  if</span><span class="operator"> (!</span>GetRowCol<span class="operator">(</span>str<span class="operator">,</span> nRow<span class="operator">,</span> nCol<span class="operator">))</span><span class="flow">
+    return</span><span class="operator">;</span>
 
-public</span><span class="operator">:</span>
-  CMatrix<span class="operator">();</span><span class="comment">  // make a null matrix
+  m_nRow<span class="operator"> =</span> nRow<span class="operator">;</span>
+  m_nCol<span class="operator"> =</span> nCol<span class="operator">;</span>
+  m_aData<span class="operator"> =</span><span class="keyword"> new</span><span class="type"> double</span><span class="operator">[</span>m_nRow<span class="operator">*</span>m_nCol<span class="operator">];</span>
+
+  FillArray<span class="operator">(</span>str<span class="operator">,</span> m_aData<span class="operator">,</span> m_nRow<span class="operator">*</span>m_nCol<span class="operator">);</span><span class="comment">
+  // FillArray should not return false since we checked that with GetRowCol
+</span><span class="operator">}</span>
+
+CMatrix<span class="operator">::~</span>CMatrix<span class="operator">()
+{</span><span class="keyword">
+  delete</span> m_aData<span class="operator">;</span><span class="comment"> // UPDATE from delete[] m_aData on 4/8
+</span><span class="operator">}</span><span class="type">
+
+void</span> CMatrix<span class="operator">::</span>swap<span class="operator">(</span>CMatrix<span class="operator"> &amp;</span>m<span class="operator">)
+{</span><span class="type">
+  int</span> tmp_i<span class="operator">;</span><span class="type">
+  double</span><span class="operator"> *</span>tmp_p<span class="operator">;</span><span class="comment">
+
+  // swap all the member variables
 </span>
-  CMatrix<span class="operator">(</span><span class="type">double</span> d<span class="operator">);</span><span class="comment"> // 1 by 1 matrix
-</span> CMatrix<span class="operator">(</span><span class="type">int</span> nRow<span class="operator">,</span><span class="type"> int</span> nCol<span class="operator">);</span><span class="comment"> // nRow by nCol zero matrix
+  tmp_i<span class="operator"> =</span> m_nCol<span class="operator">;</span> m_nCol<span class="operator"> =</span> m<span class="operator">.</span>m_nCol<span class="operator">;</span> m<span class="operator">.</span>m_nCol<span class="operator"> =</span> tmp_i<span class="operator">;</span>
+
+  tmp_i<span class="operator"> =</span> m_nRow<span class="operator">;</span> m_nRow<span class="operator"> =</span> m<span class="operator">.</span>m_nRow<span class="operator">;</span> m<span class="operator">.</span>m_nRow<span class="operator"> =</span> tmp_i<span class="operator">;</span>
+
+  tmp_p<span class="operator"> =</span> m_aData<span class="operator">;</span> m_aData<span class="operator"> =</span> m<span class="operator">.</span>m_aData<span class="operator">;</span> m<span class="operator">.</span>m_aData<span class="operator"> =</span> tmp_p<span class="operator">;
+}</span><span class="type">
+
+bool</span> CMatrix<span class="operator">::</span>IsNull<span class="operator">()
+{</span><span class="flow">
+  return</span> m_aData<span class="operator"> ==</span><span class="int"> 0</span><span class="operator">;
+}</span><span class="type">
+
+void</span> CMatrix<span class="operator">::</span>resize<span class="operator">(</span><span class="type">int</span> nRow<span class="operator">,</span><span class="type"> int</span> nCol<span class="operator">)
+{</span><span class="comment">
+  // 1 Create a new matrix m.
+  // 2 Assign values to m.
+  // 3 Make this matrix m by swapping.
 </span>
-  CMatrix<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator"> *</span>str<span class="operator">);</span><span class="comment"> // matrix from string -- corrected from CMatrix(char *str) 3/8
-</span><span class="operator">
+  CMatrix m<span class="operator">(</span>nRow<span class="operator">,</span> nCol<span class="operator">);</span><span class="comment">
 
-  ~</span>CMatrix<span class="operator">();</span><span class="comment">
+  // UPDATE from 4/8 - replaced calling getters with calling member variables
+  // which uhhh... actually doesn't make sense for accessing the OTHER matrix member variables...
+</span><span class="flow">  for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">; (</span>i<span class="operator"> &lt;</span> m_nRow<span class="operator">) &amp;&amp; (</span>i<span class="operator"> &lt;</span> m<span class="operator">.</span>m_nRow<span class="operator">); ++</span>i<span class="operator">)</span><span class="flow">
+    for</span><span class="operator"> (</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">; (</span>j<span class="operator"> &lt;</span> m_nCol<span class="operator">) &amp;&amp; (</span>j<span class="operator"> &lt;</span> m<span class="operator">.</span>m_nCol<span class="operator">); ++</span>j<span class="operator">)</span>
+      m<span class="operator">.</span>element<span class="operator">(</span>i<span class="operator">,</span> j<span class="operator">)  =</span> element<span class="operator">(</span>i<span class="operator">,</span> j<span class="operator">);</span><span class="comment">
 
-  // Is this matrix a null matrix?
-</span><span class="type">  bool</span> IsNull<span class="operator">();</span><span class="type">
+  // We don't need assignment here because we don't need m any more!
+</span> swap<span class="operator">(</span>m<span class="operator">);</span><span class="comment">
 
-  void</span> swap<span class="operator">(</span>CMatrix<span class="operator"> &amp;</span>m<span class="operator">);</span><span class="comment"> // swap this and m
-</span><span class="type">
-  void</span> resize<span class="operator">(</span><span class="type">int</span> nRow<span class="operator">,</span><span class="type"> int</span> nCol<span class="operator">);</span><span class="comment">
+  // m's destructor will be called here.
+  // The old m_aData will be deleted then.
+</span><span class="operator">}</span><span class="type">
 
-  // get
-</span><span class="type">  int</span>  getNRow<span class="operator">();</span><span class="comment"> // return # of rows
-</span><span class="type">  int</span>  getNCol<span class="operator">();</span><span class="comment"> // return # of columns
+int</span> CMatrix<span class="operator">::</span>getNRow<span class="operator">()</span><span class="comment"> // UPDATE from NRow() 4/8
+</span><span class="operator">{</span><span class="flow">
+  return</span> m_nRow<span class="operator">;
+}</span><span class="type">
 
-  // return the element at i-th row and j-th column
-</span><span class="type">  double</span><span class="operator"> &amp;</span>element<span class="operator">(</span><span class="type">int</span> i<span class="operator">,</span><span class="type"> int</span> j<span class="operator">);</span><span class="comment">
+int</span> CMatrix<span class="operator">::</span>getNCol<span class="operator">()</span><span class="comment"> // UPDATE from NCol() 4/8
+</span><span class="operator">{</span><span class="flow">
+  return</span> m_nCol<span class="operator">;
+}</span><span class="type">
 
-   // output the matrix
-</span><span class="operator">
-};</span><span class="comment"> // class CMatrix
-</span><span class="type">
-void</span> printMatrix<span class="operator">(</span>CMatrix<span class="operator"> &amp;</span>m<span class="operator">);</span><span class="comment"> // Corrected from PrintMatrix - 4/8
-</span><span class="pre">
-#endif // CMATRIX_H</span></pre>
+double</span><span class="operator"> &amp;</span>CMatrix<span class="operator">::</span>element<span class="operator">(</span><span class="type">int</span> i<span class="operator">,</span><span class="type"> int</span> j<span class="operator">)
+{</span>
+  assert<span class="operator">((</span>i<span class="operator"> &gt;=</span><span class="int"> 0</span><span class="operator">) &amp;&amp; (</span>i<span class="operator"> &lt;</span> m_nRow<span class="operator">));</span>
+  assert<span class="operator">((</span>j<span class="operator"> &gt;=</span><span class="int"> 0</span><span class="operator">) &amp;&amp; (</span>j<span class="operator"> &lt;</span> m_nCol<span class="operator">));</span><span class="flow">
+
+  return</span> m_aData<span class="operator">[</span>i<span class="operator">*</span>m_nCol<span class="operator">+</span>j<span class="operator">];
+}</span><span class="type">
+
+void</span> printMatrix<span class="operator">(</span>CMatrix<span class="operator"> &amp;</span>m<span class="operator">)</span><span class="comment"> // UPDATE from PrintMatrix 4/8
+</span><span class="operator">{</span><span class="flow">
+  if</span><span class="operator"> (</span>m<span class="operator">.</span>IsNull<span class="operator">())</span>
+    std<span class="operator">::</span>cout<span class="operator"> &lt;&lt;</span><span class="string"> "\tnull matrix"</span><span class="operator"> &lt;&lt;</span> std<span class="operator">::</span>endl<span class="operator">;</span><span class="flow">
+  else</span><span class="operator">
+  {</span><span class="comment">
+    // row by row
+</span><span class="flow">    for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> i<span class="operator"> &lt;</span> m<span class="operator">.</span>getNRow<span class="operator">(); ++</span>i<span class="operator">) 
+    {</span>
+      std<span class="operator">::</span>cout<span class="operator"> &lt;&lt;</span><span class="string"> "\t"</span><span class="operator">;</span><span class="flow">
+      for</span><span class="operator"> (</span><span class="type">int</span> j<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> j<span class="operator"> &lt;</span> m<span class="operator">.</span>getNCol<span class="operator">(); ++</span>j<span class="operator">)</span>
+        std<span class="operator">::</span>cout<span class="operator"> &lt;&lt;</span> m<span class="operator">.</span>element<span class="operator">(</span>i<span class="operator">,</span> j<span class="operator">) &lt;&lt;</span><span class="string"> "\t"</span><span class="operator">;</span>
+      std<span class="operator">::</span>cout<span class="operator"> &lt;&lt;</span> std<span class="operator">::</span>endl<span class="operator">;
+    }
+  }</span>
+  std<span class="operator">::</span>cout<span class="operator"> &lt;&lt;</span> std<span class="operator">::</span>endl<span class="operator">;
+}</span>
+</pre>
 
 
 
@@ -378,7 +552,9 @@ ostream<span class="operator">&amp;</span><span class="keyword"> operator</span>
 
 
 <pre><span class="pre">#include "cvariable.h"
-</span><span class="keyword">using namespace</span> std<span class="operator">;</span>
+</span>
+#include &lt;assert.h&gt; <span class="comment"> //ONLY difference updated 4/8</span>
+<span class="keyword">using namespace</span> std<span class="operator">;</span>
 
 CVariable<span class="operator">::</span>CVariable<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> init_name<span class="operator">)
 {</span>
@@ -504,7 +680,7 @@ ostream<span class="operator">&amp;</span><span class="keyword"> operator</span>
 
 <hr>
 
-<h2> main.cpp - Jiang? </h2>
+<h2> main.cpp - minor updates 4/8 </h2>
 
 <pre><span class="comment">/**
  Lab 5:  a Programmable Calculator
@@ -538,9 +714,6 @@ ostream<span class="operator">&amp;</span><span class="keyword"> operator</span>
    variable.  If the variable on the LHS of the assignment does not exist, it
    is created.  Otherwise, the existing variable is updated.  Compound
    operators are not supported with this command type.
-
-
-   
  */</span><span class="pre">
 
 #include &lt;iostream&gt;
@@ -764,9 +937,9 @@ bool</span> partitioner<span class="operator">(</span><span class="keyword">cons
 </span><span class="operator">  }</span><span class="flow">
 
   return</span><span class="bool"> true</span><span class="operator">;
-}</span><span class="type">
-
-void</span> freeSegments<span class="operator">(</span>segment_t<span class="operator">*</span> segmt<span class="operator">)
+}</span><span class="comment">
+// deleted a meaningless comment update 4/8
+</span><span class="type">void</span> freeSegments<span class="operator">(</span>segment_t<span class="operator">*</span> segmt<span class="operator">)
 {</span><span class="keyword">
   delete</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span><span class="keyword">
   delete</span> segmt<span class="operator">;
@@ -820,10 +993,10 @@ bool</span> isSpace<span class="operator">(</span><span class="type">char</span>
 }</span><span class="type">
 
 void</span> interpreter<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> cmd<span class="operator">)
-{</span><span class="type">
-	char</span> buffer<span class="operator">[</span><span class="int">500</span><span class="operator">];</span>
-	segment_t<span class="operator">*</span> segmt<span class="operator">;</span><span class="type">
-	char</span><span class="operator">*</span> lhs<span class="operator">;</span><span class="type">
+{</span><span class="comment">
+  //char buffer[500]; // removed in 4/8 update
+</span>  segment_t<span class="operator">*</span> segmt<span class="operator">;</span><span class="type">
+  char</span><span class="operator">*</span> lhs<span class="operator">;</span><span class="type">
   char</span><span class="operator">*</span> left<span class="operator">;</span><span class="type">
   char</span><span class="operator">*</span> right<span class="operator">;</span>
   op_t op<span class="operator">;</span><span class="type">
@@ -831,7 +1004,7 @@ void</span> interpreter<span class="operator">(</span><span class="keyword">cons
   bool</span> success<span class="operator">;</span><span class="flow">
 
   if</span><span class="operator"> (</span>partitioner<span class="operator">(</span>cmd<span class="operator">, &amp;</span>segmt<span class="operator">,</span> numSeg<span class="operator">))
-	{</span><span class="pre">
+  {</span><span class="pre">
 #ifdef DEBUG
 </span><span class="flow">    for</span><span class="operator"> (</span><span class="type">int</span> i<span class="operator"> =</span><span class="int"> 0</span><span class="operator">;</span> i<span class="operator"> &lt;</span> numSeg<span class="operator">;</span> i<span class="operator">++)
     {</span><span class="flow">
@@ -850,9 +1023,9 @@ void</span> interpreter<span class="operator">(</span><span class="keyword">cons
 </span>
     success<span class="operator"> =</span><span class="bool"> true</span><span class="operator">;</span>
     cout<span class="operator"> &lt;&lt;</span> cmd<span class="operator"> &lt;&lt;</span> endl<span class="operator">;</span><span class="flow">
-		switch</span><span class="operator"> (</span>numSeg<span class="operator">)</span><span class="comment"> //Must have 2, 3, or 5 segments
-</span><span class="operator">		{</span><span class="flow">
-		case</span><span class="int"> 2</span><span class="operator">:</span><span class="comment"> //Unary operation
+    switch</span><span class="operator"> (</span>numSeg<span class="operator">)</span><span class="comment"> //Must have 2, 3, or 5 segments
+</span><span class="operator">    {</span><span class="flow">
+    case</span><span class="int"> 2</span><span class="operator">:</span><span class="comment"> //Unary operation
 </span><span class="flow">      if</span><span class="operator"> (</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> ==</span> OP<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>type<span class="operator"> ==</span> VAR<span class="operator">)
       {</span>
         left<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">;</span>
@@ -863,14 +1036,17 @@ void</span> interpreter<span class="operator">(</span><span class="keyword">cons
         left<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span>
         op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">);
       }</span><span class="flow">
-      else</span>
-        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
+      else</span><span class="operator">
+      {</span>
+        left<span class="operator"> =</span> NULL<span class="operator">;</span><span class="comment"> // UPDATE ON 4/8
+</span>        success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;
+      }</span><span class="flow">
 
       if</span><span class="operator"> (</span>success<span class="operator">)</span>
         success<span class="operator"> =</span> unary_op<span class="operator">(</span>left<span class="operator">,</span> op<span class="operator">);</span><span class="flow">
-			break</span><span class="operator">;</span><span class="flow">       
-		case</span><span class="int"> 3</span><span class="operator">:</span><span class="comment"> //Binary operation or assignment
-</span><span class="flow">			if</span><span class="operator"> ((</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">)
+      break</span><span class="operator">;</span><span class="flow">       
+    case</span><span class="int"> 3</span><span class="operator">:</span><span class="comment"> //Binary operation or assignment
+</span><span class="flow">      if</span><span class="operator"> ((</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">)
        || (</span>segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> &amp;&amp;</span> segmt<span class="operator">[</span><span class="int">2</span><span class="operator">].</span>type<span class="operator"> !=</span> NUM<span class="operator">))
       {</span>
         success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
@@ -901,7 +1077,7 @@ void</span> interpreter<span class="operator">(</span><span class="keyword">cons
       else</span>
         success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
       break</span><span class="operator">;</span><span class="flow">
-		case</span><span class="int"> 5</span><span class="operator">:</span><span class="comment"> //Binary operation and assignment
+    case</span><span class="int"> 5</span><span class="operator">:</span><span class="comment"> //Binary operation and assignment
 </span>      lhs<span class="operator"> =</span> segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>str<span class="operator">;</span>
       op<span class="operator"> =</span> recognizeOp<span class="operator">(</span>segmt<span class="operator">[</span><span class="int">1</span><span class="operator">].</span>str<span class="operator">);</span><span class="flow">
       if</span><span class="operator"> (</span>segmt<span class="operator">[</span><span class="int">0</span><span class="operator">].</span>type<span class="operator"> !=</span> VAR<span class="operator"> ||</span> op<span class="operator"> !=</span> ASN<span class="operator">)
@@ -921,21 +1097,20 @@ void</span> interpreter<span class="operator">(</span><span class="keyword">cons
         break</span><span class="operator">;
       }</span><span class="flow">
 
-			if</span><span class="operator"> (</span>success<span class="operator">)</span>
-				success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>lhs<span class="operator">,</span> left<span class="operator">,</span> op<span class="operator">,</span> right<span class="operator">);</span><span class="flow"> 
+      if</span><span class="operator"> (</span>success<span class="operator">)</span>
+        success<span class="operator"> =</span> binary_assign_op<span class="operator">(</span>lhs<span class="operator">,</span> left<span class="operator">,</span> op<span class="operator">,</span> right<span class="operator">);</span><span class="flow"> 
       break</span><span class="operator">;</span><span class="flow"> 
     default</span><span class="operator">:</span>
       success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;
-		}</span><span class="comment">
-    //*/
-</span>
+    }</span>
+
     freeSegments<span class="operator">(</span>segmt<span class="operator">);
-	}</span><span class="flow">
+  }</span><span class="flow">
   else</span>
     success<span class="operator"> =</span><span class="bool"> false</span><span class="operator">;</span><span class="flow">
   
-	if</span><span class="operator"> (!</span>success<span class="operator">)</span>
-		cout<span class="operator"> &lt;&lt;</span><span class="string"> "Sorry, I do not understand."</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;  
+  if</span><span class="operator"> (!</span>success<span class="operator">)</span>
+    cout<span class="operator"> &lt;&lt;</span><span class="string"> "Sorry, I do not understand."</span><span class="operator"> &lt;&lt;</span> endl<span class="operator">;  
 }</span>
 
 op_t recognizeOp<span class="operator">(</span><span class="keyword">const</span><span class="type"> char</span><span class="operator">*</span> op<span class="operator">)
