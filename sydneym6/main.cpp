@@ -87,7 +87,7 @@ int main()
   cout << "\tWilliam Hendrix, Northwestern University "<< endl; 
   cout << "\tCopyright 2014   " << endl;    
 
-  CVariable('hello');
+  //CVariable('hello');
 
 /*
   if (!in.is_open())
