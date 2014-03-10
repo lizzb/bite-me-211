@@ -95,6 +95,7 @@ students wondering why nothing will compile...
 #include <sstream>
 #include <string> // yeah pretty sure you don't need all this shit, esp not string AND string.h...
 #include <string.h>
+#include "cmatrix.h"
 #include "cvariable.h"
 using namespace std; 
 
@@ -778,16 +779,16 @@ bool unary_op(const char* operand, op_t op)
   switch (op)
   {
   case INC:
-    (**obj)++;
+   // (**obj)++; these are breaking the compiler
     break;
   case DEC:
-    (**obj)--;
+  //  (**obj)--; these are breaking the compiler
     break;
   default:
     return false;
   }
 
-  cout << operand << " = " << **obj << endl;
+  //cout << operand << " = " << **obj << endl; breaking compiler
   return true;
 }
 
@@ -841,7 +842,7 @@ bool getValue(const char* expr, double& value)
   CVariable* var = db->search(expr);
   if (var != NULL)
   {
-    value = **var;
+   // value = **var; breaking the compiler, needs to be a matrix!!!!
     return true;
   }
   //else

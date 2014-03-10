@@ -11,73 +11,9 @@ and equality and inequality operators.
 #include <iostream>
 #include <string.h>
 #include <assert.h>
-
+#include <stdlib.h> // UPDATE from 4/8
 #include "cmatrix.h"
 using namespace std;
-
-// Return result of adding two matrices
-// null if input matrices are not the same size
-CMatrix CMatrix::operator+(CMatrix& otherMatrix)
-{
-  // only matrices of the same size can be added/subtracted
-
-
-  // if input matrices are not the same size,
-  // result is a null matrix 
-  return null;
-}
-
-
-// Returns result of subtracting one matrix from another
-// null if input matrices are not the same size
-CMatrix CMatrix::operator-(CMatrix& otherMatrix)
-{
-  // Can only add/subtract matrices of the same size
-  // only matrices of the same size can be added/subtracted
-
-
-  // if input matrices are not the same size,
-  // result is a null matrix 
-  return null;
-}
-
-
-// Return result of multiplying this matrix by a scalar
-// null if neither matrix is a scalar (a 1x1 matrix)
-CMatrix CMatrix::operator*(CMatrix& otherMatrix)
-{
-  return null;
-}
-
-
-// Return result of dividing this matrix by a scalar
-// null if given matrix is not a scalar (a 1x1 matrix)
-CMatrix CMatrix::operator/(CMatrix& otherMatrix)
-{
-
-  return null;
-}
-
-
-// Returns true if the given CMatrix is the same size
-// and contains all of the same values as this matrix
-// (false otherwise) 
-bool CMatrix::operator==(CMatrix& otherMatrix)
-{
-  // check that matrices are same size first
-  // if not, return false
-  // check that every value is the same in each
-  // if any value is not the same, return false
-}
-
-
-// Returns false if the given CMatrix is the same size
-// and contains all of the same values as this matrix
-// (true otherwise) 
-bool CMatrix::operator!=(CMatrix& otherMatrix)
-{
-  // return the opposite of the == operator
-}
 
 
 
@@ -213,7 +149,7 @@ CMatrix::CMatrix(const char *str)
 
 CMatrix::~CMatrix()
 {
-	delete[] m_aData;
+    delete m_aData; // UPDATE from delete[] m_aData on 4/8
 }
 
 /* ----------------------------------------------------------------------------
@@ -242,7 +178,7 @@ void CMatrix::swap(CMatrix &m)
  Params:   
  Returns:  
  ---------------------------------------------------------------------------- */
-bool CMatrix::IsNull()
+bool CMatrix::isNull()
 {
 	return m_aData == 0;
 }
@@ -261,8 +197,8 @@ void CMatrix::resize(int nRow, int nCol)
     
 	CMatrix m(nRow, nCol);
     
-	for (int i = 0; (i < NRow()) && (i < m.NRow()); ++i)
-		for (int j = 0; (j < NCol()) && (j < m.NCol()); ++j)
+	for (int i = 0; (i < getNRow()) && (i < m.getNRow()); ++i)
+		for (int j = 0; (j < getNCol()) && (j < m.getNCol()); ++j)
 			m.element(i, j)  = element(i, j);
     
 	// We don't need assignment here because we don't need m any more!
@@ -272,15 +208,10 @@ void CMatrix::resize(int nRow, int nCol)
 	// The old m_aData will be deleted then.
 }
 
-int CMatrix::NRow()
-{
-	return m_nRow;
-}
-
-int CMatrix::NCol()
-{
-	return m_nCol;
-}
+// UPDATE from NRow() 4/8
+// UPDATE from NCol() 4/8
+int CMatrix::getNRow() { return m_nRow; }
+int CMatrix::getNCol() { return m_nCol; }
 
 /* ----------------------------------------------------------------------------
  Name:     
@@ -302,20 +233,85 @@ double &CMatrix::element(int i, int j)
  Params:   
  Returns:  
  ---------------------------------------------------------------------------- */
-void PrintMatrix(CMatrix &m)
+void printMatrix(CMatrix &m) // UPDATE from PrintMatrix 4/8
 {
-	if (m.IsNull())
-		std::cout << "\tnull matrix" << std::endl;
-	else
-	{
-		// row by row
-		for (int i = 0; i < m.NRow(); ++i)
-		{
-			std::cout << "\t";
-			for (int j = 0; j < m.NCol(); ++j)
-				std::cout << m.element(i, j) << "\t";
-			std::cout << std::endl;
-		}
-	}
-	std::cout << std::endl;
+    if (m.isNull())
+        std::cout << "\tnull matrix" << std::endl;
+    else
+    {
+        // row by row
+        for (int i = 0; i < m.getNRow(); ++i)
+        {
+            std::cout << "\t";
+            for (int j = 0; j < m.getNCol(); ++j)
+                std::cout << m.element(i, j) << "\t";
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
 }
+
+
+// Return result of adding two matrices
+// null if input matrices are not the same size
+/*CMatrix CMatrix::operator+(CMatrix& otherMatrix)
+ {
+ // only matrices of the same size can be added/subtracted
+ 
+ 
+ // if input matrices are not the same size,
+ // result is a null matrix
+ return null;
+ }
+ 
+ 
+ // Returns result of subtracting one matrix from another
+ // null if input matrices are not the same size
+ CMatrix CMatrix::operator-(CMatrix& otherMatrix)
+ {
+ // Can only add/subtract matrices of the same size
+ // only matrices of the same size can be added/subtracted
+ 
+ 
+ // if input matrices are not the same size,
+ // result is a null matrix
+ return null;
+ }
+ 
+ 
+ // Return result of multiplying this matrix by a scalar
+ // null if neither matrix is a scalar (a 1x1 matrix)
+ CMatrix CMatrix::operator*(CMatrix& otherMatrix)
+ {
+ return null;
+ }
+ 
+ 
+ // Return result of dividing this matrix by a scalar
+ // null if given matrix is not a scalar (a 1x1 matrix)
+ CMatrix CMatrix::operator/(CMatrix& otherMatrix)
+ {
+ 
+ return null;
+ }
+ 
+ 
+ // Returns true if the given CMatrix is the same size
+ // and contains all of the same values as this matrix
+ // (false otherwise)
+ bool CMatrix::operator==(CMatrix& otherMatrix)
+ {
+ // check that matrices are same size first
+ // if not, return false
+ // check that every value is the same in each
+ // if any value is not the same, return false
+ }
+ 
+ 
+ // Returns false if the given CMatrix is the same size
+ // and contains all of the same values as this matrix
+ // (true otherwise)
+ bool CMatrix::operator!=(CMatrix& otherMatrix)
+ {
+ // return the opposite of the == operator
+ }*/

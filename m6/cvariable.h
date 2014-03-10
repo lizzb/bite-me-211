@@ -9,7 +9,7 @@ Extended CVariable class
 able to store and manipulate matrix variables using the CMatrix class
 
 ---------------------------------------------------------------------------- */
-
+#include "cmatrix.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -48,7 +48,7 @@ public:
   // Constructs a new CVariable with the given name that
   // stores a copy of the given CMatrix
   // (new constructor)
-  CVariable::CVariable(const char* init_name, const CMatrix& init_value);
+  CVariable(const char* init_name, const CMatrix& init_value);
   
   // Initializes a CVariable - with a given name and value 0
   CVariable(const char* init_name);
@@ -59,7 +59,7 @@ public:
   // (modification)
   // LAB 5 (OLD): Initializes a CVariable - with a given name and value
   // CVariable(const char* init_name, double init_value);
-  CVariable::CVariable(const char* init_name, double init_value);
+  CVariable(const char* init_name, double init_value);
 
   
   
@@ -106,7 +106,9 @@ public:
   // returns a reference to the stored matrix
   // (modification)
   // LAB 5 (OLD): set the value of this CVariable (returns the CVariable)
-  virtual CVariable& operator=(double newValue);
+  //virtual CVariable& operator=(double newValue);
+    //CMatrix& operator=(CMatrix& newValue);
+    CMatrix& operator=(double newValue);
 
   // Set the value of this CVariable to match that of the given CVariable (returns the CVariable)
   virtual CVariable& operator=(CVariable& newValue);

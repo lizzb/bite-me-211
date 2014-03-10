@@ -7,17 +7,17 @@ Extended CVariable class (based off Lab 5 Sample Solution)
 able to store and manipulate matrix variables using the CMatrix class
 
 ---------------------------------------------------------------------------- */
-
+#include "cmatrix.h"
 #include "cvariable.h"
 using namespace std;
 
 // Constructs a new CVariable with the given name that
 // stores a copy of the given CMatrix
 // (new constructor)
-CVariable::CVariable(const char* init_name, const CMatrix& init_value)
+/*CVariable::CVariable(const char* init_name, const CMatrix& init_value)
 {
 
-}
+}*/
 
 // Lab 5 constructor
 CVariable::CVariable(const char* init_name)
@@ -87,14 +87,15 @@ const char* CVariable::getName() const  // this is wrong
  Returns:  
  ---------------------------------------------------------------------------- */
 // Set this CVariable's CMatrix to the given matrix and return it
-//CVariable& CVariable::operator=(CVariable& cvar).... or keep this?
+/*CVariable& CVariable::operator=(CVariable& cvar) {return null; } //.... or keep this?
 CMatrix& CVariable::operator=(CMatrix& newValue)
 {
   // need to modify - check return type
   // value = newValue;
-  // return *this; 
+  // return *this;
+    return null;
 }
-
+*/
 
 /* ----------------------------------------------------------------------------
  Name:     
@@ -113,6 +114,13 @@ CMatrix& CVariable::operator=(double newValue)
   // CVariable& CVariable::operator=(double val)
   //value = newValue;
   //return *this;
+  //  return null;
+  //  return value;
+}
+
+CVariable& CVariable::operator=(CVariable& newValue)
+{
+    
 }
 
 /* ----------------------------------------------------------------------------
@@ -226,7 +234,7 @@ CVariable* CVarDB::search(const char* name)
 // prints out a CVariable
 ostream& operator<<(ostream& out, CVariable& cvar)
 {
-  return out << cvar.name << ":\t" << cvar.value;
+    return out << cvar.name << ":\t";// << printMatrix(cvar.value);//cvar.value;
 }
 
 // prints out every CVariable in the DB

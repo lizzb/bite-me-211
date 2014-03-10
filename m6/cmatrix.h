@@ -19,11 +19,11 @@ class CMatrix
 {
 	int	m_nRow; // # of rows
 	int	m_nCol; // # of columns
-	double* m_aData;
+	double* m_aData;        // CHANGE TO MATRIX TYPE
     
 public:
 	CMatrix(); 			// make a null matrix
-	CMatrix(char *str); // matrix from string
+	CMatrix(const char* str); // matrix from string -- add const
 	CMatrix(double d); 	// 1 by 1 matrix
 	CMatrix(int nRow, int nCol);	// nRow by nCol zero matrix
 	~CMatrix();
@@ -45,7 +45,7 @@ public:
 void printMatrix(CMatrix& m);
 
 
-
+/*
 //using namespace std;
 
 // Returns the result of adding two matrices;
@@ -76,5 +76,5 @@ bool operator==(CMatrix& mat);
 // and contains all of the same values as this matrix
 // (true otherwise) 
 bool operator!=(CMatrix& mat);
-
+*/
 #endif // CMATRIX_H
