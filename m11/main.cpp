@@ -34,9 +34,6 @@
 
 Lab 3 Interpreter
 // EECS 211 MP#2: A Command Line Interpretation
-// Nan Jiang, Northwestern University
-// Copyright, 2014
-//
 // This project is to  
 // Resolve a command line by checking the grammar of the command
 // and explain the command line
@@ -63,59 +60,70 @@ using namespace std;
 // enumeration of operator types
 // void OpTranslator(OP); // output the operator // lab 3
 
-   enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; 
-   enum seg_t {VAR, NUM, MAT, OP, BAD_SEG};
+enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; 
+enum seg_t {VAR, NUM, MAT, OP, BAD_SEG};
 
-   op_t recognizeOp(const char* op);
-
-
-   typedef struct
-   {
-    char* str;
-    seg_t type;
-  } segment_t;
-
-  CVarDB* db; 
+op_t recognizeOp(const char* op);
 
 
-  /*
-// functions from the previous project
-int Partitioner(char*, int [][2], int&); // partitioning the command line into segments
-*/
+typedef struct
+{
+  char* str;
+  seg_t type;
+} segment_t;
 
-  void interpreter(const char* cmd);
-  bool partitioner(const char* cmd, segment_t** segmt, int& numseg);
-  void freeSegments(segment_t* segmt);
+  // Database for holding variables // lab 5
+CVarDB* db; 
 
 
-  
-  bool isChar(char c);
-  bool isDigit(char c);
-  bool isOperator(char c);
-  bool isSpace(char c);
 
-// lab 3
-//bool IsAChar(char); // if input is a letter // lab 23
-//bool IsADigit(char); // if it is a digit    // lab 23
-//bool IsAOperator(char); // if it is an operator // lab 23
+// functions from the previous project // as in lab 3
+// int Partitioner(char*, int [][2], int&);
+// partitioning the command line into segments
 
+void interpreter(const char* cmd);
+bool partitioner(const char* cmd, segment_t** segmt, int& numseg);
+void freeSegments(segment_t* segmt);
+
+
+
+  bool isChar(char c);      // if input is a letter
+  bool isDigit(char c);     // if input is a digit 
+  bool isOperator(char c);  // if input is an operator
+  bool isSpace(char c);     // if input is a space
+
+// lab 2+3
+//bool IsAChar(char);
+//bool IsADigit(char); 
+//bool IsAOperator(char);
+// LAB 2
+// function Patitioner(Buffer) returns 1 when the parsing is completed.
+// And the segments are printed on screen.
+// function Patitioner(Buffer) returns 0 when the input command line is not valid.      
 
 
 //function declaration
+// lab 2+3
+
 //void Interpreter(string&); // lab 3
-// if the command line is valid unary operation // lab 23
-//bool IsAUnary(char*, int [][2], char*, OP&); // lab 23 
-// if it is a valid assignment // lab 23
-//bool IsAAsn(char*, int [][2], char*, char*); // lab 23 
-// if it is a valid binary operation // lab 23
-//bool IsABinary3(char*, int [][2], char*, char*, OP&);  // lab 23
-// if it is a valid assignment and binary operation // lab 23
-//bool IsABinary5(char*, int [][2], char*, char*, char*, OP&); // lab 23
 
+// lab 2+3
 
+// if the command line is valid unary operation // lab 2+3
+//bool IsAUnary(char*, int [][2], char*, OP&); // lab 2+3
   bool unary_op(const char* operand, op_t op);  
-  bool assign_op(const char* lhs, const char* rhs);  
+
+// if the command line is a valid assignment // lab 2+3
+//bool IsAAsn(char*, int [][2], char*, char*); // lab 2+3
+  bool assign_op(const char* lhs, const char* rhs); 
+
+// if the command line is a valid binary operation // lab 2+3
+//bool IsABinary3(char*, int [][2], char*, char*, OP&);  // lab 2+3
   bool binary_op(const char* left, op_t op, const char* right);  
+
+// if the command line is a valid assignment and binary operation // lab 2+3
+//bool IsABinary5(char*, int [][2], char*, char*, char*, OP&); // lab 2+3
+
   bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right);  
 
   bool getValue(const char* expr, double& value);  
@@ -137,130 +145,81 @@ int Partitioner(char*, int [][2], int&); // partitioning the command line into s
     m2(2, 2), // 2 by 2 zero matrix
     mstr("[1.2 3.4 5.6; 2.1 4.3 6.5]"), // matrix from string
     merr("[1.2 3.4 5.6; 2.1]"); // bad input
-
-
-    cout << "A null matrix:" << endl;
-    printMatrix(null);
-
-    cout << "An 1 by 1 matrix:" << endl;
-    printMatrix(m1);
-
-    cout << "A 2 by 2 matrix:" << endl;
-    printMatrix(m2);
-
-    cout << "A 2 by 3 matrix:" << endl;
-    printMatrix(mstr);
-
-    cout << "A invalid matrix:" << endl;
-    printMatrix(merr);
-
+    cout << "A null matrix:" << endl; printMatrix(null);
+    cout << "An 1 by 1 matrix:" << endl; printMatrix(m1);
+    cout << "A 2 by 2 matrix:" << endl; printMatrix(m2);
+    cout << "A 2 by 3 matrix:" << endl; printMatrix(mstr);
+    cout << "A invalid matrix:" << endl; printMatrix(merr);
     cout << "Resize to 3 by 4:" << endl;
-  mstr.resize(3, 4); // resize to 4 by 3
-  printMatrix(mstr);
-
-  cout << "Resize to 2 by 2:" << endl;
-  mstr.resize(2, 2); // resize to 2 by 2
-  printMatrix(mstr);
-  */
-  //cout << "Press any key to end...";
-  //cin.get();  // wait for a key to end your program
-
+    mstr.resize(3, 4); // resize to 4 by 3
+    printMatrix(mstr);
+    cout << "Resize to 2 by 2:" << endl;
+    mstr.resize(2, 2); // resize to 2 by 2
+    printMatrix(mstr);
+    */
 
   db = new CVarDB();  // lab 5
 
   // Get the input
-  string cmd;   
-  // string Buffer; // lab 2 3
-
+  string currentline; //cmd lab 5   // string Buffer; // lab 2 3
   // int num_Case=0; // lab 2 3
 
   // ifstream TestFile("TestCase.txt"); // read from file lab 2 3
-  ifstream in(INPUT_FILE);   // read from file
+  ifstream TestFile(INPUT_FILE);   // read from file // better name than "in"
 
   cout << "\tWelcome to EECS 211 Lab 5:  Programmable Calculator" << endl; 
   cout << "\tWilliam Hendrix, Northwestern University "<< endl; 
   cout << "\tCopyright 2014   " << endl;    
 
 
-  /*
-  ifstream TestFile("TestCase.txt"); // read from file
-
-  if (TestFile.is_open())// open file
+  // Open file
+  if (TestFile.is_open())
   {
-    while ( getline(TestFile,Buffer) )// read a command line
+    // read a command line
+    while (getline(TestFile, currentline)) //while ( getline(TestFile, Buffer) )
     {
-      if (Buffer.compare("quit")==0) // if the input is 'quit'
-      {
-        cout<<"\nThank you. "; //quit the program
-        break;
-      } 
-      else
-      {
-        // process the command line
-        cout<<"\n# "<<++num_Case <<" : "<<Buffer<<endl; // print the command line
-        Interpreter(Buffer); // not in lab 2
-      }
-    }
-    TestFile.close();
-  }
+      // Special commands:  quit and who
 
-  else { cout << "Unable to open file";  }
-
-  cout<<"Press any key to exit..."<<endl;
-  getchar();        
-// LAB 2
-// function Patitioner(Buffer) returns 1 when the parsing is completed.
-// And the segments are printed on screen.
-// function Patitioner(Buffer) returns 0 when the input command line is not valid.      
-*/
-
-  if (!in.is_open()) // if (TestFile.is_open())// open file
-    cout << "Unable to open input file " << INPUT_FILE << endl;   
-  else
-  {
-    while (getline(in, cmd))
-    {
-      //Special commands:  quit and who
-      if (cmd == "quit")
+      // if the input is 'quit'
+      if (currentline == "quit") //if (Buffer.compare("quit")==0) 
       {
+        //cout << "\nThank you. "; //quit the program
         cout << "Thank you. Now closing...\n";  
         break;
       }
-      else if (cmd == "who")
+
+      else if (currentline == "who")
       {
         cout << *db;
         continue; 
       }
 
       // Otherwise, interpret and run the command normally
-      interpreter(cmd.c_str()); 
+      else // no else for lab 5
+      {
+        // print the command line
+        //cout << "\n# " << ++num_Case <<" : "<< Buffer << endl; 
+
+        // process the command line
+        interpreter(currentline.c_str());  // lab 5
+        //Interpreter(Buffer); // lab 3, not 2
+      }
     }
 
-    in.close();  
+    TestFile.close();
   }
 
+  // Otherwise the file failed to open
+  else // cout << "Unable to open file"; 
+  cout << "Unable to open input file " << INPUT_FILE << endl;  
+
+  // delete the database of variables
   delete db;  
-  //char c;  
-  //cout << "Type 'q' to quit: ";  
-  //cin >> c;  
 
+  //cout << "Press any key to end...";
+  //cin.get();  // wait for a key to end your program
 
-/*
-res = var_1 + 3.1415
-M_1 = [1 2 3; 3 4 5; 4 3 2]
-a++
-c = d 
-a_123 = 123
-++m
-a + b
-a = b +c -d *9
-a +=9
-quit
-
-*/
-
-
-return 0;  
+  return 0;  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -466,6 +425,8 @@ return 0;
 }*/
 
 
+//void Interpreter(string& Input)
+//int Partitioner(char* Buffer,  int segmt[][2], int& iSeg)
 /* ----------------------------------------------------------------------------
  Name:     interpreter
  Purpose:  
@@ -474,17 +435,54 @@ return 0;
  ----------------------------------------------------------------------------*/ 
  void interpreter(const char* cmd)
  {
-   //char buffer[500];
-   segment_t* segmt;
-   char* lhs;
-   char* left;
-   char* right;
-   op_t op;
-   int numSeg;
-   bool success;
+  /* // lab 3 or 2+3
+  char Buffer[500]; // array buffer to hold the command line
+  strncpy(Buffer, Input.c_str(), sizeof(Buffer));
+  Buffer[sizeof(Buffer) - 1] = 0;
+  */
 
-   if (partitioner(cmd, &segmt, numSeg))
-   {
+  /*
+  // indicator LAB 3
+  int st=0; // start point
+  int ed=0; // end point
+  */
+
+
+   //char buffer[500];
+  segment_t* segmt;
+
+
+   // int segmt[10][2]; // record the location of each segment // lab 3
+  // LAB 2 // the location of each segment: start point, length
+
+   // lab 3
+   // result_name, operand_1 and operand_2
+   //char res[50], operand_1[50], operand_2[50]; 
+  char* lhs;
+  char* left;
+  char* right;
+
+   //  OP  op; // the operator in the command line
+  op_t op;
+
+   //int iSeg = 0; // number of segments in command line
+   // type asn:   e.g., a = b              (iSeg = 3)
+   // type unary: e.g., a++                (iSeg = 2)
+   // type binary:e.g., a + b or c = a+b   (iSeg = 3 or 5)
+  int numSeg;
+
+   // aka error_code = 1 or true or Tag or isValid = false
+  bool success; 
+
+
+
+   // // if the command line can be successfully segment
+  // if(Partitioner(Buffer,segmt,iSeg))
+
+   //*****************************************************//
+  if (partitioner(cmd, &segmt, numSeg))
+  {
+
 #ifdef DEBUG
     for (int i = 0; i < numSeg; i++)
     {
@@ -501,51 +499,86 @@ return 0;
     }
 #endif
 
-    success = true;
+    success = true; // if(error_code == 1)
     cout << cmd << endl;
 
+    // valid cases can be : 2, 3 or 5 // switch (iSeg) 
     // Must have 2, 3, or 5 segments
-		switch (numSeg) 
-		{
-
-    // Unary operation
-		case 2: 
-    cout << "case 2";
-    if (segmt[0].type == OP && segmt[1].type == VAR)
+    switch (numSeg) 
     {
-      left = segmt[1].str;
-      op = recognizeOp(segmt[0].str);
-    }
-    else if (segmt[0].type == VAR && segmt[1].type == OP)
-    {
-      left = segmt[0].str;
-      op = recognizeOp(segmt[1].str);
-    }
-    else success = false;
 
-    if (success) success = unary_op(left, op);
-    break;       
+      // the command line is possible to be unary operation
+      // Unary operation
+      case 2: 
+      {
+        // cout << "case 2";
+        if (segmt[0].type == OP && segmt[1].type == VAR)
+        {
+          left = segmt[1].str;
+          op = recognizeOp(segmt[0].str);
+        }
+        else if (segmt[0].type == VAR && segmt[1].type == OP)
+        {
+          left = segmt[0].str;
+          op = recognizeOp(segmt[1].str);
+        }
+        else success = false;
+
+        if (success) success = unary_op(left, op);
+        break;   
+
+        /*
+        // if it is a valid unary operation
+        Tag = IsAUnary(Buffer,segmt,operand_1,op); 
+        if(Tag)
+        {   // it is a valid unary operation, output the result
+          OpTranslator(op); 
+          cout << " " << operand_1 << endl;
+        }  
+        break;  
+        */      
+      }
 
     // Binary operation or assignment
-		case 3: 
-   if ((segmt[0].type != VAR && segmt[0].type != NUM)
-     || (segmt[2].type != VAR && segmt[2].type != NUM))
-   {
+    // the command line is possible to be binary operation or assignment
+      case 3: 
+      {
+      if ((segmt[0].type != VAR && segmt[0].type != NUM)
+       || (segmt[2].type != VAR && segmt[2].type != NUM))
+      {
     //cout << "case 3 " << segmt[2].type; tryign to fiure out how to display matrix
-    success = false;
-    break;
-  }
+        success = false;
+        break;
+      }
 
-  left = segmt[0].str;
-  op = recognizeOp(segmt[1].str);
-  right = segmt[2].str;
+      left = segmt[0].str;
+      op = recognizeOp(segmt[1].str);
+      right = segmt[2].str;
 
+      // if it is a valid assignment
       if (op == ASN) //Assign
       {
+        // it is a valid assignment, output the result
         if (segmt[0].type != NUM) //1 + 2 is ok, 1 = 2 is not
           success = assign_op(left, right);
         else success = false;
       }
+      /*
+        if(IsAAsn(Buffer,segmt,res,operand_1)) // if it is a valid assignment
+        {   // it is a valid assignment, output the result
+          Tag = true;
+          cout << "ASN " << " " << operand_1 << " to " << res <<endl;
+        }
+        */
+        /*
+        else if(IsABinary3(Buffer,segmt,operand_1,operand_2,op)) // if it is a binary operation with assignment to default variable ans
+        {   // it is a binary operation, output the result
+          Tag = true;
+          OpTranslator(op);
+          cout << " " << operand_1 << " AND " << operand_2 << " , THEN ASN to ans. " << endl;
+        }
+        break;
+        */
       else if (op == ADD || op == SUB || op == MULT || op == DIV) //Binary operation
         success = binary_op(left, op, right);
 
@@ -564,9 +597,20 @@ return 0;
       else success = false;
       break;
 
-
+    }
+    // the command line is possible to be binary operation and assignment
 		case 5: //Binary operation and assignment
     //cout << "case 5";
+    /*
+    // if it is a binary operation with assignment to a specified variable
+        Tag = IsABinary5(Buffer,segmt,res,operand_1,operand_2,op); 
+        if(Tag)
+        {   // it is a binary operation, output the result
+          OpTranslator(op);
+          cout<<" "<<operand_1<<" AND "<<operand_2<<" , THEN ASN to "<< res <<endl;
+        }  
+        break; 
+        */  
     lhs = segmt[0].str;
     op = recognizeOp(segmt[1].str);
     if (segmt[0].type != VAR || op != ASN)
@@ -592,10 +636,19 @@ return 0;
   }
 
 
+
+
   freeSegments(segmt);
 }
-else success = false;
 
+
+
+
+else success = false;
+/*if (Tag == false) // if the command line is not valid
+  {
+    cout<<"Sorry, do not understand." <<endl;
+  }*/
 if (!success) cout << "Sorry, I do not understand." << endl;  
 }
 
@@ -625,30 +678,47 @@ if (!success) cout << "Sorry, I do not understand." << endl;
  {
   // pos - keeps track of the position in the "string" which is really
   // a pointer to an aray of chars
-  int pos, len, bpos, count; // pos numseg st and ed
+  //int pos, len, bpos, count; // pos numseg st and ed
+  //int pos, bpos, count;
+  int count;
   char* buffer;
-  char c;
+  char c; // current character
+  int bpos;
 
+  int pos = 0;
+  numseg = 0;
   //First loop:  input checking and segment counting
-  pos = numseg = 0;
+  //pos = numseg = 0;
   // indicator
   //int st=0; // start point
   //int ed=0; // end point
+  // int error_code = 1;  lab 2 i thik or 3
+  // ------------------------------------------------------
+  // begin partitioner incorporation ------------------
+
 
   // get the length of command line
-  len = strlen(cmd); // int len = (int)strlen(Buffer);
+  int len = strlen(cmd); // int len = (int)strlen(Buffer);
   while (pos < len) // while(st<len)
   {
-    c = cmd[pos]; // ed = st;
+    // while(Buffer[st] ==' ' && st<len) st++;
+    // ed = st; // lab 23 did it at beginning,
+    // this one increments after getting current char
+    c = cmd[pos]; // the current character at this position
+
 
     // Variable name
-    if (isChar(c)) 
+
+    // check consecutive characters
+    if (isChar(c))  // if(IsAChar(Buffer[st])) 
     {
       pos++;
       // Oh WOW this is to enforce the convention/limitation/whatever
       // that variables can't start with a number
-      // Characters after the first are allowed to be 0-9
-      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) pos++;
+      // Characters after the first are allowed to be 0-9... at least i think
+      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9')))
+        pos++;
+      // while( (ed<len)&&(IsAChar(Buffer[ed]) || IsADigit(Buffer[ed]) || Buffer[ed]=='_')) ed++;
     }
 
     // Negative number or operator
@@ -662,7 +732,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       // Operator
       else if (pos < len && isOperator(cmd[pos]))
         while (pos < len && isOperator(cmd[pos])) pos++;
-      }
+    }
 
     // Operator
     else if (isOperator(c)) 
@@ -715,7 +785,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       //FillArray(str, m_aData, m_nRow*m_nCol);
   // FillArray should not return false since we checked that with GetRowCol
   */
-}
+    }
     // Whitespace
     else if (isSpace(c)) 
     {
@@ -1208,8 +1278,8 @@ bool IsAChar(char str) {
  Name:     isDigit
  Returns:  
  ---------------------------------------------------------------------------- */
-bool isDigit(char c)
-{
+ bool isDigit(char c)
+ {
   if (c >= '0' && c <= '9') return true;
   else return c == '.'; // still don't understand why returns a char not bool?
   // oh wow i get it this will return true if its a decimal (ie still part of a number)
@@ -1227,8 +1297,8 @@ bool isDigit(char c)
  Name:     isOperator
  Returns:  
  ---------------------------------------------------------------------------- */
-bool isOperator(char c)
-{
+ bool isOperator(char c)
+ {
   switch(c)
   {
     case '=':
@@ -1252,8 +1322,8 @@ bool isOperator(char c)
  Name:     isSpace
  Returns:  
  ---------------------------------------------------------------------------- */
-bool isSpace(char c)
-{
+ bool isSpace(char c)
+ {
   switch(c)
   {
     case ' ':
@@ -1274,8 +1344,8 @@ bool isSpace(char c)
  Params:   
  Returns:  
  ---------------------------------------------------------------------------- */
-void printMatrix(CMatrix &m)
-{
+ void printMatrix(CMatrix &m)
+ {
   if (m.isNull())
     std::cout << "\tnull matrix" << std::endl;
   else
