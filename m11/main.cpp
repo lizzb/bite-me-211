@@ -754,7 +754,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       if (i < len && isDigit(cmd[i])) while (i < len && isDigit(cmd[i])) i++;
 
       // Operator
-      else if (i < len && isOp(cmd[i])) while (i < len && isOp(cmd[i])) i++;
+      else if (i < len && isOp(cmd[i]))while (i < len && isOp(cmd[i])) i++;
     }
 
     // Operator
@@ -772,14 +772,51 @@ if (!success) cout << "Sorry, I do not understand." << endl;
     }
 
     // Matrix
+
+    // check matrix
+      else if((cmd[i]=='['))  
+      {
+        i++;
+        while( (i < len) && (cmd[i]!=']') )
+        {
+          if(isDigit(cmd[i])||(cmd[i]==',')||(cmd[i]==';')||(cmd[i]==' ')||(cmd[i]=='.'))
+          {
+            i++;
+          }
+          else
+          {
+            cout<<"Expect a ']' here."<<endl;
+            //error_code = 0;
+            // error_code = false; // lab 2
+            break;
+          }
+          i++;
+        }
+      }
+      
+/*
     else if (cmd[i] == '[') 
     {
       i++;
-      while (i < len && cmd[i] != ']') i++;
+      while (i < len && cmd[i] != ']') //i++;
+      {
+        if(isDigit(cmd[i])||(cmd[i]==',')||(cmd[i]==';')||(cmd[i]==' ')||(cmd[i]=='.'))
+          {
+            i++;
+          }
+          else
+          {
+            cout<<"Expect a ']' here."<<endl;
+          }
+          i++;
+        }
 
-      /*
+
+      }*/
+
+      
       // check matrix
-      else if((Buffer[st]=='['))  
+      /*else if((Buffer[st]=='['))  
       {
         ed = st+1;
         while((ed<len)&&(Buffer[ed]!=']'))
@@ -797,8 +834,8 @@ if (!success) cout << "Sorry, I do not understand." << endl;
           }
           ed++;
         }
-      }
-      */
+      }8?
+      
 
       /*char *matrixdata = new char[500]; // = '[';
       //getRowCol
@@ -834,7 +871,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       //FillArray(str, m_aData, m_nRow*m_nCol);
   // FillArray should not return false since we checked that with GetRowCol
   */
-    }
+   // }
     
     // Unrecognized case
     else return false;
@@ -847,22 +884,24 @@ if (!success) cout << "Sorry, I do not understand." << endl;
   //Macro function to make code easier to read
 #define push_to_buffer() {buffer[bpos] = cmd[pos]; pos++; bpos++;}
 
-  //Second loop:  populating segmt structure
+  // 
+  // Second loop:  populating segmt structure
+  // 
   *segmt = new segment_t[numseg];
   buffer = new char[len + numseg];
 
   bpos = pos = count = 0;
+
   while (pos < len)
   {
-    (*segmt)[count].str = &buffer[bpos]; //Segment count starts at this position
+    (*segmt)[count].str = &buffer[bpos]; // Segment count starts at this position
     //c = cmd[pos];
     if (isChar(cmd[pos])) //Variable
     {
       (*segmt)[count].type = VAR;
 
       //Characters after the first are allowed to be 0-9
-      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) 
-        push_to_buffer();
+      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9')))  push_to_buffer();
     }
     else if (cmd[pos] == '-')  //Negative number or operator
     {
@@ -872,51 +911,52 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       if (pos < len && isDigit(cmd[pos])) //Negative number
       {
         (*segmt)[count].type = NUM;
-        while (pos < len && isDigit(cmd[pos]))
-          push_to_buffer();
+        while (pos < len && isDigit(cmd[pos])) push_to_buffer();
       }
       else //Operator
       {
         (*segmt)[count].type = OP;
-        while (pos < len && isOp(cmd[pos]))
-          push_to_buffer();
+        while (pos < len && isOp(cmd[pos])) push_to_buffer();
       }
     }
     else if (isOp(cmd[pos])) //Operator
     {
       (*segmt)[count].type = OP;
-      while (pos < len && isOp(cmd[pos]))
-        push_to_buffer();
+      while (pos < len && isOp(cmd[pos])) push_to_buffer();
     }
     else if (isDigit(cmd[pos])) //Scalar
     {
       (*segmt)[count].type = NUM;
-      while (pos < len && isDigit(cmd[pos]))
-        push_to_buffer();
+      while (pos < len && isDigit(cmd[pos])) push_to_buffer();
     }
     else if (cmd[pos] == '[') //Matrix
     {
+      cout << "recognized [ in secon dloop";
       (*segmt)[count].type = MAT;
+      cout << "labeled the type";
       while (pos < len && cmd[pos] != ']')
-        push_to_buffer();
+        {
+          push_to_buffer(); cout << "kept going" <<endl;
+        }
+
       //Add ']' to buffer, as well
       push_to_buffer();
     }
     else if (isSpace(cmd[pos])) //Whitespace
     {
       pos++;
-      continue; //Don't advance to next segment!
+      continue; // Don't advance to next segment!
     }
-    else //Should never execute
+    else // Should never execute
     {
       delete buffer;
       delete segmt;
       return false;
     }
     
-    buffer[bpos] = '\0';  //Null-terminate this segment
+    buffer[bpos] = '\0';  // Null-terminate this segment
     bpos++;
-    count++; //Advance to next segment
+    count++; // Advance to next segment
   }
 
   return true;
