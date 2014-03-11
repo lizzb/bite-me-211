@@ -597,7 +597,7 @@ return 0;
 else success = false;
 
 if (!success) cout << "Sorry, I do not understand." << endl;  
-}*/
+}
 
 
 /* ----------------------------------------------------------------------------
