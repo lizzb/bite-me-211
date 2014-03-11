@@ -89,7 +89,7 @@ void freeSegments(segment_t* segmt);
 
   bool isChar(char c);      // if input is a letter
   bool isDigit(char c);     // if input is a digit 
-  bool isOperator(char c);  // if input is an operator
+  bool isOp(char c);  // if input is an operator
   bool isSpace(char c);     // if input is a space
 
 // lab 2+3
@@ -682,10 +682,12 @@ if (!success) cout << "Sorry, I do not understand." << endl;
   //int pos, bpos, count;
   int count;
   char* buffer;
-  char c; // current character
+  char curr; //c current character
   int bpos;
 
   int pos = 0;
+  int i = 0;
+  int prev = 0;
   numseg = 0;
   //First loop:  input checking and segment counting
   //pos = numseg = 0;
@@ -699,58 +701,105 @@ if (!success) cout << "Sorry, I do not understand." << endl;
 
   // get the length of command line
   int len = strlen(cmd); // int len = (int)strlen(Buffer);
-  while (pos < len) // while(st<len)
+
+  while (i < len) // while (pos < len)  // while(st<len)
   {
+    //c = cmd[pos]; // the current character at this position
+
+    //while(c == ' ' && pos < len) pos++;
     // while(Buffer[st] ==' ' && st<len) st++;
     // ed = st; // lab 23 did it at beginning,
     // this one increments after getting current char
-    c = cmd[pos]; // the current character at this position
+    
+    //if()
+    //prev = pos;
 
+    //curr = cmd[pos]; // the current character at this position
 
     // Variable name
 
-    // check consecutive characters
-    if (isChar(c))  // if(IsAChar(Buffer[st])) 
+    /*if( isChar(cmd[pos]) || isSpace(cmd[pos]) || cmd[pos] == '-' || 
+        isOperator(cmd[pos]) || isDigit(cmd[pos]) || cmd[pos] == '[')
+        {
+          pos++;
+        }
+  */
+
+    // Whitespace
+    if (isSpace(cmd[i])) 
     {
-      pos++;
+      i++;
+      continue; //Don't advance to next segment!
+    }
+
+    // check consecutive characters
+    else if (isChar(cmd[i]))  // if(IsAChar(Buffer[st])) //isChar(c) 
+    {
+      i++;
       // Oh WOW this is to enforce the convention/limitation/whatever
       // that variables can't start with a number
       // Characters after the first are allowed to be 0-9... at least i think
-      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9')))
-        pos++;
+      while ( (i < len) && 
+              ((isChar(cmd[i]) || 
+                (cmd[i] >= '0' && cmd[i] <= '9'))) )
+        i++;
       // while( (ed<len)&&(IsAChar(Buffer[ed]) || IsADigit(Buffer[ed]) || Buffer[ed]=='_')) ed++;
     }
 
     // Negative number or operator
-    else if (c == '-')  
+    else if (cmd[i] == '-')  
     {
-      pos++;
+      i++;
       // Negative number
-      if (pos < len && isDigit(cmd[pos])) 
-        while (pos < len && isDigit(cmd[pos])) pos++;
+      if (i < len && isDigit(cmd[i])) while (i < len && isDigit(cmd[i])) i++;
 
       // Operator
-      else if (pos < len && isOperator(cmd[pos]))
-        while (pos < len && isOperator(cmd[pos])) pos++;
+      else if (i < len && isOp(cmd[i])) while (i < len && isOp(cmd[i])) i++;
     }
 
     // Operator
-    else if (isOperator(c)) 
+    else if (isOp(cmd[i])) 
     {
-      pos++;
-      while (pos < len && isOperator(cmd[pos])) pos++;
+      i++;
+      while (i < len && isOp(cmd[i])) i++;
     }
 
     // Scalar
-    else if (isDigit(c))
+    else if (isDigit(cmd[i]))
     {
-      pos++;
-      while (pos < len && isDigit(cmd[pos])) pos++;
+      i++;
+      while (i < len && isDigit(cmd[i])) i++;
     }
-    else if (c == '[') //Matrix
+
+    // Matrix
+    else if (cmd[i] == '[') 
     {
-      pos++;
-      while (pos < len && cmd[pos] != ']') pos++;
+      i++;
+      while (i < len && cmd[i] != ']') i++;
+
+      /*
+      // check matrix
+      else if((Buffer[st]=='['))  
+      {
+        ed = st+1;
+        while((ed<len)&&(Buffer[ed]!=']'))
+        {
+          if(IsADigit(Buffer[ed])||(Buffer[ed]==',')||(Buffer[ed]==';')||(Buffer[ed]==' ')||(Buffer[ed]=='.'))
+          {
+            ed++;
+          }
+          else
+          {
+            cout<<"Expect a ']' here."<<endl;
+            error_code = 0;
+            // error_code = false; // lab 2
+            break;
+          }
+          ed++;
+        }
+      }
+      */
+
       /*char *matrixdata = new char[500]; // = '[';
       //getRowCol
       //FillArray
@@ -786,12 +835,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
   // FillArray should not return false since we checked that with GetRowCol
   */
     }
-    // Whitespace
-    else if (isSpace(c)) 
-    {
-      pos++;
-      continue; //Don't advance to next segment!
-    }
+    
     // Unrecognized case
     else return false;
     numseg++;
@@ -811,8 +855,8 @@ if (!success) cout << "Sorry, I do not understand." << endl;
   while (pos < len)
   {
     (*segmt)[count].str = &buffer[bpos]; //Segment count starts at this position
-    c = cmd[pos];
-    if (isChar(c)) //Variable
+    //c = cmd[pos];
+    if (isChar(cmd[pos])) //Variable
     {
       (*segmt)[count].type = VAR;
 
@@ -820,7 +864,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) 
         push_to_buffer();
     }
-    else if (c == '-')  //Negative number or operator
+    else if (cmd[pos] == '-')  //Negative number or operator
     {
       buffer[bpos] = '-';
       pos++;
@@ -834,23 +878,23 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       else //Operator
       {
         (*segmt)[count].type = OP;
-        while (pos < len && isOperator(cmd[pos]))
+        while (pos < len && isOp(cmd[pos]))
           push_to_buffer();
       }
     }
-    else if (isOperator(c)) //Operator
+    else if (isOp(cmd[pos])) //Operator
     {
       (*segmt)[count].type = OP;
-      while (pos < len && isOperator(cmd[pos]))
+      while (pos < len && isOp(cmd[pos]))
         push_to_buffer();
     }
-    else if (isDigit(c)) //Scalar
+    else if (isDigit(cmd[pos])) //Scalar
     {
       (*segmt)[count].type = NUM;
       while (pos < len && isDigit(cmd[pos]))
         push_to_buffer();
     }
-    else if (c == '[') //Matrix
+    else if (cmd[pos] == '[') //Matrix
     {
       (*segmt)[count].type = MAT;
       while (pos < len && cmd[pos] != ']')
@@ -858,7 +902,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       //Add ']' to buffer, as well
       push_to_buffer();
     }
-    else if (isSpace(c)) //Whitespace
+    else if (isSpace(cmd[pos])) //Whitespace
     {
       pos++;
       continue; //Don't advance to next segment!
@@ -1294,10 +1338,10 @@ bool IsAChar(char str) {
 }*/
 
 /* ----------------------------------------------------------------------------
- Name:     isOperator
+ Name:     isOp
  Returns:  
  ---------------------------------------------------------------------------- */
- bool isOperator(char c)
+ bool isOp(char c)
  {
   switch(c)
   {
