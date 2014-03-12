@@ -53,7 +53,8 @@ Lab 3 Interpreter
 #include "CVariable.h"
 using namespace std; 
 
-#define INPUT_FILE "TestCasesForBuild.txt" //lab5TestCase.txt"
+#define INPUT_FILE "lizzTests.txt" 
+//"lab6TestCases.txt" //"TestCasesForBuild.txt" //lab5TestCase.txt"
 
 // lab 3
 //enum OP {ASN, ADD, MIN, MUL, DIV, PRE_INC, PRE_DEC,POST_INC,POST_DEC};
@@ -192,7 +193,9 @@ ostream& operator<<(std::ostream& out, CMatrix& m);
 
       else if (currentline == "who")
       {
+        cout << "--------WHO---------" << endl;
         cout << *db;
+        cout << "--------------------" << endl;
         continue; 
       }
 
@@ -787,7 +790,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
           }
           else
           {
-            cout<<"Expect a ']' here."<<endl;
+            //cout<<"Expect a ']' here."<<endl; dont need to print this but the ] will be added
             //error_code = 0;
             // error_code = false; // lab 2
             break;
@@ -933,12 +936,12 @@ if (!success) cout << "Sorry, I do not understand." << endl;
     }
     else if (cmd[pos] == '[') //Matrix
     {
-      cout << "recognized [ in secon dloop";
+      //cout << "recognized [ in secon dloop";
       (*segmt)[count].type = MAT;
-      cout << "labeled the type";
+      //cout << "labeled the type Matrix";
       while (pos < len && cmd[pos] != ']')
         {
-          push_to_buffer(); cout << "kept going" <<endl;
+          push_to_buffer(); //cout << "kept going" <<endl;
         }
 
       //Add ']' to buffer, as well
