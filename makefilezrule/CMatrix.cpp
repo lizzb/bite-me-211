@@ -4,9 +4,11 @@
 
 #include "CMatrix.h"
 
+// CAN'T TOUCH THIS
+// NA NA NANA, NA NA, CAN'T TOUCH THIS
 // for string input, we get something from previous projects
 enum MATRIX_INPUT {NUM, SEP, END, ERR};
-
+// these should all be private
 MATRIX_INPUT MatrixPiece(const char *buffer, int &st, char *piece)
 {
 	while (buffer[st] == ' ')
@@ -122,8 +124,7 @@ CMatrix::CMatrix(int nRow, int nCol)
  Params:   
  Returns:  
  ---------------------------------------------------------------------------- */
-CMatrix::CMatrix(const char *str)
-	: m_nRow(0), m_nCol(0), m_aData(0)
+CMatrix::CMatrix(const char *str): m_nRow(0), m_nCol(0), m_aData(0)
 {
 	int nRow, nCol;
 	if (!GetRowCol(str, nRow, nCol)) return;
@@ -134,12 +135,36 @@ CMatrix::CMatrix(const char *str)
 
 	FillArray(str, m_aData, m_nRow*m_nCol);
 	// FillArray should not return false since we checked that with GetRowCol
+	// well thats a poor assumption
 }
 
 CMatrix::~CMatrix()
 {
 	delete[] m_aData;
 }
+
+
+/* ---------------------------------------------------------------------------- 
+ Purpose:  getters 
+ ---------------------------------------------------------------------------- */
+bool CMatrix::isNull() { return m_aData == 0; }
+int CMatrix::getNRow() { return m_nRow; }
+int CMatrix::getNCol() { return m_nCol; }
+
+/* ----------------------------------------------------------------------------
+ Name:     element
+ Purpose:  
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
+double &CMatrix::element(int i, int j)
+{
+	assert((i >= 0) && (i < m_nRow));
+	assert((j >= 0) && (j < m_nCol));
+
+	return m_aData[i*m_nCol+j];
+}
+
 
 /* ----------------------------------------------------------------------------
  Name:     swap
@@ -154,6 +179,7 @@ void CMatrix::swap(CMatrix &m)
 
 	// swap all the member variables
 
+	// wait why can it access the member variables...
 	tmp_i = m_nCol; m_nCol = m.m_nCol; m.m_nCol = tmp_i;
 
 	tmp_i = m_nRow; m_nRow = m.m_nRow; m.m_nRow = tmp_i;
@@ -186,30 +212,31 @@ void CMatrix::resize(int nRow, int nCol)
 	// The old m_aData will be deleted then.
 }
 
-bool CMatrix::isNull() { return m_aData == 0; }
-
-int CMatrix::getNRow() { return m_nRow; }
-int CMatrix::getNCol() { return m_nCol; }
-
-/* ----------------------------------------------------------------------------
- Name:     element
- Purpose:  
- Params:   
- Returns:  
- ---------------------------------------------------------------------------- */
-double &CMatrix::element(int i, int j)
+CMatrix& CMatrix::operator+(CMatrix& other)
 {
-	assert((i >= 0) && (i < m_nRow));
-	assert((j >= 0) && (j < m_nCol));
+	// check that both are same size
+	// if they are not return null don't try to add or subtract
 
-	return m_aData[i*m_nCol+j];
+	// assuming both alreaady same size...
+	CMatrix m(m_nRow, m_nCol); // solution matrix
+
+	// use same method as swap or resize or whatever
+	// to access same row,col cell on each matrix at same time
+	for (int i = 0; (i < getNRow()) && (i < other.getNRow()); ++i)
+		for (int j = 0; (j < getNCol()) && (j < other.getNCol()); ++j)
+			m.element(i, j) = element(i, j) + other.element(i, j);
+
+
+	return *this;
 }
 
+// for subtract, first multiply by -1
+// then add
 
-
+// for !=, take the not of ==
 
 /* ----------------------------------------------------------------------------
- Name:     printMatrix
+ Name:     printMatrix --> should overload << operator instead for convenience
  Purpose:  
  Params:   
  Returns:  
