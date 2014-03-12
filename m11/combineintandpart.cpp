@@ -60,7 +60,7 @@ void main()
 			{
 				// process the command line
 				cout<<"\n# "<<++num_Case <<" : "<<Buffer<<endl; // print the command line
-				Interpreter(Buffer);
+				Interpreter(Buffer); // not in lab 2
 			}
 		}
 		TestFile.close();
