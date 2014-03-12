@@ -36,9 +36,7 @@ Lab 3 Interpreter
 // EECS 211 MP#2: A Command Line Interpretation
 // This project is to  
 // Resolve a command line by checking the grammar of the command
-// and explain the command line
-
-   
+// and explain the command line 
  */
 
 //#include "stdafx.h" // in lab 3, not 2 4 or 5
@@ -243,12 +241,11 @@ ostream& operator<<(std::ostream& out, CMatrix& m);
   strncpy(Buffer, Input.c_str(), sizeof(Buffer));
   Buffer[sizeof(Buffer) - 1] = 0;
 
-  /*
+  
   // indicator LAB 3
-  int st=0; // start point
-  int ed=0; // end point
-  */
-  /*
+  //int st=0; // start point
+  //int ed=0; // end point
+
   bool Tag = false;
   // int error_code = 1;    // LAB 3
   // bool error_code = true;  // LAB 2
@@ -353,7 +350,7 @@ ostream& operator<<(std::ostream& out, CMatrix& m);
       break;
     }  
   } 
-
+*/
   /*
   // lab 2
   // print each segment
@@ -419,14 +416,10 @@ ostream& operator<<(std::ostream& out, CMatrix& m);
       }
     }
   }
-
-
-
   if (Tag == false) // if the command line is not valid
   {
     cout<<"Sorry, do not understand." <<endl;
   }
-
 }*/
 
 
@@ -687,12 +680,12 @@ if (!success) cout << "Sorry, I do not understand." << endl;
   //int pos, bpos, count;
   int count;
   char* buffer;
-  char curr; //c current character
+  //char curr; //c current character
   int bpos;
 
   int pos = 0;
   int i = 0;
-  int prev = 0;
+  //int prev = 0;
   numseg = 0;
   //First loop:  input checking and segment counting
   //pos = numseg = 0;
@@ -799,24 +792,16 @@ if (!success) cout << "Sorry, I do not understand." << endl;
         }
       }
       
-/*
-    else if (cmd[i] == '[') 
+/*else if (cmd[i] == '[') 
     {
       i++;
       while (i < len && cmd[i] != ']') //i++;
       {
         if(isDigit(cmd[i])||(cmd[i]==',')||(cmd[i]==';')||(cmd[i]==' ')||(cmd[i]=='.'))
-          {
             i++;
-          }
-          else
-          {
-            cout<<"Expect a ']' here."<<endl;
-          }
+          else cout << "Expect a ']' here."<< endl;
           i++;
         }
-
-
       }*/
 
       
@@ -826,10 +811,8 @@ if (!success) cout << "Sorry, I do not understand." << endl;
         ed = st+1;
         while((ed<len)&&(Buffer[ed]!=']'))
         {
-          if(IsADigit(Buffer[ed])||(Buffer[ed]==',')||(Buffer[ed]==';')||(Buffer[ed]==' ')||(Buffer[ed]=='.'))
-          {
-            ed++;
-          }
+          if(IsADigit(Buffer[ed])||(Buffer[ed]==',')||(Buffer[ed]==';')||(Buffer[ed]==' ')||(Buffer[ed]=='.')) ed++;
+
           else
           {
             cout<<"Expect a ']' here."<<endl;
@@ -839,7 +822,7 @@ if (!success) cout << "Sorry, I do not understand." << endl;
           }
           ed++;
         }
-      }8?
+      }*/
       
 
       /*char *matrixdata = new char[500]; // = '[';
@@ -901,6 +884,8 @@ if (!success) cout << "Sorry, I do not understand." << endl;
   {
     (*segmt)[count].str = &buffer[bpos]; // Segment count starts at this position
     //c = cmd[pos];
+
+    // VARIABLE NAME
     if (isChar(cmd[pos])) //Variable
     {
       (*segmt)[count].type = VAR;
@@ -913,6 +898,8 @@ if (!success) cout << "Sorry, I do not understand." << endl;
       buffer[bpos] = '-';
       pos++;
       bpos++;
+
+      // NEGATIVE 
       if (pos < len && isDigit(cmd[pos])) //Negative number
       {
         (*segmt)[count].type = NUM;
@@ -924,24 +911,31 @@ if (!success) cout << "Sorry, I do not understand." << endl;
         while (pos < len && isOp(cmd[pos])) push_to_buffer();
       }
     }
-    else if (isOp(cmd[pos])) //Operator
+
+    // OPERATOR
+    else if (isOp(cmd[pos])) // Operator
     {
       (*segmt)[count].type = OP;
       while (pos < len && isOp(cmd[pos])) push_to_buffer();
     }
+
+    // SCALAR
     else if (isDigit(cmd[pos])) //Scalar
     {
       (*segmt)[count].type = NUM;
       while (pos < len && isDigit(cmd[pos])) push_to_buffer();
     }
-    else if (cmd[pos] == '[') //Matrix
+
+    // MATRIX
+    else if (cmd[pos] == '[') // Matrix
     {
       //cout << "recognized [ in secon dloop";
       (*segmt)[count].type = MAT;
       //cout << "labeled the type Matrix";
       while (pos < len && cmd[pos] != ']')
         {
-          push_to_buffer(); //cout << "kept going" <<endl;
+          push_to_buffer();
+          //cout << "kept going" <<endl;
         }
 
       //Add ']' to buffer, as well
@@ -1353,15 +1347,13 @@ void OpTranslator(OP op)
  bool isChar(char c)
  {
   if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) return true;
-  else return c == '_'; // still don't understand why returns a char not bool?
+  else return c == '_'; // this is the only other acceptable character
+  // finally understand why this returns c=='_'
+  // rather than a plain true or false
+
+  //  return ((c >= 'A' && c <= 'Z') || (c >= 'a'&& c <= 'z')); // lab 2+3
 }
-// lab 2+3
-/*
-bool IsAChar(char str) {
-  bool Tag = false;
-  if((str>='A'&&str<='Z')||(str>='a'&&str<='z')) Tag = true;
-  return Tag;
-}*/
+
 
 /* ----------------------------------------------------------------------------
  Name:     isDigit
@@ -1370,17 +1362,16 @@ bool IsAChar(char str) {
  bool isDigit(char c)
  {
   if (c >= '0' && c <= '9') return true;
-  else return c == '.'; // still don't understand why returns a char not bool?
-  // oh wow i get it this will return true if its a decimal (ie still part of a number)
+  else return c == '.'; // only other acceptable character to be considered a digit
+  // oh wow i get it this will return true if its a decimal
+  // (ie still part of a number)
   // and otherwise false
   // that is SO NOT OBVIOUS
+
+  //  return ((c >= '0' && c <= '9')|| (c =='.')); // lab 2+3
 }
-// lab 2+3
-/*bool IsADigit(char str) {
-  bool Tag = false;
-  if((str>='0'&&str<='9')||(str=='.')) Tag = true;
-  return Tag;
-}*/
+
+
 
 /* ----------------------------------------------------------------------------
  Name:     isOp
@@ -1399,13 +1390,9 @@ bool IsAChar(char str) {
     default:
     return false;
   }
+  // return ((c=='+')||(c=='-')||(c=='*')||(c=='/')||(c=='=')); // lab 2+3
 }
-// lab 2+3
-/*bool IsAOperator(char str) {
-  bool Tag = false;
-  if((str=='+')||(str=='-')||(str=='*')||(str=='/')||(str=='=')) Tag = true;
-  return Tag;
-}*/
+
 
 /* ----------------------------------------------------------------------------
  Name:     isSpace
@@ -1428,33 +1415,22 @@ bool IsAChar(char str) {
 
 ostream& operator<<(std::ostream& out, CMatrix& m)
 {
-    
-    if (m.isNull()) out << "\tnull matrix" << endl;
-    //std::cout << "\tnull matrix" << std::endl;
-	else
-	{
+
+  if (m.isNull()) out << "\tnull matrix" << endl;
+  else
+  {
 		// row by row
-		for (int i = 0; i < m.getNRow(); ++i)
-		{
-			//std::cout << "\t";
-            out << "\t";
-			for (int j = 0; j < m.getNCol(); ++j) out << m.element(i, j) << "\t";
-            //std::cout << m.element(i, j) << "\t";
-			//std::cout << std::endl;
-            out << endl;
-		}
-	}
-    out << endl;
-	//std::cout << std::endl;
-    return out;
-    
-    /*cout << "Variables: \n";
-     int len = cdb.db.size();
-     for (int i = 0; i < len; i++)
-     out << cdb.db[i] << endl;
-     return out;
-     */
-    //printMatrix(m);
+    for (int i = 0; i < m.getNRow(); ++i)
+    {
+      out << "\t";
+      for (int j = 0; j < m.getNCol(); ++j)
+        out << m.element(i, j) << "\t";
+
+      out << endl;
+    }
+  }
+  out << endl;
+  return out;
 }
 
 /* ----------------------------------------------------------------------------
@@ -1462,7 +1438,7 @@ ostream& operator<<(std::ostream& out, CMatrix& m)
  Purpose:  
  Params:   
  Returns:  
- ---------------------------------------------------------------------------- */
+ ---------------------------------------------------------------------------- 
  void printMatrix(CMatrix &m)
  {
   if (m.isNull())
@@ -1479,4 +1455,4 @@ ostream& operator<<(std::ostream& out, CMatrix& m)
     }
   }
   std::cout << std::endl;
-}
+}*/
