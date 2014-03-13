@@ -41,7 +41,7 @@
 using namespace std; 
 
 //#define INPUT_FILE "TestCase.txt"
-#define INPUT_FILE "/Users/deborahzzink/Desktop/TestCaseLab6.txt"
+#define INPUT_FILE "TestCaseLab6.txt"
 
 enum op_t  {ASN, ADD, SUB, MULT, DIV, INC, DEC, ADDASN, SUBASN, MULTASN, DIVASN, BAD_OP}; 
 enum seg_t {VAR, NUM, MAT, OP, BAD_SEG};
@@ -52,18 +52,18 @@ typedef struct
   seg_t type;
 } segment_t;
 
-CVarDB* db; 
-
-void interpreter(const char* cmd);
+CVarDB* db; // Database for holding variables
 
 op_t recognizeOp(const char* op);
-bool partitioner(const char* cmd, segment_t** segmt, int& numseg);
-void freeSegments(segment_t* segmt);
-
 bool isChar(char c);
 bool isDigit(char c);
 bool isOperator(char c);
 bool isSpace(char c);
+
+// functions for reading/interpreting input 
+void interpreter(const char* cmd);
+bool partitioner(const char* cmd, segment_t** segmt, int& numseg);
+void freeSegments(segment_t* segmt);
 
 bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right);  
 bool binary_op(const char* left, op_t op, const char* right);  
@@ -102,19 +102,20 @@ int main()
 
   //Get the input
   string cmd; 
-  ifstream in(INPUT_FILE);   // read from file
+  ifstream inputFile(INPUT_FILE);   // read from file
 
   cout << "\tWelcome to EECS 211 Lab 6:  Mini MatLab" << endl;
   cout << "\tSydney Zink, Northwestern University "<< endl;
   cout << "\tCopyright 2014   " << endl;    
 
-  if (!in.is_open())
+  if (!inputFile.is_open())
     cout << "Unable to open input file " << INPUT_FILE << endl;   
   else
   {
-    while (getline(in, cmd))
+  	// read a command line from the test inputs file
+    while (getline(inputFile, cmd))
     {
-      //Special commands:  quit and who
+      // Special commands:  quit and who
       if (cmd == "quit")
       {
         cout << "Thank you. Now closing...\n";  
@@ -126,163 +127,49 @@ int main()
         continue; 
       }
 
-      //Otherwise, interpret and run the command normally
+      // Otherwise, interpret and run the command normally
       interpreter(cmd.c_str()); 
     }
 
-    in.close();  
+    inputFile.close();  
   }
 
   delete db;
-  char c;  
-  cout << "Type 'q' to quit: ";  
-  cin >> c;  
+ // this is just irritating to have to always press a key to end the program
+ // not necessary
+ // char c;  
+ // cout << "Type 'q' to quit: ";  
+ // cin >> c;  
 
   return 0;  
 }
 
-bool partitioner(const char* cmd, segment_t** segmt, int& numseg)
+op_t recognizeOp(const char* op)
 {
-  int pos, len, bpos, count;
-  char* buffer;
-  char c;
-
-  //First loop:  input checking and segment counting
-  pos = numseg = 0;
-  len = strlen(cmd);
-  while (pos < len)
-  {
-    c = cmd[pos];
-    if (isChar(c)) //Variable
-    {
-      pos++;
-      //Characters after the first are allowed to be 0-9
-      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) 
-        pos++;
-    }
-    else if (c == '-')  //Negative number or operator
-    {
-      pos++;
-      if (pos < len && isDigit(cmd[pos])) //Negative number
-        while (pos < len && isDigit(cmd[pos]))
-          pos++;
-      else if (pos < len && isOperator(cmd[pos])) //Operator
-        while (pos < len && isOperator(cmd[pos]))
-          pos++;
-    }
-    else if (isOperator(c)) //Operator
-    {
-      pos++;
-      while (pos < len && isOperator(cmd[pos]))
-        pos++;
-    }
-    else if (isDigit(c)) //Scalar
-    {
-      pos++;
-      while (pos < len && isDigit(cmd[pos]))
-        pos++;
-    }
-    else if (c == '[') //Matrix
-    {
-      pos++;
-      //We'll check matrix validity in CMatrix (Lab 6)
-      //We won't worry about it here
-      while (pos < len && cmd[pos] != ']')
-        pos++;
-      pos++; //Skip over ']'
-    }
-    else if (isSpace(c)) //Whitespace
-    {
-      pos++;
-      continue; //Don't advance to next segment!
-    }
-    else //Unrecognized case
-      return false;
-    numseg++;
-  }
-
-  //Macro function to make code easier to read
-#define push_to_buffer() {buffer[bpos] = cmd[pos]; pos++; bpos++;}
-
-  //Second loop:  populating segmt structure
-  *segmt = new segment_t[numseg];
-  buffer = new char[len + numseg];
-
-  bpos = pos = count = 0;
-  while (pos < len)
-  {
-    (*segmt)[count].str = &buffer[bpos]; //Segment count starts at this position
-    c = cmd[pos];
-    if (isChar(c)) //Variable
-    {
-      (*segmt)[count].type = VAR;
-
-      //Characters after the first are allowed to be 0-9
-      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) 
-        push_to_buffer();
-    }
-    else if (c == '-')  //Negative number or operator
-    {
-      buffer[bpos] = '-';
-      pos++;
-      bpos++;
-      if (pos < len && isDigit(cmd[pos])) //Negative number
-      {
-        (*segmt)[count].type = NUM;
-        while (pos < len && isDigit(cmd[pos]))
-          push_to_buffer();
-      }
-      else //Operator
-      {
-        (*segmt)[count].type = OP;
-        while (pos < len && isOperator(cmd[pos]))
-          push_to_buffer();
-      }
-    }
-    else if (isOperator(c)) //Operator
-    {
-      (*segmt)[count].type = OP;
-      while (pos < len && isOperator(cmd[pos]))
-        push_to_buffer();
-    }
-    else if (isDigit(c)) //Scalar
-    {
-      (*segmt)[count].type = NUM;
-      while (pos < len && isDigit(cmd[pos]))
-        push_to_buffer();
-    }
-    else if (c == '[') //Matrix
-    {
-      (*segmt)[count].type = MAT;
-      while (pos < len && cmd[pos] != ']')
-        push_to_buffer();
-      //Add ']' to buffer, as well
-      push_to_buffer();
-    }
-    else if (isSpace(c)) //Whitespace
-    {
-      pos++;
-      continue; //Don't advance to next segment!
-    }
-    else //Should never execute
-    {
-      delete buffer;
-      delete segmt;
-      return false;
-    }
-    
-    buffer[bpos] = '\0';  //Null-terminate this segment
-    bpos++;
-    count++; //Advance to next segment
-  }
-
-  return true;
-}
-
-void freeSegments(segment_t* segmt)
-{
-  delete segmt[0].str;
-  delete segmt;
+  if (strcmp(op, "=") == 0)
+    return ASN;
+  else if (strcmp(op, "+") == 0)
+    return ADD;
+  else if (strcmp(op, "-") == 0)
+    return SUB;
+  else if (strcmp(op, "*") == 0)
+    return MULT;
+  else if (strcmp(op, "/") == 0)
+    return DIV;
+  else if (strcmp(op, "++") == 0)
+    return INC;
+  else if (strcmp(op, "--") == 0)
+    return DEC;
+  else if (strcmp(op, "+=") == 0)
+    return ADDASN;
+  else if (strcmp(op, "-=") == 0)
+    return SUBASN;
+  else if (strcmp(op, "*=") == 0)
+    return MULTASN;
+  else if (strcmp(op, "/=") == 0)
+    return DIVASN;
+  else
+    return BAD_OP;
 }
 
 bool isChar(char c)
@@ -332,6 +219,12 @@ bool isSpace(char c)
   }
 }
 
+/* ----------------------------------------------------------------------------
+ Name:     interpreter
+ Purpose:  BLACK MAGIC
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
 void interpreter(const char* cmd)
 {
 	segment_t* segmt;
@@ -455,33 +348,165 @@ void interpreter(const char* cmd)
 		cout << "Sorry, I do not understand." << endl;  
 }
 
-op_t recognizeOp(const char* op)
+
+
+/* ----------------------------------------------------------------------------
+ Name:     partitioner
+ Purpose:  MORE BLACK MAGIC
+ Params:   
+ Returns:  
+ ---------------------------------------------------------------------------- */
+bool partitioner(const char* cmd, segment_t** segmt, int& numseg)
 {
-  if (strcmp(op, "=") == 0)
-    return ASN;
-  else if (strcmp(op, "+") == 0)
-    return ADD;
-  else if (strcmp(op, "-") == 0)
-    return SUB;
-  else if (strcmp(op, "*") == 0)
-    return MULT;
-  else if (strcmp(op, "/") == 0)
-    return DIV;
-  else if (strcmp(op, "++") == 0)
-    return INC;
-  else if (strcmp(op, "--") == 0)
-    return DEC;
-  else if (strcmp(op, "+=") == 0)
-    return ADDASN;
-  else if (strcmp(op, "-=") == 0)
-    return SUBASN;
-  else if (strcmp(op, "*=") == 0)
-    return MULTASN;
-  else if (strcmp(op, "/=") == 0)
-    return DIVASN;
-  else
-    return BAD_OP;
+  int pos, len, bpos, count;
+  char* buffer;
+  char c;
+
+  //First loop:  input checking and segment counting
+  pos = numseg = 0;
+  len = strlen(cmd);
+  while (pos < len)
+  {
+    c = cmd[pos];
+    if (isChar(c)) //Variable
+    {
+      pos++;
+      //Characters after the first are allowed to be 0-9
+      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) 
+        pos++;
+    }
+    else if (c == '-')  //Negative number or operator
+    {
+      pos++;
+      if (pos < len && isDigit(cmd[pos])) //Negative number
+        while (pos < len && isDigit(cmd[pos]))
+          pos++;
+      else if (pos < len && isOperator(cmd[pos])) //Operator
+        while (pos < len && isOperator(cmd[pos]))
+          pos++;
+    }
+    else if (isOperator(c)) //Operator
+    {
+      pos++;
+      while (pos < len && isOperator(cmd[pos]))
+        pos++;
+    }
+    else if (isDigit(c)) //Scalar
+    {
+      pos++;
+      while (pos < len && isDigit(cmd[pos]))
+        pos++;
+    }
+    else if (c == '[') //Matrix
+    {
+      pos++;
+      //We'll check matrix validity in CMatrix (Lab 6)
+      //We won't worry about it here
+      //
+      //
+      //
+      // CHECK MATRIX VALIDITY HERE - see lab 3 i think
+      //
+      //
+      //
+      while (pos < len && cmd[pos] != ']')
+        pos++;
+      pos++; //Skip over ']'
+    }
+    else if (isSpace(c)) //Whitespace
+    {
+      pos++;
+      continue; //Don't advance to next segment!
+    }
+    else //Unrecognized case
+      return false;
+    numseg++;
+  }
+
+  //Macro function to make code easier to read
+#define push_to_buffer() {buffer[bpos] = cmd[pos]; pos++; bpos++;}
+
+  //Second loop:  populating segmt structure
+  *segmt = new segment_t[numseg];
+  buffer = new char[len + numseg];
+
+  bpos = pos = count = 0;
+  while (pos < len)
+  {
+    (*segmt)[count].str = &buffer[bpos]; //Segment count starts at this position
+    c = cmd[pos];
+    if (isChar(c)) //Variable
+    {
+      (*segmt)[count].type = VAR;
+
+      //Characters after the first are allowed to be 0-9
+      while (pos < len && (isChar(cmd[pos]) || (cmd[pos] >= '0' && cmd[pos] <= '9'))) 
+        push_to_buffer();
+    }
+    else if (c == '-')  //Negative number or operator
+    {
+      buffer[bpos] = '-';
+      pos++;
+      bpos++;
+      if (pos < len && isDigit(cmd[pos])) //Negative number
+      {
+        (*segmt)[count].type = NUM;
+        while (pos < len && isDigit(cmd[pos]))
+          push_to_buffer();
+      }
+      else //Operator
+      {
+        (*segmt)[count].type = OP;
+        while (pos < len && isOperator(cmd[pos]))
+          push_to_buffer();
+      }
+    }
+    else if (isOperator(c)) //Operator
+    {
+      (*segmt)[count].type = OP;
+      while (pos < len && isOperator(cmd[pos]))
+        push_to_buffer();
+    }
+    else if (isDigit(c)) //Scalar
+    {
+      (*segmt)[count].type = NUM;
+      while (pos < len && isDigit(cmd[pos]))
+        push_to_buffer();
+    }
+    else if (c == '[') //Matrix
+    {
+      (*segmt)[count].type = MAT;			// ************* HERE IS WHERE MATRIX TYPE ASSIGNED
+      while (pos < len && cmd[pos] != ']')
+        push_to_buffer();
+      //Add ']' to buffer, as well
+      push_to_buffer();
+    }
+    else if (isSpace(c)) //Whitespace
+    {
+      pos++;
+      continue; //Don't advance to next segment!
+    }
+    else //Should never execute
+    {
+      delete buffer;
+      delete segmt;
+      return false;
+    }
+    
+    buffer[bpos] = '\0';  //Null-terminate this segment
+    bpos++;
+    count++; //Advance to next segment
+  }
+
+  return true;
 }
+
+void freeSegments(segment_t* segmt)
+{
+  delete segmt[0].str;
+  delete segmt;
+}
+
 
 bool binary_assign_op(const char* lhs, const char* left, op_t op, const char* right)
 {

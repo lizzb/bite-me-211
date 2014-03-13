@@ -8,3 +8,7 @@
 *.xcscheme
 
 *.plist
+
+*.o
+
+sydm13/demo
