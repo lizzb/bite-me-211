@@ -57,12 +57,12 @@ public:
 
 	// returns true if the given CMatrix is the same size
 	// and contains all of the same values as this matrix (false otherwise)
-	//bool operator==(CMatrix& mat);
+	bool operator==(CMatrix& mat);
 
 
 	// returns false if the given CMatrix is the same size
 	// and contains all of the same values as this matrix (true otherwise)
-	//bool operator!=(CMatrix& mat);
+	bool operator!=(CMatrix& mat);
 
 
 	 // output the matrix

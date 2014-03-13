@@ -60,6 +60,21 @@ int main()
     cout <<"m1 " << endl;
 	*/
 
+	cout << "m1: " << endl << m1;
+	CMatrix m1x2(2.2);
+	cout << "m1x2: " << endl << m1x2;
+	cout << "m1 == m1x2 " << (m1 == m1x2) << endl;
+	cout << "m1 != m1x2 " << (m1 != m1x2) << endl;
+	cout << "m1 x matrix containing 1 element, 2.0 " << endl;
+	CMatrix dub(2.0);
+	//cout << m1 * dub; //segfault
+	CMatrix dubxm1 = m1 * dub; // malloc issues later
+
+	cout << "dubxm1: " << dubxm1;
+	cout << "dubxm1 == m1x2 " << (dubxm1 == m1x2) << endl;
+	cout << "dubxm1 != m1x2 " << (dubxm1 != m1x2) << endl;
+
+
     cout << "m1: " << endl << m1;
     cout << "mstr: " << endl << mstr;
     cout << "other matrix m3" << endl << m3;

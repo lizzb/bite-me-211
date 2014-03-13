@@ -512,7 +512,7 @@ CMatrix& CMatrix::operator/(CMatrix& other)
     // don't even try, return null matrix
     //if( !(other.getNRow() == 1 && other.getNCol() == 1))
     //	return quotient;
-    
+
     
     // this is the matrix, other is scalar
     //else //if (other.getNRow() == 1 && other.getNCol() == 1)
@@ -535,4 +535,18 @@ CMatrix& CMatrix::operator/(CMatrix& other)
 
 }
 
+bool CMatrix::operator==(CMatrix& otherMatrix)
+{
+	for (int i = 0; (i < getNRow() && i < otherMatrix.getNRow()); i++)
+            for (int j = 0; (j < getNCol() && j < otherMatrix.getNCol()); j++)
+                if (otherMatrix.element(i, j) != element(i, j))
+                	return false;
+
+   	return true;
+}
+
+bool CMatrix::operator!=(CMatrix& otherMatrix)
+{
+	return !(*this == otherMatrix);
+}
 
