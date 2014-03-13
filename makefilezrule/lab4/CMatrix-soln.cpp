@@ -4,6 +4,7 @@
 
 #include "CMatrix-soln.h"
 
+
 // for string input, we get something from previous projects
 enum MATRIX_INPUT {NUM, SEP, END, ERR};
 
@@ -11,7 +12,7 @@ MATRIX_INPUT MatrixPiece(const char *buffer, int &st, char *piece)
 {
 	while (buffer[st] == ' ')
 		st++;
-
+    
 	if (((buffer[st] <= '9') && (buffer[st] >= '0')) || (buffer[st] == '.'))
 	{
 		int ed = st;
@@ -42,15 +43,15 @@ bool GetRowCol(const char *str, int &nRow, int &nCol)
 {
 	nRow = 0;
 	nCol = 0;
-
+    
 	// should start with a '['
 	if (str[0] != '[')
 		return false;
-
+    
 	char piece[100];
 	int col = 0, st = 1;
 	for (;;)
-	switch (MatrixPiece(str, st, piece))
+        switch (MatrixPiece(str, st, piece))
 	{
 		case SEP: // new row
 			if ((nRow != 0) && (col != nCol))
@@ -79,7 +80,7 @@ bool GetRowCol(const char *str, int &nRow, int &nCol)
 void FillArray(const char *str, double *array, int size)
 {
 	// call GetRowCol first, this one should not fail
-
+    
 	char piece[100];
 	int i = 0, st = 1;
 	for (; i < size;)
@@ -129,15 +130,17 @@ CMatrix::CMatrix(const char *str)
 	m_nRow = nRow;
 	m_nCol = nCol;
 	m_aData = new double[m_nRow*m_nCol];
-
+    
+    // FillArray should not return false
+    // since we checked that with GetRowCol
 	FillArray(str, m_aData, m_nRow*m_nCol);
-	// FillArray should not return false since we checked that with GetRowCol
+	
 }
 
 CMatrix::~CMatrix()
 {
 	//if(*m_aData != NULL || m_aData != NULL)
-		delete[] m_aData;
+    delete[] m_aData;
 	//else delete m_aData;
 	//if(m_aData != NULL) delete[] m_aData; // compiler does nOT like this line
 }
@@ -148,11 +151,12 @@ void CMatrix::swap(CMatrix &m)
 	double *tmp_p;
 
 	// swap all the member variables
-
+    
+    // swap # of columns
 	tmp_i = m_nCol; m_nCol = m.m_nCol; m.m_nCol = tmp_i;
-
+    // swap number of rows
 	tmp_i = m_nRow; m_nRow = m.m_nRow; m.m_nRow = tmp_i;
-
+    // swap m_aData pointer to double array
 	tmp_p = m_aData; m_aData = m.m_aData; m.m_aData = tmp_p;
 }
 
@@ -406,8 +410,9 @@ CMatrix& CMatrix::operator+(CMatrix& other)
 	// if they are not return null don't try to add or subtract
     
 	// assuming both alreaady same size...
-	CMatrix sum(m_nRow, m_nCol); // solution matrix
-    
+	CMatrix sum;//(m_nRow, m_nCol); // solution matrix
+    sum.resize(getNRow(), getNCol());
+
 	// use same method as swap or resize or whatever
 	// to access same row,col cell on each matrix at same time
 	for (int i = 0; (i < getNRow()) && (i < other.getNRow()); ++i)
@@ -420,4 +425,114 @@ CMatrix& CMatrix::operator+(CMatrix& other)
     variable 'sum' returned [-Wreturn-stack-address]*/
 	return sum;
 }
+
+
+CMatrix& CMatrix::operator-(CMatrix& other)
+{
+	// check that both are same size
+	// if they are not return null don't try to add or subtract
+    
+	// assuming both alreaady same size...
+	CMatrix diff;//(m_nRow, m_nCol); // solution matrix
+    diff.resize(getNRow(), getNCol());
+
+	// use same method as swap or resize or whatever
+	// to access same row,col cell on each matrix at same time
+	for (int i = 0; (i < getNRow()) && (i < other.getNRow()); ++i)
+		for (int j = 0; (j < getNCol()) && (j < other.getNCol()); ++j)
+			diff.element(i, j) = element(i, j) - other.element(i, j);
+    
+	//return negOther + ; ehh this approach would be 2 loops repeated in each fx
+	return diff;
+}
+
+// returns the result of multiplying this matrix by another matrix;
+// the result can be a null matrix
+// if neither this nor the given matrix are 1x1
+CMatrix& CMatrix::operator*(CMatrix& other)
+{
+    
+    double scalarVal = 0.0;
+    // assuming passed first conidition
+	CMatrix product; //m_nRow, m_nCol); // solution matrix
+    
+    // check that one of the 2 matrices is 1x1 (a scalar)
+    // if not, return null - don't try - the result is a null matrix
+    if (! ((other.getNRow() == 1 && other.getNCol() == 1) ||
+        (getNRow() == 1 && getNCol() == 1) ))
+        return product; //CMatrix();
+    //at least one of the matrices needs to be 1x1, but in this case, neither is
+    
+    // otherwise multiplication by scalar value (a double in a 1x1 CMatrix)
+    
+    //if (other.getNRow() == 1 && other.getNCol == 1) scalarVal = other.element(0,0);
+    //else if (getNRow() == 1 && getNCol == 1) scalarVal = element(0,0);
+    
+    
+    
+    // this is the matrix, other is scalar
+    if (other.getNRow() == 1 && other.getNCol() == 1)
+    {
+        scalarVal = other.element(0,0);
+        
+        // resize answer to be size of this matrix
+        product.resize(getNRow(), getNCol());
+        
+        //iterate through this matrix,
+        // at each i,j index multiply by scalar and
+        // put value into corresponding i,j index of product matrix
+        for (int i = 0; (i < getNRow() && i < product.getNRow()); i++)
+            for (int j = 0; (j < getNCol() && j < product.getNCol()); j++)
+                product.element(i, j) = element(i, j) * scalarVal;
+    }
+    // this is the scalar cmatrix, other is matrix cmatrix
+    else if (getNRow() == 1 && getNCol() == 1)
+    {
+        scalarVal = element(0,0);
+        product.resize(other.getNRow(), other.getNCol());
+        
+        for (int i = 0; (i < other.getNRow() && i < product.getNRow()); i++)
+            for (int j = 0; (j < other.getNCol() && j < product.getNCol()); j++)
+                product.element(i, j) = other.element(i, j) * scalarVal;
+    }
+    
+    return product;
+
+}
+
+
+CMatrix& CMatrix::operator/(CMatrix& other)
+{
+    double scalarVal = 0.0;	// number to divide by contained in other
+	CMatrix quotient; 		// solution matrix
+
+
+    // if the matrix to divide by is not a scalar
+    // aka a double in a 1x1 CMatrix
+    // don't even try, return null matrix
+    //if( !(other.getNRow() == 1 && other.getNCol() == 1))
+    //	return quotient;
+    
+    
+    // this is the matrix, other is scalar
+    //else //if (other.getNRow() == 1 && other.getNCol() == 1)
+    if (other.getNRow() == 1 && other.getNCol() == 1)
+    {
+        scalarVal = other.element(0,0);
+        
+        // resize answer to be size of this matrix
+        quotient.resize(getNRow(), getNCol());
+        
+        //iterate through this matrix,
+        // at each i,j index multiply by scalar and
+        // put value into corresponding i,j index of product matrix
+        for (int i = 0; (i < getNRow() && i < quotient.getNRow()); i++)
+            for (int j = 0; (j < getNCol() && j < quotient.getNCol()); j++)
+                quotient.element(i, j) = (element(i, j) / scalarVal);
+    }
+    
+    return quotient;
+
+}
+
 

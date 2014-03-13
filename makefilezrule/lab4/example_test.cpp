@@ -37,7 +37,6 @@ int main()
 	/*
     cout << "A 2 by 3 matrix:" << endl;
 	cout << mstr;
-
 	
 	cout << "A invalid matrix:" << endl;
 	cout << merr;
@@ -61,16 +60,51 @@ int main()
     cout <<"m1 " << endl;
 	*/
 
-	cout << "Add the following 2 by 3 matrices:" << endl;
+    cout << "m1: " << endl << m1;
+    cout << "mstr: " << endl << mstr;
+    cout << "other matrix m3" << endl << m3;
 
-	cout << "mstr: " << endl << mstr;
-	cout << "other matrix" << endl << m3;
+	cout << "multiply: mstr x m1 (scalar value) " << endl;
+    CMatrix prod = m1 * mstr;
+    cout << prod;
 
-	cout << "sum of matrices" << endl;
-	
+    cout << "multiply: (scalar value) m1 x mstr " << endl;
+    CMatrix prod2 = m1 * mstr;
+    cout << prod2;
+
+	cout << "divide: mstr / m1 (scalar value) " << endl;
+    CMatrix quotient = mstr / m1;
+    cout << prod;
+
+    cout << "multiply: (scalar value) m1 / mstr " << endl;
+    CMatrix quotient2 = m1 / mstr;
+    cout << quotient2;    
+
+
+    
+    cout << "Add the following 2 by 3 matrices:" << endl;
+	cout << "sum of matrices m3 and mstr" << endl;
+
+	//----
 	CMatrix sum = m3 + mstr;
     cout << sum; 		// malloc - but gives sum
+
     //cout << m3 + mstr;	// seg fault - no sum
+    //----
+
+    cout << "mstr + m3" << endl;
+    CMatrix sum2 = mstr + m3;
+    cout << sum2;
+
+    cout << "mstr - m3" << endl;
+    CMatrix diff = mstr - m3;
+    cout << diff;
+
+    cout << "m3 - mstr" << endl;
+    CMatrix diff2 = m3 - mstr;
+    cout << diff2;
+    
+
 
 	//cout << "Press any key to end...";
 	//cin.get();	// wait for a key to end your program
