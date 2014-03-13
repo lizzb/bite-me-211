@@ -17,20 +17,22 @@ public:
 
 	CMatrix(const char *str); // matrix from string
 
-	~CMatrix();
+	~CMatrix(); // destructor
 
 	// Is this matrix a null matrix?
 	bool IsNull() const;
     
+    const CMatrix& operator=(const CMatrix& m); // *** if i had a copy constructor i could use it inside this
+
     CMatrix operator+(CMatrix& mat); //adding two matrices, NULL result if diff sizes
     CMatrix operator-(CMatrix& mat); //subtracting matrices, NULL matrix if diff sizes
     CMatrix operator*(CMatrix& mat); //multiplying matrices, NULL if at least one isn't just a one by one matrix UNLESS DOING BONUS CREDIT
-    const CMatrix& operator=(const CMatrix& m);
     CMatrix operator/(CMatrix& mat); //dividing matrix by a scalar, NULL if mat is not just a 1 by 1 matrix
     bool operator==(CMatrix& mat); //true if CMatrix is same size matrix with all the same values as this matrix, false if not to either or both of those things
     bool operator!=(CMatrix& mat); //same as == overload but true if not same in at least one of two regards and false if same in both regards
 
 	void swap(CMatrix &m); // swap this and m
+	// swap functionality can be used for assignment / copy constructor *****
 
 	void resize(int nRow, int nCol);
 

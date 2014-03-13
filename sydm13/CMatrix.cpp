@@ -138,6 +138,9 @@ CMatrix::~CMatrix()
 {
     if(m_aData!=NULL)
         delete m_aData;
+
+
+  // i'm having issues with my destructor, i think hence malloc errors
 }
 
 void CMatrix::swap(CMatrix &m)
@@ -176,6 +179,10 @@ void CMatrix::resize(int nRow, int nCol)
 
 	// m's destructor will be called here.
 	// The old m_aData will be deleted then.
+
+
+	// ****** see comments above in this function
+	// try to reuse this function body for assignment and operators and stuff
 }
 
 int CMatrix::getNRow()
@@ -287,16 +294,17 @@ CMatrix CMatrix::operator*(CMatrix& mat)
             return mat;
         }
         else {
-            return CMatrix();
+            return CMatrix(); // return a null matrix
         }
     }
     else {
-        return CMatrix();
+        return CMatrix(); // return a null matrix
     }
 }
 
 CMatrix CMatrix::operator/(CMatrix& mat)
 {
+	// check that given parameter is a scalar (a 1x1 matrix)
     if ((mat.getNCol() != 1) && (mat.getNRow() != 1))
     {
         return CMatrix();
@@ -353,6 +361,8 @@ bool CMatrix::operator==(CMatrix& mat)
     }
 }
 
+// no need to loop through again - just return the opposite of == for !=
+// or vice versa
 bool CMatrix::operator!=(CMatrix& mat)
 {
     int error = 0;
@@ -389,6 +399,7 @@ bool CMatrix::operator!=(CMatrix& mat)
 
 //end new stuff------------------------------------------------/
 
+// don't need this anymore, now that you overloaded the << operator
 void printMatrix(CMatrix &m)
 {
 	if (m.IsNull())

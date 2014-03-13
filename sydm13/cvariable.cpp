@@ -22,7 +22,7 @@ CVariable::CVariable(const char* init_name, double init_value)
   value = CMatrix(init_value);
 }
 
-CVariable::CVariable(const CVariable& copy)
+CVariable::CVariable(const CVariable& copy) // copy constructor?!!? ***
 {
   value = copy.value;
   
